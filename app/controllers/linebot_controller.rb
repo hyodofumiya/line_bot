@@ -1,44 +1,59 @@
 class LinebotController < ApplicationController
   require 'line/bot'
-
   protect_from_forgery :except => [:callback]
 
-  def client
-    @client ||= Line::Bot::Client.new { |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f"
-      config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="
-    }
-  end
 
   def callback
     body = request.body.read
-
-    signature = request.env['HTTP_X_LINE_SIGNATURE']
-    unless client.validate_signature(body, signature)
-      head :bad_request
-    end
-
+    binding.pry
+    #リクエストがlineからのものかを確認する
+    check_from_line(body)
+    #Lineでuserから送られてきた内容のみをeventsとしてパース
     events = client.parse_events_from(body)
-
+    #userがlineで送ってきたイベントタイプに応じて処理を割り振る
+    binding.pry
     events.each { |event|
       case event
+      #メッセージイベントだった場合
       when Line::Bot::Event::Message
+
+        #メッセージのタイプに応じて処理を割り振る
         case event.type
+        #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
           # LINEから送られてきたメッセージが「アンケート」と一致するかチェック
           if event.message['text'].eql?('アンケート')
+            #lineの送信者にレスポンスにメッセージを返す。
             # private内のtemplateメソッドを呼び出します。
             client.reply_message(event['replyToken'], template)
           end
         end
       end
     }
-
     head :ok
   end
 
   private
+#各メソッド------------------------------------------------------------------------------------------------
+  
+  #リクエスト元かlineかどうかを確認する
+  def check_from_line(body)
+    signature = request.env['HTTP_X_LINE_SIGNATURE']
+    unless client.validate_signature(body, signature)
+      head :bad_request
+    end
+  end
 
+  #メッセージの送信者を@clientとして定義する。
+  def client
+    @client ||= Line::Bot::Client.new { |config|
+      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
+      config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+    }
+  end
+
+
+#---------------------------------------------------------------------------------------------------
   def template
     {
       "type": "template",
