@@ -5,13 +5,11 @@ class LinebotController < ApplicationController
 
   def callback
     body = request.body.read
-    binding.pry
     #リクエストがlineからのものかを確認する
     check_from_line(body)
     #Lineでuserから送られてきた内容のみをeventsとしてパース
     events = client.parse_events_from(body)
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
-    binding.pry
     events.each { |event|
       case event
       #メッセージイベントだった場合
