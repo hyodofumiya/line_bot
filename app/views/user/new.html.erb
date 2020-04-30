@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ユーザー登録</title>
+
+    </head>
+    <body class="user_new_body">
+        <div class="form-structor">
+            <form class="signup">
+                <h2 class="form-title" id="signup">入力フォーム</h2>
+                <div class="form-holder">
+                    <input type="text" id="familyName" class="input" placeholder="名前（姓）" maxlength="15" required  />
+                    <input type="text" id="firstName" class="input" placeholder="名前（名）" required  maxlength="15"/>
+                    <input type="text" id="employeeNumber" class="input" placeholder="社員番号（半角数字）" required  maxlength="5" minlength="5" inputmode="numeric" pattern="\d{5}"/>
+                </div>
+                <input type="submit" id="sendMessageButton" class="submit-btn" value="完了">
+            </form>
+        </div>
+        <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    </body>
+</html>
