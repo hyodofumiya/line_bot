@@ -24,11 +24,11 @@ function sendMessage(){
     //htmlでフォームのバリデーションに引っかかったらtrueが入る
     var checkValid=document.getElementById('signup_form').checkValidity();
     //バリデーションが問題なければ送信するかどうかの判断をする
-    if (checkValid=="true"){
+    if (checkValid==true){
       liff.sendMessages([
       {
         type:'text',
-        text:"Hello, World!"
+        text:"Hello, World!${familyName}"
       }
       ])
       .then(() => {
