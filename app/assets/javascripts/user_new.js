@@ -5,10 +5,10 @@ function initializeLiff() {
   console.log("test1");
   liff
     .init({
-        liffId: "1654154094-L2PYjd9P";
+      liffId = "1654154094-L2PYjd9P";
     })
     .then(() => {
-        initializeApp();
+      initializeApp();
     })
     .catch((err) => {
       console.log(err.code, err.message);
