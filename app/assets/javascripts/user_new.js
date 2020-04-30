@@ -3,9 +3,10 @@ window.addEventListener('turbolinks:load', initializeLiff)
 function initializeLiff() {
   //var userId = data.context.userId
   console.log("test1");
+  myLiffId= "1654154094-L2PYjd9P";
   liff
     .init({
-      liffId = "1654154094-L2PYjd9P";
+      liffId: myLiffId
     })
     .then(() => {
       initializeApp();
