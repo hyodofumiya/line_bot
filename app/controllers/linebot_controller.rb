@@ -115,24 +115,23 @@ class LinebotController < ApplicationController
   def create_user_message
     {
       "type": "template",
-      "altText": "this is a create_user_message",
+      "altText": "this is a buttons template",
       "template": {
-          "type": "confirm",
-          "text": "今日のもくもく会は楽しいですか？",
-          "actions": [
-              {
-                "type": "message",
-                # Botから送られてきたメッセージに表示される文字列です。
-                "label": "楽しい",
-                # ボタンを押した時にBotに送られる文字列です。
-                "text": "楽しい"
-              },
-              {
-                "type": "message",
-                "label": "楽しくない",
-                "text": "楽しくない"
-              }
-          ]
+        "type": "buttons",
+        "actions": [
+          {
+            "type": "uri",
+            "label": "はい",
+            "uri": "line://app/1654154094-L2PYjd9P"
+          },
+          {
+            "type": "message",
+            "label": "いいえ",
+            "text": "いいえ"
+          }
+        ],
+        "title": "ユーザー登録",
+        "text": "勤怠入力を行うためのユーザー登録を行いますか？"
       }
     }
   end
