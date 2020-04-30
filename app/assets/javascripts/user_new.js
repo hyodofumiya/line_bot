@@ -28,7 +28,7 @@ function sendMessage(){
       liff.sendMessages([
       {
         type:'text',
-        text:familyName
+        text:"Hello, World!"
       }
       ])
       .then(() => {
