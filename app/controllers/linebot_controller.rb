@@ -10,7 +10,6 @@ class LinebotController < ApplicationController
     #Lineでuserから送られてきた内容のみをeventsとしてパース
     events = client.parse_events_from(body)
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
-    binding.pry
     events.each { |event|
 
       #メッセージ送信者のLINEidを＠user_idとして定義
@@ -34,7 +33,6 @@ class LinebotController < ApplicationController
       
       #友達追加の場合
       when Line::Bot::Event::Follow
-        binding.pry
         #lineのuser_idに対応するユーザーがDBに存在するか判断
         #DBにline_idが存在しなかった場合ユーザー登録させる
         user = User.find_by(line_id: @user_id)
