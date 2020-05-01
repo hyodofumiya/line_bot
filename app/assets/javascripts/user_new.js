@@ -158,8 +158,9 @@ function sendMessage(){
     //バリデーションが問題なければ送信するかどうかの判断をする
     if (checkValid==true){
       var settedObj = set_message(familyName, firstName, employeeNumber);
+      var messageArray = [settedObj];
       liff.sendMessages(
-        settedObj
+        messageArray
       )
       .then(() => {
         console.log('message sent');
