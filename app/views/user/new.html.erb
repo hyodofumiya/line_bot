@@ -8,13 +8,13 @@
     </head>
     <body class="user_new_body">
         <div class="form-structor">
-            <%= form_with class:signup, id: signup_form, url:user_user_check_bot_path, onsubmit:"sendMessage()" do |f| %>
+            <%= form_with class:"signup", id:"signup_form", url:user_user_check_bot_path do |f| %>
                 <h2 class="form-title" id="signup">入力フォーム</h2>
                 <div class="form-holder">
                     <%= f.text_field :family_name, id:"familyName", class:"input", placeholder:"名前（姓）", maxlength:15, required:"required" %>
                     <%= f.text_field :first_name, id:"firstName", class:"input", placeholder:"名前（名）", required:"required", maxlength:15 %>
-                    <%= f.text_field :employee_number, id:"employeeNumber", class:"input", placeholder:"社員番号（半角数字）", required:"required",  maxlength:5, minlength:5, inputmode:"numeric", pattern:"\d{5}" %>
-                    <%- f.hidden_field :user_token, id:"userIdToken"%>
+                    <%= f.text_field :employee_number, id:"employeeNumber", class:"input", placeholder:"社員番号（半角数字）", required:"required",  maxlength:5, minlength:5, inputmode:"numeric", pattern:'\d{5}'%>
+                    <%= f.hidden_field :user_token, id:"userIdToken"%>
                 </div>
                 <%= f.submit id:"sendMessageButton", class:"submit-btn", value:"完了" %>
             <% end %>
