@@ -1,56 +1,10 @@
 window.addEventListener('turbolinks:load', initializeLiff)
 
-//LIFFを起動----------------------------------------------------------------------------------
-function initializeLiff() {
-  console.log("test1");
-  MyLiffId= "1654154094-L2PYjd9P";
-  liff
-    .init({
-      liffId: MyLiffId
-    })
-    .then(() => {
-      sendMessage();
-    })
-    .catch((err) => {
-      console.log(err.code, err.message);
-    });
-}
-//LIFFの機能------------------------------------------------------------------------------------
-function sendMessage(){
-  //メッセージ送信機能
-  document.getElementById("sendMessageButton").addEventListener('click', function(){
-
-    //htmlでフォームのバリデーションに引っかかったらtrueが入る
-    var checkValid=document.getElementById('signup_form').checkValidity();      
-      //バリデーションが問題なければ送信するかどうかの判断をする
-    if (checkValid==true){
-      //
-      //var firstName = document.getElementById('firstName').getAttribute('value');
-      //var familyName = document.getElementById('familyName').getAttribute('value');
-      //var employeeNumber = document.getElementById('employeeNumber').getAttribute('value');
-      //var seme = set_form_message(firstName,familyName,employeeNumber);
-      //debugger
-      liff.sendMessages([{
-        "type":"text",
-        "text":"tee"
-      }])
-      .then(() => {
-        alert("送信しました");
-        console.log('message sent');
-      })
-      .catch((err) => {
-        alert(err);
-        console.log('error', err);
-      });
-    }
-  })
-}
-
-
-
-
-function set_form_message(firstName, familyName, employeeNumber){
-  var newUserSendMessage = {
+const NewUserSendMessage=
+{
+  "type": "flex",
+  "altText": "Flex Message",
+  "contents": {
     "type": "bubble",
     "direction": "ltr",
     "header": {
@@ -132,12 +86,100 @@ function set_form_message(firstName, familyName, employeeNumber){
         {
           "type": "text",
           "text": "employeeNumber"
+        },
+        {
+          "type": "text",
+          "text": "上記内容で登録しますか？",
+          "margin": "xxl",
+          "wrap": true
+        }
+      ]
+    },
+    "footer": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "はい",
+            "text": "はい"
+          },
+          "style": "primary"
+        },
+        {
+          "type": "separator",
+          "margin": "md",
+          "color": "#FFFFFF"
+        },
+        {
+          "type": "button",
+          "action": {
+            "type": "message",
+            "label": "いいえ",
+            "text": "いいえ"
+          },
+          "style": "secondary"
         }
       ]
     }
-  };
-  newUserSendMessage.body.contents[1].contents[1].text = firstName;
-  newUserSendMessage.body.contents[1].contents[1].text = familyName;
-  newUserSendMessage.body.contents[4].text = employeeNumber;
-  return newUserSendMessage;
+  }
+};
+
+
+
+
+//LIFFを起動----------------------------------------------------------------------------------
+function initializeLiff() {
+  console.log("test1");
+  MyLiffId= "1654154094-L2PYjd9P";
+  liff
+    .init({
+      liffId: MyLiffId
+    })
+    .then(() => {
+      sendMessage();
+    })
+    .catch((err) => {
+      console.log(err.code, err.message);
+    });
 }
+//LIFFの機能------------------------------------------------------------------------------------
+function sendMessage(){
+  //メッセージ送信機能
+  document.getElementById("sendMessageButton").addEventListener('click', function(){
+    familyName=document.getElementById("familyName").value;
+    firstName=document.getElementById("firstName").value;
+    employeeNumber=document.getElementById("employeeNumber").value;
+    //htmlでフォームのバリデーションに引っかかったらtrueが入る
+    var checkValid=document.getElementById('signup_form').checkValidity();
+
+    //バリデーションが問題なければ送信するかどうかの判断をする
+    if (checkValid==true){
+      var settedObj = set_message(familyName, firstName, employeeNumber);
+      var messageArray = [settedObj];
+      liff.sendMessages(
+        messageArray
+      )
+      .then(() => {
+        console.log('message sent');
+      })
+      .catch((err) => {
+        console.log('error', err);
+      });
+    }
+  })
+
+  function set_message(familyName, firstName, employeeNumber){
+    var obj =NewUserSendMessage;
+    obj.contents.body.contents[1].contents[1].text = familyName;
+    obj.contents.body.contents[2].contents[1].text = firstName;
+    obj.contents.body.contents[4].text = employeeNumber;
+    return obj;
+  }
+
+}
+
+
+
