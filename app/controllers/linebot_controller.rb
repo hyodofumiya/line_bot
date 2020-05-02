@@ -23,11 +23,14 @@ class LinebotController < ApplicationController
         case event.type
         #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
-          # LINEから送られてきたメッセージが「アンケート」と一致するかチェック
+          # LINEから送られてきたメッセージが「アンケート」と一致した場合
           if event.message['text'].eql?('アンケート')
             #lineの送信者にレスポンスにメッセージを返す。
             # private内のtemplateメソッドを呼び出します。
             client.reply_message(event['replyToken'], template)
+          #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
+          else event.message['text'].eql?('ユーザー登録フォームを送信しました')
+            #client.reply_message(event['replyToken'], template)
           end
         end
       
@@ -87,25 +90,128 @@ class LinebotController < ApplicationController
 
   def template
     {
-      "type": "template",
-      "altText": "this is a confirm template",
-      "template": {
-          "type": "confirm",
-          "text": "今日のもくもく会は楽しいですか？",
-          "actions": [
-              {
-                "type": "message",
-                # Botから送られてきたメッセージに表示される文字列です。
-                "label": "楽しい",
-                # ボタンを押した時にBotに送られる文字列です。
-                "text": "楽しい"
-              },
-              {
-                "type": "message",
-                "label": "楽しくない",
-                "text": "楽しくない"
-              }
+      "type": "flex",
+      "altText": "Flex Message",
+      "contents": {
+        "type": "bubble",
+        "direction": "ltr",
+        "header": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "入力内容の確認",
+              "margin": "none",
+              "size": "xl",
+              "align": "center",
+              "weight": "bold",
+              "color": "#767474"
+            },
+            {
+              "type": "separator"
+            }
           ]
+        },
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "flex": 0,
+          "spacing": "none",
+          "margin": "none",
+          "contents": [
+            {
+              "type": "text",
+              "text": "氏名",
+              "size": "lg"
+            },
+            {
+              "type": "box",
+              "layout": "horizontal",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "姓:　",
+                  "flex": 0,
+                  "align": "start",
+                  "weight": "regular",
+                  "color": "#787878"
+                },
+                {
+                  "type": "text",
+                  "text": "テストせい",
+                  "align": "start",
+                  "weight": "regular",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "layout": "horizontal",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "名:　",
+                  "flex": 0,
+                  "margin": "none",
+                  "color": "#787878"
+                },
+                {
+                  "type": "text",
+                  "text": "テスト名",
+                  "align": "start",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "社員番号",
+              "margin": "md",
+              "size": "lg"
+            },
+            {
+              "type": "text",
+              "text": "テスト番号"
+            },
+            {
+              "type": "text",
+              "text": "上記内容で登録しますか？",
+              "margin": "xxl",
+              "wrap": true
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "はい",
+                "text": "はい"
+              },
+              "style": "primary"
+            },
+            {
+              "type": "separator",
+              "margin": "md",
+              "color": "#FFFFFF"
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "いいえ",
+                "text": "いいえ"
+              },
+              "style": "secondary"
+            }
+          ]
+        }
       }
     }
   end
@@ -134,5 +240,9 @@ class LinebotController < ApplicationController
     }
   end
 
+  def message
+    {"type": "text",
+      "text": "test"}
+  end
 
 end
