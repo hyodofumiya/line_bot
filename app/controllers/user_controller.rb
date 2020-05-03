@@ -12,7 +12,8 @@ class UserController < ApplicationController
 
   def user_check_bot
     user_id_token = params[:user_token]
-    get_user_id_from_token(user_id_token)
+    @user_id = get_user_id_from_token(user_id_token)
+    return_check_message()
   end
 
   private
@@ -21,16 +22,23 @@ class UserController < ApplicationController
     uri = URI.parse('https://api.line.me/oauth2/v2.1/verify')
     http = Net::HTTP.new(uri.host, uri.port)
 
-
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     req = Net::HTTP::Post.new(uri.path)
 
     req.set_form_data({"id_token":user_id_token, "client_id":"1654154094"})
-    binding.pry
     res = http.request(req)
+    
+    result = ActiveSupport::JSON.decode(res.body)
+    user_id = result["sub"]
+    
+    return user_id
+  end
+
+  def return_check_message()
     binding.pry
+    
   end
 
 end
