@@ -39,10 +39,9 @@ class LinebotController < ApplicationController
         #lineのuser_idに対応するユーザーがDBに存在するか判断
         #DBにline_idが存在しなかった場合ユーザー登録させる
         user = User.find_by(line_id: @user_id)
-        user.nil? client.reply_message(event['replyToken'], create_user_message)
+        client.reply_message(event['replyToken'], create_user_message) if user.nil?
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
-        binding.pry
 
       #既存のグループにアプリが招待された場合
       when Line::Bot::Event::Join
@@ -68,7 +67,7 @@ class LinebotController < ApplicationController
   private
 #各メソッド------------------------------------------------------------------------------------------------
   
-  #リクエスト元かlineかどうかを確認する
+  #リクエスト元がlineかどうかを確認する
   def check_from_line(body)
     signature = request.env['HTTP_X_LINE_SIGNATURE']
     unless client.validate_signature(body, signature)
@@ -140,7 +139,11 @@ class LinebotController < ApplicationController
   def fails_create_user_message
     {type:"text",
     text:"登録できませんでした。"}
+  end
 
-  def error
+  def already_exist_user
+    {type:"text",
+      text:"すでに登録されています"}
+  end
 
 end
