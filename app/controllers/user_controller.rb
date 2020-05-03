@@ -38,8 +38,145 @@ class UserController < ApplicationController
 
   def return_check_message()
     binding.pry
-    
+
+    message = {
+      "type": "flex",
+      "altText": "Flex Message",
+      "contents": {
+        "type": "bubble",
+        "direction": "ltr",
+        "header": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "入力内容の確認",
+              "margin": "none",
+              "size": "xl",
+              "align": "center",
+              "weight": "bold",
+              "color": "#767474"
+            },
+            {
+              "type": "separator",
+              "margin": "none"
+            }
+          ]
+        },
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "flex": 0,
+          "spacing": "none",
+          "margin": "none",
+          "contents": [
+            {
+              "type": "text",
+              "text": "氏名",
+              "margin": "sm",
+              "size": "lg"
+            },
+            {
+              "type": "box",
+              "layout": "horizontal",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "姓:　",
+                  "flex": 0,
+                  "align": "start",
+                  "weight": "regular",
+                  "color": "#787878"
+                },
+                {
+                  "type": "text",
+                  "text": params[:family_name],
+                  "align": "start",
+                  "weight": "regular",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "layout": "horizontal",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "名:　",
+                  "flex": 0,
+                  "margin": "none",
+                  "color": "#787878"
+                },
+                {
+                  "type": "text",
+                  "text": params[:first_name],
+                  "align": "start",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "社員番号",
+              "margin": "md",
+              "size": "lg"
+            },
+            {
+              "type": "text",
+              "text": params[:employee_number]
+            },
+            {
+              "type": "text",
+              "text": "上記内容で登録しますか？",
+              "margin": "xxl",
+              "wrap": true
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "postback",
+                "label": "はい",
+                "text": "はい",
+                "data": "aaaa"
+              },
+              "style": "primary"
+            },
+            {
+              "type": "separator",
+              "margin": "md",
+              "color": "#FFFFFF"
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "message",
+                "label": "いいえ",
+                "text": "いいえ"
+              },
+              "style": "secondary"
+            }
+          ]
+        }
+      }
+    }
+    binding.pry
+    response = client.push_message(@user_id, message)
   end
 
+  #メッセージの送信元lineのアカウントを@clientとして定義する。
+  def client
+    @client ||= Line::Bot::Client.new { |config|
+      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
+      config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+    }
+  end
 end
 
