@@ -56,6 +56,10 @@ class LinebotController < ApplicationController
       #参加しているグループからメンバーが退出又は削除された場合
       when Line::Bot::Event::MemberLeft
 
+      #ポストバックだった場合
+      when Line::Bot::Event::Postback
+        @form_data = JSON.parse(event["postback"]["data"])
+        create_user
       end
     }
     head :ok
@@ -85,136 +89,19 @@ class LinebotController < ApplicationController
     @user_id = event['source']['userId']
   end
 
+  def create_user
+    create_user = User.new(family_name:@form_data["family_name", first_name:@form_data["first_name"], employee_number:@form_data["employee_number", admin_user:"false"]])
+      #if create_user.save
+        #client.reply_message(event['replyToken'], success_create_user_message)
+      #else
+        #if User.find_by(employee_numer:@form_data["employee_number"]).present?
+        #else
+          #client.reply_message(event['replyToken'], fails_create_user_message)
+  end
+
 
 #応答メッセージの内容---------------------------------------------------------------------------------------------------
 
-  def template
-    {
-      "type": "flex",
-      "altText": "Flex Message",
-      "contents": {
-        "type": "bubble",
-        "direction": "ltr",
-        "header": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": "入力内容の確認",
-              "margin": "none",
-              "size": "xl",
-              "align": "center",
-              "weight": "bold",
-              "color": "#767474"
-            },
-            {
-              "type": "separator"
-            }
-          ]
-        },
-        "body": {
-          "type": "box",
-          "layout": "vertical",
-          "flex": 0,
-          "spacing": "none",
-          "margin": "none",
-          "contents": [
-            {
-              "type": "text",
-              "text": "氏名",
-              "size": "lg"
-            },
-            {
-              "type": "box",
-              "layout": "horizontal",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "姓:　",
-                  "flex": 0,
-                  "align": "start",
-                  "weight": "regular",
-                  "color": "#787878"
-                },
-                {
-                  "type": "text",
-                  "text": "テストせい",
-                  "align": "start",
-                  "weight": "regular",
-                  "wrap": true
-                }
-              ]
-            },
-            {
-              "type": "box",
-              "layout": "horizontal",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "名:　",
-                  "flex": 0,
-                  "margin": "none",
-                  "color": "#787878"
-                },
-                {
-                  "type": "text",
-                  "text": "テスト名",
-                  "align": "start",
-                  "wrap": true
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "text": "社員番号",
-              "margin": "md",
-              "size": "lg"
-            },
-            {
-              "type": "text",
-              "text": "テスト番号"
-            },
-            {
-              "type": "text",
-              "text": "上記内容で登録しますか？",
-              "margin": "xxl",
-              "wrap": true
-            }
-          ]
-        },
-        "footer": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "button",
-              "action": {
-                "type": "message",
-                "label": "はい",
-                "text": "はい"
-              },
-              "style": "primary"
-            },
-            {
-              "type": "separator",
-              "margin": "md",
-              "color": "#FFFFFF"
-            },
-            {
-              "type": "button",
-              "action": {
-                "type": "message",
-                "label": "いいえ",
-                "text": "いいえ"
-              },
-              "style": "secondary"
-            }
-          ]
-        }
-      }
-    }
-  end
 
   def create_user_message
     {
@@ -244,5 +131,16 @@ class LinebotController < ApplicationController
     {"type": "text",
       "text": "test"}
   end
+
+  def success_create_user_message
+    {type:"text",
+    text:"登録が完了しました"}
+  end
+
+  def fails_create_user_message
+    {type:"text",
+    text:"登録できませんでした。"}
+
+  def error
 
 end

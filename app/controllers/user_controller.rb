@@ -37,8 +37,7 @@ class UserController < ApplicationController
   end
 
   def return_check_message()
-    binding.pry
-
+    form_data = {'family_name': params[:family_name], 'first_name': params[:first_name], 'employee_number': params[:employee_number]}
     message = {
       "type": "flex",
       "altText": "Flex Message",
@@ -144,8 +143,8 @@ class UserController < ApplicationController
               "action": {
                 "type": "postback",
                 "label": "はい",
-                "text": "はい",
-                "data": "aaaa"
+                "displayText": "送信しました",
+                "data": form_data.to_json
               },
               "style": "primary"
             },
@@ -167,7 +166,6 @@ class UserController < ApplicationController
         }
       }
     }
-    binding.pry
     response = client.push_message(@user_id, message)
   end
 
