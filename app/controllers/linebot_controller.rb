@@ -23,11 +23,14 @@ class LinebotController < ApplicationController
         case event.type
         #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
-          # LINEから送られてきたメッセージが「アンケート」と一致するかチェック
+          # LINEから送られてきたメッセージが「アンケート」と一致した場合
           if event.message['text'].eql?('アンケート')
             #lineの送信者にレスポンスにメッセージを返す。
             # private内のtemplateメソッドを呼び出します。
             client.reply_message(event['replyToken'], template)
+          #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
+          else event.message['text'].eql?('ユーザー登録フォームを送信しました')
+            #client.reply_message(event['replyToken'], template)
           end
         end
       
@@ -53,6 +56,10 @@ class LinebotController < ApplicationController
       #参加しているグループからメンバーが退出又は削除された場合
       when Line::Bot::Event::MemberLeft
 
+      #ポストバックだった場合
+      when Line::Bot::Event::Postback
+        @form_data = JSON.parse(event["postback"]["data"])
+        create_user
       end
     }
     head :ok
@@ -82,33 +89,19 @@ class LinebotController < ApplicationController
     @user_id = event['source']['userId']
   end
 
+  def create_user
+    create_user = User.new(family_name:@form_data["family_name", first_name:@form_data["first_name"], employee_number:@form_data["employee_number", admin_user:"false"]])
+      #if create_user.save
+        #client.reply_message(event['replyToken'], success_create_user_message)
+      #else
+        #if User.find_by(employee_numer:@form_data["employee_number"]).present?
+        #else
+          #client.reply_message(event['replyToken'], fails_create_user_message)
+  end
+
 
 #応答メッセージの内容---------------------------------------------------------------------------------------------------
 
-  def template
-    {
-      "type": "template",
-      "altText": "this is a confirm template",
-      "template": {
-          "type": "confirm",
-          "text": "今日のもくもく会は楽しいですか？",
-          "actions": [
-              {
-                "type": "message",
-                # Botから送られてきたメッセージに表示される文字列です。
-                "label": "楽しい",
-                # ボタンを押した時にBotに送られる文字列です。
-                "text": "楽しい"
-              },
-              {
-                "type": "message",
-                "label": "楽しくない",
-                "text": "楽しくない"
-              }
-          ]
-      }
-    }
-  end
 
   def create_user_message
     {
@@ -134,5 +127,20 @@ class LinebotController < ApplicationController
     }
   end
 
+  def message
+    {"type": "text",
+      "text": "test"}
+  end
+
+  def success_create_user_message
+    {type:"text",
+    text:"登録が完了しました"}
+  end
+
+  def fails_create_user_message
+    {type:"text",
+    text:"登録できませんでした。"}
+
+  def error
 
 end
