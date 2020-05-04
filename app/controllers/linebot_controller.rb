@@ -10,6 +10,7 @@ class LinebotController < ApplicationController
     #Lineでuserから送られてきた内容のみをeventsとしてパース
     events = client.parse_events_from(body)
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
+    @user = User.find_by(line_id: @user_id)
     events.each { |event|
 
       #メッセージ送信者のLINEidを＠user_idとして定義
@@ -29,8 +30,8 @@ class LinebotController < ApplicationController
             # private内のtemplateメソッドを呼び出します。
             client.reply_message(event['replyToken'], template)
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
-          else event.message['text'].eql?('ユーザー登録フォームを送信しました')
-            #client.reply_message(event['replyToken'], template)
+          else event.message['text'].eql?('新規ユーザー登録')
+            client.reply_message(event['replyToken'], create_user_message) if @user.nil?
           end
         end
       
@@ -38,8 +39,7 @@ class LinebotController < ApplicationController
       when Line::Bot::Event::Follow
         #lineのuser_idに対応するユーザーがDBに存在するか判断
         #DBにline_idが存在しなかった場合ユーザー登録させる
-        user = User.find_by(line_id: @user_id)
-        client.reply_message(event['replyToken'], create_user_message) if user.nil?
+        client.reply_message(event['replyToken'], create_user_message) if @user.nil?
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
 
