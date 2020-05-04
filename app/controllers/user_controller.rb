@@ -12,11 +12,14 @@ class UserController < ApplicationController
 
   def user_check_bot
     user_id_token = params[:user_token]
+    #LINEのIDトークンをLINEに送信し、LINEのIDを取得する
     @user_id = get_user_id_from_token(user_id_token)
+    #ユーザーに入力内容の確認メッセージを送信する
     return_check_message()
   end
 
   private
+  
   #userIDのトークンからuserIDを取得する関数
   def get_user_id_from_token(user_id_token)
     uri = URI.parse('https://api.line.me/oauth2/v2.1/verify')
