@@ -57,8 +57,13 @@ class LinebotController < ApplicationController
 
       #ポストバックだった場合
       when Line::Bot::Event::Postback
-        @form_data = JSON.parse(event["postback"]["data"])
-        create_user
+        #postbackリクエストのdataプロパティを＠post_dataとして定義
+        @postback_data = JSON.parse(event["postback"]["data"])
+        #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
+        case @postback_data[0]["name"]
+        when "user_form"
+          create_user
+        end
       end
     }
     head :ok
@@ -89,13 +94,15 @@ class LinebotController < ApplicationController
   end
 
   def create_user
-    create_user = User.new(family_name:@form_data["family_name", first_name:@form_data["first_name"], employee_number:@form_data["employee_number", admin_user:"false"]])
+    form_data = @postback_data[1]
+    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], admin_user:"false")
       #if create_user.save
         #client.reply_message(event['replyToken'], success_create_user_message)
       #else
         #if User.find_by(employee_numer:@form_data["employee_number"]).present?
         #else
           #client.reply_message(event['replyToken'], fails_create_user_message)
+          binding.pry
   end
 
 

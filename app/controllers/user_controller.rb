@@ -40,7 +40,7 @@ class UserController < ApplicationController
   end
 
   def return_check_message()
-    form_data = {'family_name': params[:family_name], 'first_name': params[:first_name], 'employee_number': params[:employee_number]}
+    form_data = [{name: "user_form"},{'family_name': params[:family_name], 'first_name': params[:first_name], 'employee_number': params[:employee_number]}]
     message = {
       "type": "flex",
       "altText": "Flex Message",
