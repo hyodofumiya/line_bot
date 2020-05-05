@@ -1,0 +1,2 @@
+class StandbyController < ApplicationController
+end
