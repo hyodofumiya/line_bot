@@ -1,0 +1,2 @@
+class Standby < ApplicationRecord
+end
