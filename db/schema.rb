@@ -16,25 +16,27 @@ ActiveRecord::Schema.define(version: 2020_05_05_133947) do
   enable_extension "plpgsql"
 
   create_table "standbies", force: :cascade do |t|
-    t.bigint "line_id"
+    t.bigint "user_id", null: false
     t.date "date", null: false
     t.time "start", null: false
     t.time "break_start"
     t.time "break_end"
-    t.time "break_sum", null: false
+    t.time "break_sum"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["line_id"], name: "index_standbies_on_line_id"
+    t.index ["user_id"], name: "index_standbies_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "family_name", null: false
+    t.string "first_name", null: false
     t.integer "employee_number", null: false
     t.text "line_id", null: false
     t.boolean "admin_user", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["employee_number", "line_id"], name: "index_users_on_employee_number_and_line_id", unique: true
   end
 
-  add_foreign_key "standbies", "users", column: "line_id"
+  add_foreign_key "standbies", "users", on_delete: :cascade
 end
