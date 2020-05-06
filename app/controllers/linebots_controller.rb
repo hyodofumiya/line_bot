@@ -1,23 +1,22 @@
-class LinebotController < ApplicationController
+class LinebotsController < ApplicationController
   require 'line/bot'
   protect_from_forgery :except => [:callback]
 
 
-  def callback
-    body = request.body.read
-    #リクエストがlineからのものかを確認する
-    check_from_line(body)
-    #Lineでuserから送られてきた内容のみをeventsとしてパース
-    events = client.parse_events_from(body)
-    #userがlineで送ってきたイベントタイプに応じて処理を割り振る
-    @user = User.find_by(line_id: @user_id)
-    events.each { |event|
+  #exitnclude Standby
 
+  def callback
+    $body = request.body.read
+    #リクエストがlineからのものかを確認する
+    check_from_line($body)
+    #Lineでuserから送られてきた内容のみをeventsとしてパース
+    events = client.parse_events_from($body)
+    #userがlineで送ってきたイベントタイプに応じて処理を割り振る
+    events.each { |event|
       #メッセージ送信者のLINEidを＠user_idとして定義
       user_id(event)
-
+      @user = User.find_by(line_id: $user_id)
       case event
-
       #メッセージイベントだった場合
       when Line::Bot::Event::Message
         #メッセージのタイプに応じて処理を割り振る
@@ -60,18 +59,37 @@ class LinebotController < ApplicationController
         #postbackリクエストのdataプロパティを＠post_dataとして定義
         @postback_data = JSON.parse(event["postback"]["data"])
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
-        case @postback_data[0]["name"]
-        when "user_form"
+        if @postback_data[0]["name"] == "user_form"
           create_user
-        when "start_work"
+        else
+          #user登録してあるか確認
+          binding.pry
+          if check_user(event) == true
+            case @postback_data[0]["name"]
+            when "start_work"
+              binding.pry
+              create_standby_record = Standby.add_new_record(@postback_data[1]["date"])
+              standby_return_message = Standby.return_message(create_standby_record)
+              binding.pry
+            when "start_break"
+              binding.pry
+              #standbyレコードを更新してもいいか確認
+                #問題なければ更新
+                #問題があればエラーメッセージを表示
+                  #リッチメニューのidを取得し、条件に応じて切り替える
+            when "finish_break"
+              #standbyレコードを更新してもいいか確認
+                #問題なければ更新
+                #問題があれば
+                  #問題の内容を返信
+                  #リッチメニューの更新が必要か確認し、必要なら更新
+              binding.pry
 
-          binding.pry
-        when "start_break"
-          redirect_to 
-          binding.pry
-        when "finish_break"
-
-          binding.pry
+            when "finish_work"
+            end
+            client.reply_message(event['replyToken'], standby_return_message)
+          else
+          end
         end
       end
     }
@@ -97,14 +115,18 @@ class LinebotController < ApplicationController
     }
   end
 
-  #メッセージ送信者のlineのuser_idを@user_idとして取得する
+  #メッセージ送信者のlineのuser_idを$user_idとして取得する
   def user_id(event)
-    @user_id = event['source']['userId']
+    $user_id = event['source']['userId']
+  end
+
+  def check_user(event)
+    client.reply_message(event['replyToken'], [no_user_message ,create_user_message])
   end
 
   def create_user
     form_data = @postback_data[1]
-    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], admin_user:"false")
+    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $line_id, admin_user:"false")
       #if create_user.save
         #client.reply_message(event['replyToken'], success_create_user_message)
       #else
@@ -140,6 +162,11 @@ class LinebotController < ApplicationController
         "text": "勤怠入力を行うためのユーザー登録を行いますか？"
       }
     }
+  end
+
+  def no_user_message
+    {"type": "text",
+      "text": "ユーザーが登録されていません"}
   end
 
   def message
