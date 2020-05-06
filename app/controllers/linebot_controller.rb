@@ -28,7 +28,7 @@ class LinebotController < ApplicationController
           if event.message['text'].eql?('アンケート')
             #lineの送信者にレスポンスにメッセージを返す。
             # private内のtemplateメソッドを呼び出します。
-            client.reply_message(event['replyToken'], template)
+            client.reply_message(event['replyToken'], message)
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
           else event.message['text'].eql?('新規ユーザー登録')
             client.reply_message(event['replyToken'], create_user_message) if @user.nil?
@@ -63,6 +63,15 @@ class LinebotController < ApplicationController
         case @postback_data[0]["name"]
         when "user_form"
           create_user
+        when "start_work"
+
+          binding.pry
+        when "start_break"
+          redirect_to 
+          binding.pry
+        when "finish_break"
+
+          binding.pry
         end
       end
     }
