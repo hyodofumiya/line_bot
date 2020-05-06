@@ -13,8 +13,10 @@ class LinebotsController < ApplicationController
     events = client.parse_events_from($body)
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
     events.each { |event|
-      #メッセージ送信者のLINEidを＠user_idとして定義
-      user_id(event)
+      @event = event
+      #メッセージ送信者のLINEidを$user_idとして定義
+      $user_id = @event['source']['userId']
+
       @user = User.find_by(line_id: $user_id)
       case event
       #メッセージイベントだった場合
@@ -27,10 +29,10 @@ class LinebotsController < ApplicationController
           if event.message['text'].eql?('アンケート')
             #lineの送信者にレスポンスにメッセージを返す。
             # private内のtemplateメソッドを呼び出します。
-            client.reply_message(event['replyToken'], message)
+            client.reply_message(@event['replyToken'], message)
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
           else event.message['text'].eql?('新規ユーザー登録')
-            client.reply_message(event['replyToken'], create_user_message) if @user.nil?
+            client.reply_message(@event['replyToken'], create_user_message) if @user.nil?
           end
         end
       
@@ -38,7 +40,7 @@ class LinebotsController < ApplicationController
       when Line::Bot::Event::Follow
         #lineのuser_idに対応するユーザーがDBに存在するか判断
         #DBにline_idが存在しなかった場合ユーザー登録させる
-        client.reply_message(event['replyToken'], create_user_message) if @user.nil?
+        client.reply_message(@event['replyToken'], create_user_message) if @user.nil?
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
 
@@ -57,18 +59,18 @@ class LinebotsController < ApplicationController
       #ポストバックだった場合
       when Line::Bot::Event::Postback
         #postbackリクエストのdataプロパティを＠post_dataとして定義
-        @postback_data = JSON.parse(event["postback"]["data"])
+        @postback_data = JSON.parse(@event["postback"]["data"])
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
         if @postback_data[0]["name"] == "user_form"
           create_user
         else
           #user登録してあるか確認
-          binding.pry
-          if check_user(event) == true
+          if @user.nil?
+            not_exist_user_message
+          else
             case @postback_data[0]["name"]
             when "start_work"
-              binding.pry
-              create_standby_record = Standby.add_new_record(@postback_data[1]["date"])
+              create_standby_record = Standby.add_new_record(@postback_data[1]["date"], @user)
               standby_return_message = Standby.return_message(create_standby_record)
               binding.pry
             when "start_break"
@@ -87,8 +89,7 @@ class LinebotsController < ApplicationController
 
             when "finish_work"
             end
-            client.reply_message(event['replyToken'], standby_return_message)
-          else
+            client.reply_message(@event['replyToken'], standby_return_message)
           end
         end
       end
@@ -115,25 +116,26 @@ class LinebotsController < ApplicationController
     }
   end
 
-  #メッセージ送信者のlineのuser_idを$user_idとして取得する
-  def user_id(event)
-    $user_id = event['source']['userId']
+  def not_exist_user_message
+    client.reply_message(@event['replyToken'], [no_user_message ,create_user_message])
   end
 
-  def check_user(event)
-    client.reply_message(event['replyToken'], [no_user_message ,create_user_message])
+  def check_user
+    
   end
 
   def create_user
     form_data = @postback_data[1]
-    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $line_id, admin_user:"false")
-      #if create_user.save
-        #client.reply_message(event['replyToken'], success_create_user_message)
-      #else
-        #if User.find_by(employee_numer:@form_data["employee_number"]).present?
-        #else
-          #client.reply_message(event['replyToken'], fails_create_user_message)
-          binding.pry
+    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $user_id, admin_user:"false")
+    if create_user.save
+      client.reply_message(@event['replyToken'], success_create_user_message)
+    else
+      if User.find_by(employee_number: form_data["employee_number"]).present?
+        client.reply_message(@event['replyToken'], already_exist_emmplyee_number_message)
+      else
+        client.reply_message(@event['replyToken'], fails_create_user_message)
+      end
+    end
   end
 
 
@@ -182,6 +184,11 @@ class LinebotsController < ApplicationController
   def fails_create_user_message
     {type:"text",
     text:"登録できませんでした。"}
+  end
+
+  def already_exist_emmplyee_number_message
+    {type:"text",
+    text:"すでに社員番号が使われています。"}
   end
 
   def already_exist_user

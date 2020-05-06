@@ -4,14 +4,13 @@ class Standby < ApplicationRecord
   require "date"
 
   #standbyレコードを作成するメソッド
-  def self.add_new_record(date)
-    binding.pry
+  def self.add_new_record(date, user)
     #standbyレコードを新たに作成してもいいか確認するメソッド
-    if Standby.find_by(line_id: $user_id).nil?
+    if Standby.find_by(user_id: user.id).nil?
       #新規作成
-      record = Standby.new(line_id:$user_id, date: date.to_date, start:date.to_time )
+      user_id = user.id
+      record = Standby.new(user_id: user_id, date: date.to_date, start:date.to_time )
       create_record = record.save
-      binding.pry
     else
     #エラー対応のメソッド
       #レスポンスに返すメッセージを選択するメソッド
