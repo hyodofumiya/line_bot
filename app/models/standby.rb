@@ -6,25 +6,26 @@ class Standby < ApplicationRecord
   #standbyレコードを作成するメソッド
   def self.add_new_record(date, user)
     #standbyレコードを新たに作成してもいいか確認するメソッド
-    if Standby.find_by(user_id: user.id).nil?
-      #新規作成
+    @standby_record = Standby.find_by(user_id: user.id) if present?
+    if @standby_record.nil? #新規作成
       user_id = user.id
       record = Standby.new(user_id: user_id, date: date.to_date, start:date.to_time )
       create_record = record.save
+      if create_record = true
+        return "出勤しました"
+      else
+        return "出勤に失敗しました。やり直してください。"
+      end
     else
-    #エラー対応のメソッド
-      #レスポンスに返すメッセージを選択するメソッド
-      return_message = select_return_message()
-      #リッチメニューの内容が正しいか判断するメソッド
+      if @standby_record.break_start.nil?
+        return "すでに出勤しています"
+      else
+        return "休憩中です"
+      end
     end
     #リッチメニューを適切なものに切り替えるメソッド
   end
 
-  def self.return_message
-  end
   private
 
-  def select_return_message
-
-  end
 end
