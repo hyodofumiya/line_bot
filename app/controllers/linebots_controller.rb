@@ -14,10 +14,11 @@ class LinebotsController < ApplicationController
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
     events.each { |event|
       @event = event
-      #メッセージ送信者のLINEidを$user_idとして定義
-      $user_id = @event['source']['userId']
-
-      @user = User.find_by(line_id: $user_id)
+      #メッセージ送信者のLINEidを$user_line_idとして定義
+      $user_line_id = @event['source']['userId']
+      #ユーザーのリッチメニューIDを取得
+      $user_richmenu_id = client.get_user_rich_menu($user_line_id)
+      $user = User.find_by(line_id: $user_line_id)
       case event
       #メッセージイベントだった場合
       when Line::Bot::Event::Message
@@ -32,7 +33,7 @@ class LinebotsController < ApplicationController
             client.reply_message(@event['replyToken'], message)
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
           else event.message['text'].eql?('新規ユーザー登録')
-            client.reply_message(@event['replyToken'], create_user_message) if @user.nil?
+            client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
           end
         end
       
@@ -40,7 +41,7 @@ class LinebotsController < ApplicationController
       when Line::Bot::Event::Follow
         #lineのuser_idに対応するユーザーがDBに存在するか判断
         #DBにline_idが存在しなかった場合ユーザー登録させる
-        client.reply_message(@event['replyToken'], create_user_message) if @user.nil?
+        client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
 
@@ -65,31 +66,24 @@ class LinebotsController < ApplicationController
           create_user
         else
           #user登録してあるか確認
-          if @user.nil?
+          if $user.nil?
             not_exist_user_message
           else
+            binding.pry
+            Richmenu.check_richmenu
+            binding.pry
             case @postback_data[0]["name"]
             when "start_work"
-              create_standby_record = Standby.add_new_record(@postback_data[1]["date"], @user)
-              standby_return_message = Standby.return_message(create_standby_record)
+              create_standby_record = Standby.add_new_record(@postback_data[1]["date"], $user)
+              return_message = set_return_message(create_standby_record)
               binding.pry
             when "start_break"
               binding.pry
-              #standbyレコードを更新してもいいか確認
-                #問題なければ更新
-                #問題があればエラーメッセージを表示
-                  #リッチメニューのidを取得し、条件に応じて切り替える
             when "finish_break"
-              #standbyレコードを更新してもいいか確認
-                #問題なければ更新
-                #問題があれば
-                  #問題の内容を返信
-                  #リッチメニューの更新が必要か確認し、必要なら更新
               binding.pry
-
             when "finish_work"
             end
-            client.reply_message(@event['replyToken'], standby_return_message)
+            client.reply_message(@event['replyToken'], return_message)
           end
         end
       end
@@ -120,13 +114,9 @@ class LinebotsController < ApplicationController
     client.reply_message(@event['replyToken'], [no_user_message ,create_user_message])
   end
 
-  def check_user
-    
-  end
-
   def create_user
     form_data = @postback_data[1]
-    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $user_id, admin_user:"false")
+    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $user_line_id, admin_user:"false")
     if create_user.save
       client.reply_message(@event['replyToken'], success_create_user_message)
     else
@@ -195,5 +185,11 @@ class LinebotsController < ApplicationController
     {type:"text",
       text:"すでに登録されています"}
   end
+
+  def set_return_message(message)
+    {type: "text",
+    text: message}
+  end
+
 
 end
