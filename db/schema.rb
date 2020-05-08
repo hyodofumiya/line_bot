@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_07_001107) do
+ActiveRecord::Schema.define(version: 2020_05_08_113025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,18 @@ ActiveRecord::Schema.define(version: 2020_05_07_001107) do
     t.datetime "break_start"
     t.integer "break_sum"
     t.index ["user_id"], name: "index_standbies_on_user_id"
+  end
+
+  create_table "time_cards", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.date "date", null: false
+    t.integer "work_time", null: false
+    t.datetime "start_time", null: false
+    t.datetime "finish_time", null: false
+    t.integer "break_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_time_cards_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

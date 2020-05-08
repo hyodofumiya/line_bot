@@ -1,4 +1,5 @@
 class Richmenu < ApplicationRecord
+  belongs_to :user
   require 'line/bot'
 
   def self.client
