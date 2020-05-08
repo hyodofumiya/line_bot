@@ -2,9 +2,6 @@ class LinebotsController < ApplicationController
   require 'line/bot'
   protect_from_forgery :except => [:callback]
 
-
-  #exitnclude Standby
-
   def callback
     $body = request.body.read
     #リクエストがlineからのものかを確認する
@@ -17,7 +14,7 @@ class LinebotsController < ApplicationController
       #メッセージ送信者のLINEidを$user_line_idとして定義
       $user_line_id = @event['source']['userId']
       #ユーザーのリッチメニューIDを取得
-      $user_richmenu_id = client.get_user_rich_menu($user_line_id)
+      $user_richmenu_id = Richmenu.get_user_richmenu_id
       $user = User.find_by(line_id: $user_line_id)
       case event
       #メッセージイベントだった場合
@@ -69,17 +66,17 @@ class LinebotsController < ApplicationController
           if $user.nil?
             not_exist_user_message
           else
-            binding.pry
-            Richmenu.check_richmenu
-            binding.pry
             case @postback_data[0]["name"]
             when "start_work"
               create_standby_record = Standby.add_new_record(@postback_data[1]["date"], $user)
               return_message = set_return_message(create_standby_record)
-              binding.pry
             when "start_break"
+              update_standby_record = Standby.add_startbreak_to_record(@postback_data[1]["date"])
+              return_message = set_return_message(update_standby_record)
               binding.pry
             when "finish_break"
+              update_standby_record = Standby.add_breaksum_to_record(@postback_data[1]["date"])
+              return_message = set_return_message(update_standby_record)
               binding.pry
             when "finish_work"
             end
@@ -88,6 +85,8 @@ class LinebotsController < ApplicationController
         end
       end
     }
+    binding.pry
+    Richmenu.check_and_change_richmenu
     head :ok
   end
 
@@ -104,7 +103,7 @@ class LinebotsController < ApplicationController
 
   #メッセージの送信元lineのアカウントを@clientとして定義する。
   def client
-    @client ||= Line::Bot::Client.new { |config|
+    client ||= Line::Bot::Client.new { |config|
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
@@ -130,7 +129,6 @@ class LinebotsController < ApplicationController
 
 
 #応答メッセージの内容---------------------------------------------------------------------------------------------------
-
 
   def create_user_message
     {
