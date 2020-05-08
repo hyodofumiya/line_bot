@@ -1,23 +1,25 @@
-class LinebotController < ApplicationController
+class LinebotsController < ApplicationController
   require 'line/bot'
+  require 'time'
   protect_from_forgery :except => [:callback]
 
-
   def callback
-    body = request.body.read
+    $body = request.body.read
     #リクエストがlineからのものかを確認する
-    check_from_line(body)
+    check_from_line($body)
     #Lineでuserから送られてきた内容のみをeventsとしてパース
-    events = client.parse_events_from(body)
+    events = client.parse_events_from($body)
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
-    @user = User.find_by(line_id: @user_id)
     events.each { |event|
-
-      #メッセージ送信者のLINEidを＠user_idとして定義
-      user_id(event)
-
+      @event = event
+      #メッセージ送信者のLINEidを$user_line_idとして定義
+      $user_line_id = @event['source']['userId']
+      #ユーザーのリッチメニューIDを取得
+      $user_richmenu_id = Richmenu.get_user_richmenu_id
+      $user = User.find_by(line_id: $user_line_id)
+      #リクエストの送信日時を定義。timestampのarea_codeを消すため下３桁を消している
+      $timestamp = Time.at(event["timestamp"]/1000)
       case event
-
       #メッセージイベントだった場合
       when Line::Bot::Event::Message
         #メッセージのタイプに応じて処理を割り振る
@@ -28,10 +30,10 @@ class LinebotController < ApplicationController
           if event.message['text'].eql?('アンケート')
             #lineの送信者にレスポンスにメッセージを返す。
             # private内のtemplateメソッドを呼び出します。
-            client.reply_message(event['replyToken'], template)
+            client.reply_message(@event['replyToken'], message)
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
           else event.message['text'].eql?('新規ユーザー登録')
-            client.reply_message(event['replyToken'], create_user_message) if @user.nil?
+            client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
           end
         end
       
@@ -39,7 +41,7 @@ class LinebotController < ApplicationController
       when Line::Bot::Event::Follow
         #lineのuser_idに対応するユーザーがDBに存在するか判断
         #DBにline_idが存在しなかった場合ユーザー登録させる
-        client.reply_message(event['replyToken'], create_user_message) if @user.nil?
+        client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
 
@@ -57,10 +59,36 @@ class LinebotController < ApplicationController
 
       #ポストバックだった場合
       when Line::Bot::Event::Postback
-        @form_data = JSON.parse(event["postback"]["data"])
-        create_user
+        #postbackリクエストのdataプロパティを＠post_dataとして定義
+        @postback_data = JSON.parse(@event["postback"]["data"])
+        #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
+        if @postback_data[0]["name"] == "user_form"
+          create_user
+        else
+          #user登録してあるか確認
+          if $user.nil?
+            not_exist_user_message
+          else
+            case @postback_data[0]["name"]
+            when "start_work"
+              create_standby_record = Standby.add_new_record
+              return_message = set_return_message(create_standby_record)
+            when "start_break"
+              update_standby_record = Standby.add_startbreak_to_record
+              return_message = set_return_message(update_standby_record)
+              binding.pry
+            when "finish_break"
+              update_standby_record = Standby.add_breaksum_to_record
+              return_message = set_return_message(update_standby_record)
+              binding.pry
+            when "finish_work"
+            end
+            response = client.reply_message(@event['replyToken'], return_message)
+          end
+        end
       end
     }
+    Richmenu.check_and_change_richmenu
     head :ok
   end
 
@@ -77,30 +105,32 @@ class LinebotController < ApplicationController
 
   #メッセージの送信元lineのアカウントを@clientとして定義する。
   def client
-    @client ||= Line::Bot::Client.new { |config|
+    client ||= Line::Bot::Client.new { |config|
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
   end
 
-  #メッセージ送信者のlineのuser_idを@user_idとして取得する
-  def user_id(event)
-    @user_id = event['source']['userId']
+  def not_exist_user_message
+    client.reply_message(@event['replyToken'], [no_user_message ,create_user_message])
   end
 
   def create_user
-    create_user = User.new(family_name:@form_data["family_name", first_name:@form_data["first_name"], employee_number:@form_data["employee_number", admin_user:"false"]])
-      #if create_user.save
-        #client.reply_message(event['replyToken'], success_create_user_message)
-      #else
-        #if User.find_by(employee_numer:@form_data["employee_number"]).present?
-        #else
-          #client.reply_message(event['replyToken'], fails_create_user_message)
+    form_data = @postback_data[1]
+    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $user_line_id, admin_user:"false")
+    if create_user.save
+      client.reply_message(@event['replyToken'], success_create_user_message)
+    else
+      if User.find_by(employee_number: form_data["employee_number"]).present?
+        client.reply_message(@event['replyToken'], already_exist_emmplyee_number_message)
+      else
+        client.reply_message(@event['replyToken'], fails_create_user_message)
+      end
+    end
   end
 
 
 #応答メッセージの内容---------------------------------------------------------------------------------------------------
-
 
   def create_user_message
     {
@@ -126,6 +156,11 @@ class LinebotController < ApplicationController
     }
   end
 
+  def no_user_message
+    {"type": "text",
+      "text": "ユーザーが登録されていません"}
+  end
+
   def message
     {"type": "text",
       "text": "test"}
@@ -141,9 +176,20 @@ class LinebotController < ApplicationController
     text:"登録できませんでした。"}
   end
 
+  def already_exist_emmplyee_number_message
+    {type:"text",
+    text:"すでに社員番号が使われています。"}
+  end
+
   def already_exist_user
     {type:"text",
       text:"すでに登録されています"}
   end
+
+  def set_return_message(message)
+    {type: "text",
+    text: message}
+  end
+
 
 end

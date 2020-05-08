@@ -10,18 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_28_142057) do
+ActiveRecord::Schema.define(version: 2020_05_07_001107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "users", force: :cascade do |t|
+  create_table "richmenus", force: :cascade do |t|
     t.string "name", null: false
+    t.text "richmenu_id", null: false
+    t.string "explanation", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "standbies", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.date "date", null: false
+    t.datetime "start", null: false
+    t.datetime "break_start"
+    t.integer "break_sum"
+    t.index ["user_id"], name: "index_standbies_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "family_name", null: false
+    t.string "first_name", null: false
     t.integer "employee_number", null: false
     t.text "line_id", null: false
     t.boolean "admin_user", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["employee_number", "line_id"], name: "index_users_on_employee_number_and_line_id", unique: true
   end
 
+  add_foreign_key "standbies", "users", on_delete: :cascade
 end
