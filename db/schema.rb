@@ -26,12 +26,9 @@ ActiveRecord::Schema.define(version: 2020_05_07_001107) do
   create_table "standbies", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.date "date", null: false
-    t.time "start", null: false
-    t.time "break_start"
-    t.time "break_end"
-    t.time "break_sum"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "start", null: false
+    t.datetime "break_start"
+    t.datetime "break_sum"
     t.index ["user_id"], name: "index_standbies_on_user_id"
   end
 
