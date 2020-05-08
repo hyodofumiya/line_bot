@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 2020_05_07_001107) do
     t.date "date", null: false
     t.datetime "start", null: false
     t.datetime "break_start"
-    t.datetime "break_sum"
+    t.integer "break_sum"
     t.index ["user_id"], name: "index_standbies_on_user_id"
   end
 

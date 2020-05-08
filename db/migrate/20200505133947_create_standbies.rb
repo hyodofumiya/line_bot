@@ -5,7 +5,7 @@ class CreateStandbies < ActiveRecord::Migration[5.2]
       t.date :date,  null:false
       t.timestamp :start, null:false
       t.timestamp :break_start
-      t.timestamp :break_sum
+      t.integer :break_sum  #休憩時間の合成をsecondで保存
       t.timestamp
     end
   end
