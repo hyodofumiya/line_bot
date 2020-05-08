@@ -1,5 +1,6 @@
 class LinebotsController < ApplicationController
   require 'line/bot'
+  require 'time'
   protect_from_forgery :except => [:callback]
 
   def callback
@@ -16,6 +17,8 @@ class LinebotsController < ApplicationController
       #ユーザーのリッチメニューIDを取得
       $user_richmenu_id = Richmenu.get_user_richmenu_id
       $user = User.find_by(line_id: $user_line_id)
+      #リクエストの送信日時を定義。timestampのarea_codeを消すため下３桁を消している
+      $timestamp = Time.at(event["timestamp"]/1000)
       case event
       #メッセージイベントだった場合
       when Line::Bot::Event::Message
@@ -68,24 +71,23 @@ class LinebotsController < ApplicationController
           else
             case @postback_data[0]["name"]
             when "start_work"
-              create_standby_record = Standby.add_new_record(@postback_data[1]["date"], $user)
+              create_standby_record = Standby.add_new_record
               return_message = set_return_message(create_standby_record)
             when "start_break"
-              update_standby_record = Standby.add_startbreak_to_record(@postback_data[1]["date"])
+              update_standby_record = Standby.add_startbreak_to_record
               return_message = set_return_message(update_standby_record)
               binding.pry
             when "finish_break"
-              update_standby_record = Standby.add_breaksum_to_record(@postback_data[1]["date"])
+              update_standby_record = Standby.add_breaksum_to_record
               return_message = set_return_message(update_standby_record)
               binding.pry
             when "finish_work"
             end
-            client.reply_message(@event['replyToken'], return_message)
+            response = client.reply_message(@event['replyToken'], return_message)
           end
         end
       end
     }
-    binding.pry
     Richmenu.check_and_change_richmenu
     head :ok
   end

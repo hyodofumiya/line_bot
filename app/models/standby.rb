@@ -4,12 +4,12 @@ class Standby < ApplicationRecord
   require "date"
 
   #standbyレコードを作成するメソッド
-  def self.add_new_record(date, user)
+  def self.add_new_record
     #standbyレコードを新たに作成してもいいか確認するメソッド
-    @standby_record = Standby.find_by(user_id: user.id) if present?
+    @standby_record = Standby.find_by(user_id: $user.id) if present?
     if @standby_record.nil? #新規作成
-      user_id = user.id
-      record = Standby.new(user_id: user_id, date: date.to_date, start:date.to_time )
+      user_id = $user.id
+      record = Standby.new(user_id: user_id, date: $timestamp, start:$timestamp )
       create_record = record.save
       if create_record = true
         return "出勤しました"
@@ -23,15 +23,14 @@ class Standby < ApplicationRecord
         return "休憩中です"
       end
     end
-    #リッチメニューを適切なものに切り替えるメソッド
   end
 
-  def self.add_startbreak_to_record(date)
+  def self.add_startbreak_to_record
     binding.pry
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
       if @record.break_start.nil?
-        update_record = @record.update(break_start: date.to_time)
+        update_record = @record.update(break_start: $timestamp)
         if update_record == true
           return "休憩を開始しました"
         else
@@ -43,16 +42,16 @@ class Standby < ApplicationRecord
     else
       return Standby.no_stanby_record
     end
-    binding.pry
   end
 
-  def self.add_breaksum_to_record(date)
+  def self.add_breaksum_to_record
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
       if @record.break_start.present?
-        this_break_time_sum = date.to_time - @record.break_start
+        this_breaktime_sum = $timestamp - @record.break_start
+        all_breaktime_sum = @record.break_sum + this_breaktime_sum
         binding.pry
-        update_record = @record.update(break_start: "", break_sum: this_break_time_sum)
+        update_record = @record.update(break_start: nil, break_sum: all_breaktime_sum)
         if update_record == true
           return "休憩を終了しました"
         else
