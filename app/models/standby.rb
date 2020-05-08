@@ -48,10 +48,7 @@ class Standby < ApplicationRecord
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
       if @record.break_start.present?
-        this_breaktime_sum = $timestamp - @record.break_start
-        all_breaktime_sum = @record.break_sum + this_breaktime_sum
-        binding.pry
-        update_record = @record.update(break_start: nil, break_sum: all_breaktime_sum)
+        update_record = @record.update_break_sum
         if update_record == true
           return "休憩を終了しました"
         else
@@ -65,6 +62,14 @@ class Standby < ApplicationRecord
     end
     binding.pry
   end
+
+  def update_break_sum
+    this_breaktime_sum = $timestamp - self.break_start
+    all_breaktime_sum = self.break_sum + this_breaktime_sum
+    update_record = self.update(break_start: nil, break_sum: all_breaktime_sum)
+    return update_record
+  end
+
 
   def self.no_stanby_record
     "出勤していません"
