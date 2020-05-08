@@ -26,6 +26,48 @@ class Standby < ApplicationRecord
     #リッチメニューを適切なものに切り替えるメソッド
   end
 
-  private
+  def self.add_startbreak_to_record(date)
+    binding.pry
+    @record = Standby.find_by(user_id: $user.id)
+    if @record.present?
+      if @record.break_start.nil?
+        update_record = @record.update(break_start: date.to_time)
+        if update_record == true
+          return "休憩を開始しました"
+        else
+          return "休憩の開始に失敗しました"
+        end
+      else
+        return "#{@record.break_start.strftime("%H時%M分")}から休憩中です"
+      end
+    else
+      return Standby.no_stanby_record
+    end
+    binding.pry
+  end
 
+  def self.add_breaksum_to_record(date)
+    @record = Standby.find_by(user_id: $user.id)
+    if @record.present?
+      if @record.break_start.present?
+        this_break_time_sum = date.to_time - @record.break_start
+        binding.pry
+        update_record = @record.update(break_start: "", break_sum: this_break_time_sum)
+        if update_record == true
+          return "休憩を終了しました"
+        else
+          return "休憩の終了に失敗しました"
+        end
+      else
+        return "休憩を開始していません"
+      end
+    else
+      return Standby.no_stanby_record
+    end
+    binding.pry
+  end
+
+  def self.no_stanby_record
+    "出勤していません"
+  end
 end
