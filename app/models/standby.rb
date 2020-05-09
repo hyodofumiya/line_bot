@@ -26,7 +26,6 @@ class Standby < ApplicationRecord
   end
 
   def self.add_startbreak_to_record
-    binding.pry
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
       if @record.break_start.nil?
@@ -48,10 +47,7 @@ class Standby < ApplicationRecord
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
       if @record.break_start.present?
-        this_breaktime_sum = $timestamp - @record.break_start
-        all_breaktime_sum = @record.break_sum + this_breaktime_sum
-        binding.pry
-        update_record = @record.update(break_start: nil, break_sum: all_breaktime_sum)
+        update_record = @record.update_break_sum
         if update_record == true
           return "休憩を終了しました"
         else
@@ -63,7 +59,39 @@ class Standby < ApplicationRecord
     else
       return Standby.no_stanby_record
     end
-    binding.pry
+  end
+
+  def self.finish_work_flow
+    standby = Standby.find_by(user_id: $user.id)
+    #出勤しているか確認する
+    if standby.present?
+      #休憩中か判断し、休憩中の場合は休憩を終了する。
+      work_status = standby.break_start
+      if work_status.present?
+        update_break_sum = standby.update_break_sum
+        return "退勤に失敗しました。休憩を終了できませんでした。" if update_break_sum.break_start.present?
+      end
+      work_start = standby.start
+      break_sum = standby.break_sum
+      full_work_hour = $timestamp - work_start
+      #前日の入力忘れの場合とで条件分け
+      if full_work_hour <= 60*60*24
+        work_time = full_work_hour - break_sum
+        TimeCard.create_new_record_flow(work_time, standby)
+      else
+        return "連続勤務が24時間を超えているため登録できません。１日の勤務時間が24時間以内になるように編集画面から分けて入力してください。"
+      end
+    else
+      return "先に出勤してください"
+    end
+  end
+
+  def update_break_sum
+    this_breaktime_sum = $timestamp - self.break_start
+    all_breaktime_sum = this_breaktime_sum
+    all_breaktime_sum += self.break_sum if self.break_sum.present?
+    update_record = self.update(break_start: nil, break_sum: all_breaktime_sum)
+    return update_record
   end
 
   def self.no_stanby_record
