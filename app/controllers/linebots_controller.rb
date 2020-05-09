@@ -76,12 +76,12 @@ class LinebotsController < ApplicationController
             when "start_break"
               update_standby_record = Standby.add_startbreak_to_record
               return_message = set_return_message(update_standby_record)
-              binding.pry
             when "finish_break"
               update_standby_record = Standby.add_breaksum_to_record
               return_message = set_return_message(update_standby_record)
-              binding.pry
             when "finish_work"
+              finish_standby = Standby.finish_work_flow
+              return_message = set_return_message(finish_standby)
             end
             response = client.reply_message(@event['replyToken'], return_message)
           end
