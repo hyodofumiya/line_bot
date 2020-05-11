@@ -68,6 +68,8 @@ class LinebotsController < ApplicationController
           #user登録してあるか確認
           if $user.nil?
             not_exist_user_message
+          elsif @postback_data[0]["name"] == "others"
+            res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id)
           else
             case @postback_data[0]["name"]
             when "start_work"
@@ -82,13 +84,18 @@ class LinebotsController < ApplicationController
             when "finish_work"
               finish_standby = Standby.finish_work_flow
               return_message = set_return_message(finish_standby)
+            when "timecard_index"
+            when "timecard_show"
+            when "timecard_fix"
+            when "search_member"
+            when "back"
             end
             response = client.reply_message(@event['replyToken'], return_message)
+            Richmenu.check_and_change_richmenu
           end
         end
       end
     }
-    Richmenu.check_and_change_richmenu
     head :ok
   end
 
