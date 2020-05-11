@@ -8,49 +8,77 @@ class Richmenu
     rich_menu = {
         "size": {
           "width": 1200,
-          "height": 405
+          "height": 810
         },
         "selected": true,
-        "name": "休憩終了",
-        "chatBarText": "休憩中(タップで表示)",
+        "name": "その他",
+        "chatBarText": "その他",
         "areas": [
           {
             "bounds": {
-                "x": 60,
-                "y": 20,
-                "width": 340,
-                "height": 362
+                "x": 45,
+                "y": 15,
+                "width": 313,
+                "height": 373
             },
             "action": {
                 "type": "postback",
-                "label": "休憩終了",
-                "data": [{name: "finish_break"}, {date: DateTime.now}].to_json
+                "label": "今月と前月分",
+                "data": [{name: "timecard_index"}].to_json
             }
           },
           {
             "bounds": {
-                "x": 465,
-                "y": 20,
-                "width": 340,
-                "height": 362
+                "x": 444,
+                "y": 15,
+                "width": 313,
+                "height": 373
             },
             "action": {
-                "type": "postback",
-                "label": "退勤",
-                "data": [{name: "finish_work"}, {date: DateTime.now}].to_json
+                "type": "datetimepicker",
+                "mode": "date",
+                "label": "日付を指定",
+                "data": [{name: "timecard_show"}].to_json
             }
           },
           {
             "bounds": {
-                "x": 950,
-                "y": 135,
-                "width": 140,
-                "height": 220
+                "x": 842,
+                "y": 15,
+                "width": 313,
+                "height": 373
             },
             "action": {
                 "type": "postback",
-                "label": "others",
-                "data": [{name: "others"}].to_json
+                "mode": "date",
+                "label": "修正",
+                "data": [{name: "timecard-fix"}].to_json
+            }
+          },
+          {
+            "bounds": {
+                "x": 45,
+                "y": 424,
+                "width": 313,
+                "height": 373
+            },
+            "action": {
+                "type": "postback",
+                "label": "出勤中/作業中の人を探す",
+                "data": [{name: "search_member"}].to_json
+            }
+          },
+          {
+            "bounds": {
+                "x": 893,
+                "y": 494,
+                "width": 212,
+                "height": 232
+            },
+            "action": {
+                "type": "postback",
+                "label": "戻る",
+                "data": [{name: "back"}].to_json
             }
           }
         ]
@@ -75,9 +103,9 @@ class Richmenu
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
-    file = File.open('public/breakstart.jpg')
+    file = File.open('public/others.jpg')
     binding.pry
-    response = client.create_rich_menu_image('richmenu-c483410ed627718cbda57d6ce91ac7f1', file)
+    response = client.create_rich_menu_image('richmenu-07792a76bd76607a22553bbf2e052b30', file)
     body = JSON.parse(response.body)
     binding.pry
   end
