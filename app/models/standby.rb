@@ -76,7 +76,8 @@ class Standby < ApplicationRecord
       full_work_hour = $timestamp - work_start
       #前日の入力忘れの場合とで条件分け
       if full_work_hour <= 60*60*24
-        work_time = full_work_hour - break_sum
+        work_time = full_work_hour
+        work_time -= break_sum if break_sum.present?
         TimeCard.create_new_record_flow(work_time, standby)
       else
         return "連続勤務が24時間を超えているため登録できません。１日の勤務時間が24時間以内になるように編集画面から分けて入力してください。"
