@@ -75,7 +75,6 @@ class LinebotsController < ApplicationController
             when "timecard_index"
               selected_timecards_messages = TimeCard.index_selected_date
               return_message = selected_timecards_messages
-              binding.pry
             when "timecard_show"
               selected_date = event["postback"]["params"]["date"]
               selected_timecard = TimeCard.show_selected_date(selected_date)
@@ -101,7 +100,6 @@ class LinebotsController < ApplicationController
               Richmenu.check_and_change_richmenu
             end
             response = client.reply_message(@event['replyToken'], return_message)
-            binding.pry
           end
         end
       end
