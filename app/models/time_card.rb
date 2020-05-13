@@ -42,13 +42,10 @@ class TimeCard < ApplicationRecord
   def self.index_selected_date
     this_month = Time.now.to_date.all_month
     last_month = Time.now.last_month.to_date.all_month
-    binding.pry
     this_month_timecards = TimeCard.where(user_id: $user.id, date: this_month).order(date: :asc)
     last_month_timecards = TimeCard.where(user_id: $user.id, date: last_month).order(date: :asc)
-    binding.pry
     this_month_timecards_message = TimeCard.create_timecards_index_message(this_month_timecards, this_month, Time.now.to_date)
     last_month_timecards_message = TimeCard.create_timecards_index_message(last_month_timecards, last_month, Time.now.last_month.to_date)
-    binding.pry
     this_and_last_month_timecards_message = TimeCard.compile_this_and_last_month_timecards_message(this_month_timecards_message, last_month_timecards_message)
     return this_and_last_month_timecards_message
   end
