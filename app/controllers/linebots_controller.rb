@@ -68,27 +68,44 @@ class LinebotsController < ApplicationController
           #user登録してあるか確認
           if $user.nil?
             not_exist_user_message
+          elsif @postback_data[0]["name"] == "others"
+            res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id)
           else
             case @postback_data[0]["name"]
+            when "timecard_index"
+              selected_timecards_messages = TimeCard.index_selected_date
+              return_message = selected_timecards_messages
+              binding.pry
+            when "timecard_show"
+              selected_date = event["postback"]["params"]["date"]
+              selected_timecard = TimeCard.show_selected_date(selected_date)
+              return_message = set_return_message(selected_timecard)
+            when "timecard_fix"
+            when "search_member"
+            when "back"
             when "start_work"
               create_standby_record = Standby.add_new_record
               return_message = set_return_message(create_standby_record)
+              Richmenu.check_and_change_richmenu
             when "start_break"
               update_standby_record = Standby.add_startbreak_to_record
               return_message = set_return_message(update_standby_record)
+              Richmenu.check_and_change_richmenu
             when "finish_break"
               update_standby_record = Standby.add_breaksum_to_record
               return_message = set_return_message(update_standby_record)
+              Richmenu.check_and_change_richmenu
             when "finish_work"
               finish_standby = Standby.finish_work_flow
               return_message = set_return_message(finish_standby)
+              Richmenu.check_and_change_richmenu
             end
             response = client.reply_message(@event['replyToken'], return_message)
+            binding.pry
           end
         end
       end
     }
-    Richmenu.check_and_change_richmenu
     head :ok
   end
 
