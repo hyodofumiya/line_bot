@@ -82,6 +82,7 @@ class LinebotsController < ApplicationController
             when "timecard_fix"
             when "search_member"
             when "back"
+              Richmenu.check_and_change_richmenu
             when "start_work"
               create_standby_record = Standby.add_new_record
               return_message = set_return_message(create_standby_record)
@@ -100,6 +101,7 @@ class LinebotsController < ApplicationController
               Richmenu.check_and_change_richmenu
             end
             response = client.reply_message(@event['replyToken'], return_message)
+
           end
         end
       end
