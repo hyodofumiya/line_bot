@@ -1,4 +1,4 @@
-window.addEventListener('turbolinks:load', initializeLiff)
+//window.addEventListener('turbolinks:load', initializeLiff)
 
 //LIFFを起動----------------------------------------------------------------------------------
 function initializeLiff() {
@@ -10,6 +10,7 @@ function initializeLiff() {
     })
     .then(() => {
       sendMessage();
+      liff.closeWindow();
     })
     .catch((err) => {
       console.log(err.code, err.message);

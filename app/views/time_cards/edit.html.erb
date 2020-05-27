@@ -1,0 +1,28 @@
+<body class="timecard_edit_body">
+    <div class="timecard_edit_body__form-structor">
+        <%= form_with model:@timecard, class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
+            <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
+            <div class="timecard_edit_form__form-holder">
+              <div class="timecard_edit_form__form-holder__a_form">
+                <label class="control-label timecard_edit_form_label" for="timecard_date">出勤日</label>
+                <%= f.date_field :date, id:'timecard_date' , class: 'timecard_edit_form_input', use_month_numbers: "true" %>
+              </div>
+              <div class="timecard_edit_form__form-holder__a_form">
+                <label class="control-label timecard_edit_form_label" for="timecard_start_time">勤務開始時刻</label>
+                <%= f.time_field :start_time, id: "timecard_start_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
+              </div>
+              <div class="timecard_edit_form__form-holder__a_form">
+                <label class="control-label timecard_edit_form_label" for="timecard_finish_time">勤務終了時刻</label>
+                <%= f.time_field :finish_time, id: "timecard_finish_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
+              </div>
+              <div class="timecard_edit_form__form-holder__a_form">
+                <label class="control-label timecard_edit_form_label" for="timecard_break_time">休憩時間（分）</label>
+                <%= f.number_field :break_time, id: "timecard_break_time", class: "timecard_edit_form_input", required: "required", max: 1440, min:0, disabled: "disabled" %>
+              </div>
+                <%= f.hidden_field :user_token, id:"userIdToken"%>
+            </div>
+            <%= f.submit id:"sendMessageButton", class:"timecard_edit_form__submit-btn", value:"完了" %>
+        <% end %>
+    </div>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+</body>
