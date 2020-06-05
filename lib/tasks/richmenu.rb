@@ -49,9 +49,9 @@ class Richmenu
                 "height": 373
             },
             "action": {
-                "type": "postback",
-                "mode": "date",
+                "type": "uri",
                 "label": "修正",
+                "uri": "https://liff.line.me/1654154094-1nd8zDod",
                 "data": [{name: "timecard-fix"}].to_json
             }
           },
@@ -104,10 +104,9 @@ class Richmenu
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
     file = File.open('public/others.jpg')
-    binding.pry
-    response = client.create_rich_menu_image('richmenu-07792a76bd76607a22553bbf2e052b30', file)
+    response = client.create_rich_menu_image('richmenu-d882125ecd5761d36fc8102049c0fb04', file)
     body = JSON.parse(response.body)
-    binding.pry
+    p body
   end
 
   def self.set_default
@@ -115,8 +114,8 @@ class Richmenu
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
-    client.set_default_rich_menu('richmenu-4357e5ee1155e1a187c752f69b27ecb1')
-    binding.pry
+    res = client.set_default_rich_menu('richmenu-4357e5ee1155e1a187c752f69b27ecb1')
+    p res
   end
 
   def self.delete
@@ -124,8 +123,8 @@ class Richmenu
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
-    respnse = client.delete_rich_menu("richmenu-a8218daeed2ab9cd2158bd8fb9169edb")
-    binding.pry
+    response = client.delete_rich_menu("richmenu-07792a76bd76607a22553bbf2e052b30")
+    p response
   end
 
   def self.check_image
@@ -134,6 +133,7 @@ class Richmenu
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
     response = client.get_rich_menu_image("richmenu-c483410ed627718cbda57d6ce91ac7f1")
+    p response
   end
 end
 

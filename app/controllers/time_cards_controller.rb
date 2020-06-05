@@ -5,6 +5,25 @@ class TimeCardsController < ApplicationController
   require 'json'
 
   def create
+    user_id_token = params[:time_card][:user_token]
+    user_line_id = get_user_id_from_token(user_id_token)
+    user_id = User.find_by(line_id: user_line_id)
+    timecard_id = params[:time_card][:timecard_id]
+    if user_id.nil?
+      redirect_to action: 'edit', notice: 'ユーザーが見つかりません。'      
+    elsif timecard_id.present?
+      redirect_to action: 'update'
+    end
+    time_card = TimeCard.find(params[:time_card][:timecard_id])
+    work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
+    start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
+    finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
+    result = time_card.create
+    if result == true
+      notice "修正しました"
+    else
+      notice "修正できませんでした"
+    end
   end
 
   def edit
@@ -12,12 +31,17 @@ class TimeCardsController < ApplicationController
   end
 
   def update
-    user_id_token = params[:user_token]
-    #LINEのIDトークンをLINEに送信し、LINEのIDを取得する
-    @user_id = get_user_id_from_token(user_id_token)
     #ユーザーに入力内容の確認メッセージを送信する
-    return_check_message()
-    render nothing: true
+    time_card = TimeCard.find(params[:time_card][:timecard_id])
+    work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
+    start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
+    finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
+    time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
+    if time_card == true
+      render nothing: true
+    else
+      notice "修正できませんでした"
+    end
   end
 
   def set_record_for_form

@@ -62,14 +62,14 @@ class LinebotsController < ApplicationController
         #postbackリクエストのdataプロパティを＠post_dataとして定義
         @postback_data = JSON.parse(@event["postback"]["data"])
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
-        if @postback_data[0]["name"] == "user_form"
+      if @postback_data[0]["name"] == "user_form"
           create_user
         else
           #user登録してあるか確認
           if $user.nil?
             not_exist_user_message
           elsif @postback_data[0]["name"] == "others"
-            res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id)
+            res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
           else
             case @postback_data[0]["name"]
             when "timecard_index"
@@ -79,7 +79,8 @@ class LinebotsController < ApplicationController
               selected_date = event["postback"]["params"]["date"]
               selected_timecard = TimeCard.show_selected_date(selected_date)
               return_message = set_return_message(selected_timecard)
-            when "timecard_fix"
+            when "timecard-fix"
+              redirect_to timecard_edit_path
             when "search_member"
             when "back"
               Richmenu.check_and_change_richmenu
@@ -101,7 +102,6 @@ class LinebotsController < ApplicationController
               Richmenu.check_and_change_richmenu
             end
             response = client.reply_message(@event['replyToken'], return_message)
-
           end
         end
       end

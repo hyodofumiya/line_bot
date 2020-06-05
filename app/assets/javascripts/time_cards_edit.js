@@ -1,23 +1,37 @@
-window.addEventListener('turbolinks:load', initializeLiff)
+window.addEventListener('turbolinks:load', judgeTimeCardEditApp);
+
+var timecard_data;
+
+function judgeTimeCardEditApp(){
+  //呼び出したいLIFFアプリをuriから特定
+  var referrer = document.referrer;
+  let timecardEditPass = "https://liff.line.me/1654154094-1nd8zDod";
+  //if (referrer == timecardEditPass){
+  initializeTimeCardEditLiff();
+  //};
+}
 
 //LIFFを起動----------------------------------------------------------------------------------
-function initializeLiff() {
-  console.log("test1");
+function initializeTimeCardEditLiff() {
   MyLiffId= "1654154094-1nd8zDod";
   liff
     .init({
       liffId: MyLiffId
     })
     .then(() => {
-      //日付が変更されるとuserを確認しtimecardのレコードを返す
-      return_timecard()
+      //日付が変更されるとuserを確認しtimecardのレコードを返す関数
+      timecard_data = return_timecard();
+      //日付に値が入ると他のフォームを選択可能にする関数
+      judgeDateFormStatus();
+      sendMessage('timecard_edit_form');
+      changeSubmitBtnStatus();
     })
     .catch((err) => {
-      console.log(err.code, err.message)
+      console.log(err.code, err.message);
     });
 }
 //LIFFの機能------------------------------------------------------------------------------------
-
+//timecardのレコードをフォームにいれる関数
 function return_timecard(){
   $("#timecard_date").change(function(){ //日付を変更するとイベントが発火します
     var input_date = $("#timecard_date").val(); // フォームの値を'input_date'という名前の変数に代入します
@@ -30,27 +44,67 @@ function return_timecard(){
     })
     .done(function(data){
       if (data.exist == true){
-        $("#timecard_start_time").attr({"value": data.start_time});
-        $("#timecard_finish_time").attr({"value": data.finish_time});
-        $("#timecard_break_time").attr({"value": data.break_time/60});
+        document.getElementById('timecard_start_time').value = data.start_time;
+        document.getElementById("timecard_finish_time").value = data.finish_time;
+        document.getElementById("timecard_break_time").value = data.break_time/60;
+        document.getElementById("timecardId").value = data.timecard_id;
+        $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
+        timecard_data = data;
+        return timecard_data
       }else{
         $("#timecard_start_time").attr({"value": ""});
         $("#timecard_finish_time").attr({"value": ""});
         $("#timecard_break_time").attr({"value": ""});
+        $("#timecardId").attr({"value": ""});
+        $("#timecard_edit_form").attr({"action": '/time_cards/'});
+        $("#sendMessageBtn").attr({"disabled": "disabled"});
+        timecard_data = undefined;
       }
-
-      end
-      //$('').empty(); //前回のフォーム入力情報が残っている場合はそれを消す
-        //$('.meal_list').append(`<li>${meal.name} </li>`);
-        //データは配列形式でかえってくるので、forEachで繰り返し処理をします
-        //ここではデータの単数の変数名をmealと置いていますが、何でも構いません。
-        //ただし、値を取り出す場合は"ここで定義した変数名"."json.jbuilderで定義した〇〇(この例ではname)"で取得します。
     })
     .fail(function(){
       // 通信に失敗した場合の処理です
-      //alert('検索に失敗しました') // alertで検索失敗の旨を表示します
+      alert('通信に失敗しました') // alertで通信失敗の旨を表示します
     })
   })
 }
+
+//日付が入力されているか確認し、状態に応じて他のフォームを選択可能にする関数
+function judgeDateFormStatus(){
+  $("#timecard_date").change(function(){ //日付を変更するとイベントが発火します
+    var date_status = document.getElementById("timecard_date").value !== "";
+    if(date_status == true){
+      $("#timecard_start_time").removeAttr("disabled");
+      $("#timecard_finish_time").removeAttr("disabled");
+      $("#timecard_break_time").removeAttr("disabled");
+    }else{
+      $("#timecard_start_time").attr({"disabled": "disabled"});
+      $("#timecard_finish_time").attr({"disabled": "disabled"});
+      $("#timecard_break_time").attr({"disabled": "disabled"});
+    }
+  });
+}
+
+function changeSubmitBtnStatus(){
+  $("#timecard_edit_form").change(function(){
+    if (timecard_data !== undefined){
+      var start_time_status = document.getElementById('timecard_start_time').value == timecard_data.start_time;
+      var finish_time_status = document.getElementById("timecard_finish_time").value == timecard_data.finish_time;
+      var break_time_status = document.getElementById("timecard_break_time").value == timecard_data.break_time/60;
+      if (start_time_status == false||finish_time_status == false||break_time_status == false ){
+        $("#sendMessageButton").removeAttr("disabled");
+      }else{
+        $("#sendMessageButton").attr({"disabled": "disabled"});
+      }
+    }else{
+      var checkValid=document.getElementById('timecard_edit_form').checkValidity();
+      if (checkValid == true){
+        $("#sendMessageButton").removeAttr("disabled");
+      }else{
+        $("#sendMessageButton").attr({"disabled": "disabled"});
+      }
+    }
+  });
+}
+
 
 
