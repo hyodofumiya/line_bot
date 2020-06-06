@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 2020_06_06_062606) do
   enable_extension "plpgsql"
 
   create_table "groups", force: :cascade do |t|
-    t.string "name", null: false
     t.text "line_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
