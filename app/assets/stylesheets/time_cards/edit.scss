@@ -1,0 +1,47 @@
+.timecard_edit_body{
+  font-size: 16px;
+  background-color: #E1E8EE;
+  //height: 100vh;
+  &__form-structor{
+    text-align: center;
+    background-color: #fff;
+    margin: auto;
+    width: 90%;
+    .timecard_edit_form{
+      &__form-title{
+        font-size: 4em;
+        margin-top: 1em;
+        padding: 1em  0;
+      }
+      &__form-holder{
+        margin-bottom: 1em;
+        &__a_form{
+          font-size: 20px;
+          margin: auto;
+          margin-bottom: 2em;
+          text-align: left;
+          display: flex;
+          justify-content: space-between;
+          padding: 0 10%;
+          .timecard_edit_form_label{
+            width: 50%;
+            display: inline-block;
+            font-size: 2em;
+            text-align: left;
+          }
+          .timecard_edit_form_input{
+            font-size: 2em;
+          }
+        }
+      }
+      &__submit-btn{
+        width: 30%;
+        margin-bottom: 1em;
+        border: solid 2.5px #00000052;
+        border-radius: 3px;
+        font-size: 4em;
+        display: inline-block;
+        }
+    }
+  }
+}
