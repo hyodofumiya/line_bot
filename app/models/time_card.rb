@@ -30,7 +30,8 @@ class TimeCard < ApplicationRecord
     if timecard.present?
       start_time = timecard.start_time.in_time_zone('Tokyo')
       finish_time = timecard.finish_time.in_time_zone('Tokyo')  
-      message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time/60}分\n休憩：#{timecard.break_time/(60*60)}時間#{timecard.break_time/60}分"
+      message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time%(60*60)/60}分\n休憩：#{timecard.break_time/(60*60)}時間#{timecard.break_time%(60*60)/60}分"
+
     elsif selected_date >= Time.now
       message = "勤務履歴\n\n未登録"
     else
