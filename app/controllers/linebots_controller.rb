@@ -12,11 +12,17 @@ class LinebotsController < ApplicationController
     #userがlineで送ってきたイベントタイプに応じて処理を割り振る
     events.each { |event|
       @event = event
-      #メッセージ送信者のLINEidを$user_line_idとして定義
+      #メッセージ送信者のLINEidを個人・グループ・トークルーム_line_idとして定義
+      #変数のリセットのために個人・グループ・トークルームを全部宣言する
       $user_line_id = @event['source']['userId']
-      #ユーザーのリッチメニューIDを取得
-      $user_richmenu_id = Richmenu.get_user_richmenu_id
-      $user = User.find_by(line_id: $user_line_id)
+      $group_line_id = @event['source']['groupId']
+      $room_line_id = @event['source']["roomId"]
+      #送信者がuserだった場合はUserレコードと現在のリッチメニューを取得
+      if $user_line_id.present?
+        #ユーザーのリッチメニューIDを取得
+        $user_richmenu_id = Richmenu.get_user_richmenu_id
+        $user = User.find_by(line_id: $user_line_id)
+      end
       #リクエストの送信日時を定義。timestampのarea_codeを消すため下３桁を消している
       $timestamp = Time.at(event["timestamp"]/1000)
       case event
@@ -47,8 +53,15 @@ class LinebotsController < ApplicationController
 
       #既存のグループにアプリが招待された場合
       when Line::Bot::Event::Join
-
-      #参加していたグループから削除された又は退出した場合
+        group_line_id = @event['source']['groupId']
+        #new_group = Group.add_new_group(group_line_id)
+        binding.pry
+        #if new_group == true
+        UserGroup.add_member_to_new_group(group_line_id, @event['replyToken'])
+        #else
+        #end
+        binding.pry
+        #参加していたグループから削除された又は退出した場合
       when Line::Bot::Event::Leave
 
       #すでに参加しているグループにメンバーが追加された場合
