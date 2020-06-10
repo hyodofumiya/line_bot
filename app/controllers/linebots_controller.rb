@@ -32,11 +32,6 @@ class LinebotsController < ApplicationController
         case event.type
         #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
-          # LINEから送られてきたメッセージが「アンケート」と一致した場合
-          if event.message['text'].eql?('アンケート')
-            #lineの送信者にレスポンスにメッセージを返す。
-            # private内のtemplateメソッドを呼び出します。
-            client.reply_message(@event['replyToken'], message)
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
           else event.message['text'].eql?('新規ユーザー登録')
             client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
@@ -150,6 +145,7 @@ class LinebotsController < ApplicationController
     create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $user_line_id, admin_user:"false")
     if create_user.save
       client.reply_message(@event['replyToken'], success_create_user_message)
+      
     else
       if User.find_by(employee_number: form_data["employee_number"]).present?
         client.reply_message(@event['replyToken'], already_exist_emmplyee_number_message)
