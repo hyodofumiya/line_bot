@@ -23,7 +23,7 @@ function initializeTimeCardEditLiff() {
       timecard_data = return_timecard();
       //日付に値が入ると他のフォームを選択可能にする関数
       judgeDateFormStatus();
-      sendMessage('timecard_edit_form');
+      judgeWorktime();
       changeSubmitBtnStatus();
     })
     .catch((err) => {
@@ -83,7 +83,7 @@ function judgeDateFormStatus(){
     }
   });
 }
-
+//保存されているレコードと内容が一致する場合はsubmitをdisabledに、そうでない場合はableに変更する関数
 function changeSubmitBtnStatus(){
   $("#timecard_edit_form").change(function(){
     if (timecard_data !== undefined){
@@ -106,5 +106,18 @@ function changeSubmitBtnStatus(){
   });
 }
 
-
-
+//勤務終了時刻が勤務開始時刻よりも後であることを確認する関数。falseの場合は送信をキャンセル
+function judgeWorktime(){
+  debugger
+  document.getElementById("sendMessageButton").addEventListener('click', function(event){
+    var start_time = document.getElementById("timecard_start_time").value;
+    var finish_time = document.getElementById("timecard_finish_time").value;
+    debugger
+    if (start_time<finish_time){
+      sendMessage('timecard_edit_form');
+    }else{
+      debugger
+      event.preventDefault();
+    }
+  })
+}

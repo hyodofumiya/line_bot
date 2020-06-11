@@ -36,11 +36,11 @@ class TimeCardsController < ApplicationController
     work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
     start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
     finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
-    time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
-    if time_card == true
-      render nothing: true
+    time_card_update = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
+    binding.pry
+    if time_card_update == true
+      render body: nil
     else
-      notice "修正できませんでした"
     end
   end
 

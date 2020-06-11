@@ -33,7 +33,7 @@ class LinebotsController < ApplicationController
         #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
           #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
-          else event.message['text'].eql?('新規ユーザー登録')
+          if event.message['text'].eql?('新規ユーザー登録')
             client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
           end
         end
@@ -145,7 +145,6 @@ class LinebotsController < ApplicationController
     create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $user_line_id, admin_user:"false")
     if create_user.save
       client.reply_message(@event['replyToken'], success_create_user_message)
-      
     else
       if User.find_by(employee_number: form_data["employee_number"]).present?
         client.reply_message(@event['replyToken'], already_exist_emmplyee_number_message)
