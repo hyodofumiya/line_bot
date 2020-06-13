@@ -10,7 +10,7 @@ class TimeCardsController < ApplicationController
     user_id = User.find_by(line_id: user_line_id)
     timecard_id = params[:time_card][:timecard_id]
     if user_id.nil?
-      redirect_to action: 'edit', notice: 'ユーザーが見つかりません。'      
+      redirect_to action: 'edit', notice: 'ユーザーが見つかりません。'
     elsif timecard_id.present?
       redirect_to action: 'update'
     end
@@ -20,9 +20,9 @@ class TimeCardsController < ApplicationController
     finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
     result = time_card.create
     if result == true
-      notice "修正しました"
+      return_message = "修正しました"
     else
-      notice "修正できませんでした"
+      return_message = "修正できませんでした"
     end
   end
 
@@ -39,8 +39,11 @@ class TimeCardsController < ApplicationController
     time_card_update = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
     binding.pry
     if time_card_update == true
+      client.reply_message(@event['replyToken'], [no_user_message ,create_user_message])
+      return_message = '修正しました'
       render body: nil
     else
+      return_message = '更新できませんでした'
     end
   end
 
@@ -67,6 +70,12 @@ class TimeCardsController < ApplicationController
   end
 
   private
+  def client
+    client ||= Line::Bot::Client.new { |config|
+      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
+      config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+    }
+  end
 
   def get_user_id_from_token(user_id_token)
     uri = URI.parse('https://api.line.me/oauth2/v2.1/verify')
