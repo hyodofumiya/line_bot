@@ -116,7 +116,7 @@ function judgeWorktime(){
     if (start_time<finish_time){
       sendMessage('timecard_edit_form');
     }else{
-      debugger
+      alert("終了時刻を開始時刻よりも後に設定してください")
       event.preventDefault();
     }
   })
