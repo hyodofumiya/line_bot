@@ -108,16 +108,21 @@ function changeSubmitBtnStatus(){
 
 //勤務終了時刻が勤務開始時刻よりも後であることを確認する関数。falseの場合は送信をキャンセル
 function judgeWorktime(){
-  debugger
   document.getElementById("sendMessageButton").addEventListener('click', function(event){
     var start_time = document.getElementById("timecard_start_time").value;
     var finish_time = document.getElementById("timecard_finish_time").value;
-    debugger
     if (start_time<finish_time){
-      sendMessage('timecard_edit_form');
+      //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
+      var checkValid = document.getElementById('timecard_edit_form').checkValidity();
+      //バリデーションが問題なければ送信するかどうかの判断をする
+      if (checkValid == true){
+        var userIdToken = liff.getIDToken();
+        document.getElementById("userIdToken").value = userIdToken;
+      }
     }else{
       alert("終了時刻を開始時刻よりも後に設定してください")
       event.preventDefault();
     }
   })
 }
+

@@ -17,16 +17,4 @@
 //= require jquery
 //= require jquery_ujs
 
-function sendMessage(formId){
-  //メッセージ送信機能
-  document.getElementById("sendMessageButton").addEventListener('click', function(){
-    //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
-    var checkValid=document.getElementById(formId).checkValidity();
-    //バリデーションが問題なければ送信するかどうかの判断をする
-    if (checkValid==true){
-      var userIdToken = liff.getIDToken();
-      document.getElementById("userIdToken").value = userIdToken;
-    }
-  })
-}
 
