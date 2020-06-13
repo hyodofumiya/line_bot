@@ -1,6 +1,7 @@
 <body class="timecard_edit_body">
+    <%= render partial: 'layouts/flash'%>
     <div class="timecard_edit_body__form-structor">
-        <%= form_with model:@timecard,class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
+        <%= form_with model:@timecard,class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true}, local: true do |f| %>
             <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
             <div class="timecard_edit_form__form-holder">
               <div class="timecard_edit_form__form-holder__a_form">
