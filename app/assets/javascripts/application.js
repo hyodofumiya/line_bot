@@ -23,7 +23,6 @@ function sendMessage(formId){
     //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
     var checkValid=document.getElementById(formId).checkValidity();
     //バリデーションが問題なければ送信するかどうかの判断をする
-    debugger
     if (checkValid==true){
       var userIdToken = liff.getIDToken();
       document.getElementById("userIdToken").value = userIdToken;
