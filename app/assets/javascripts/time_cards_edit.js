@@ -107,8 +107,10 @@ function changeSubmitBtnStatus(){
 }
 
 //勤務終了時刻が勤務開始時刻よりも後であることを確認する関数。falseの場合は送信をキャンセル
+
 function judgeWorktime(){
-  document.getElementById("sendMessageButton").addEventListener('click', function(event){
+  $("#timecard_edit_form").on('submit', function(event){
+    event.preventDefault();
     var start_time = document.getElementById("timecard_start_time").value;
     var finish_time = document.getElementById("timecard_finish_time").value;
     if (start_time<finish_time){
@@ -118,11 +120,28 @@ function judgeWorktime(){
       if (checkValid == true){
         var userIdToken = liff.getIDToken();
         document.getElementById("userIdToken").value = userIdToken;
+        var formData = new FormData(this);
+        var url = $(this).attr('action');
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: formData,
+          dataType: 'json',
+          processData: false,
+          contentType: false
+        })
+        .success(function(data){
+          reset_form();
+        })
+    
       }
     }else{
       alert("終了時刻を開始時刻よりも後に設定してください")
-      event.preventDefault();
     }
-  })
-}
+  });
+};
 
+function reset_form(){
+  $("#timecard_edit_form")[0].reset();
+  debugger
+}

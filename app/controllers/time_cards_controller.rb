@@ -5,7 +5,6 @@ class TimeCardsController < ApplicationController
   require 'json'
 
   def create
-    binding.pry
     user_id_token = params[:time_card][:user_token]
     user_line_id = get_user_id_from_token(user_id_token)
     user_id = User.find_by(line_id: user_line_id)
@@ -37,16 +36,18 @@ class TimeCardsController < ApplicationController
     work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
     start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
     finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
-    time_card_update = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
+    @result = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
     user_id_token = params[:time_card][:user_token]
     user_line_id = get_user_id_from_token(user_id_token)
-    if time_card_update == true
+    if @result == true
       return_message = "#{params[:time_card][:date].to_date.strftime("%m/%d")}の勤怠を修正しました"
-      response = client.push_message(user_line_id, return_change_timecard_message(return_message))
-      render "edit"
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message)) #LINEに修正成功のメッセージを送信する
     else
-      return_message = '更新できませんでした'
       response = client.push_message(user_line_id, return_change_timecard_message(return_message))
+    end
+    respond_to do |format|
+      format.html { render "edit"}
+      format.json
     end
   end
 
