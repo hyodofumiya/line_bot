@@ -38,13 +38,15 @@ class TimeCardsController < ApplicationController
     start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
     finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
     time_card_update = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
+    user_id_token = params[:time_card][:user_token]
+    user_line_id = get_user_id_from_token(user_id_token)
     if time_card_update == true
-      user_id_token = params[:time_card][:user_token]
-      user_line_id = get_user_id_from_token(user_id_token)
-      response = client.push_message(user_line_id, success_change_timecard_message)
-      redirect_to action: 'edit'
+      return_message = "#{params[:time_card][:date].to_date.strftime("%m/%d")}の勤怠を修正しました"
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message))
+      render "edit"
     else
       return_message = '更新できませんでした'
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message))
     end
   end
 
@@ -84,9 +86,9 @@ class TimeCardsController < ApplicationController
     return user_id
   end
 
-  def success_change_timecard_message
+  def return_change_timecard_message(return_message)
     {"type": "text",
-      "text": "#{params[:time_card][:date].to_date.strftime("%m/%d")}の勤怠を修正しました"}
+      "text": return_message}
   end
 
 end
