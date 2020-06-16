@@ -133,15 +133,14 @@ function judgeWorktime(){
         .success(function(data){
           reset_form();
         })
-    
       }
     }else{
       alert("終了時刻を開始時刻よりも後に設定してください")
+      return false;
     }
   });
 };
 
 function reset_form(){
   $("#timecard_edit_form")[0].reset();
-  debugger
 }
