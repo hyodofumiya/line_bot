@@ -1,4 +1,5 @@
 <body class="timecard_edit_body">
+    <%= render partial: 'layouts/flash'%>
     <div class="timecard_edit_body__form-structor">
         <%= form_with model:@timecard,class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
             <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
@@ -22,7 +23,7 @@
                 <%= f.hidden_field :user_token, id:"userIdToken"%>
                 <%= f.hidden_field :timecard_id, id:"timecardId"%>
             </div>
-            <%= f.submit id:"sendMessageButton", class:"timecard_edit_form__submit-btn", value:"完了", data: { "disable-with": "保存しています..." } %>
+            <%= f.submit id:"sendMessageButton", class:"timecard_edit_form__submit-btn", value:"完了", data: { "disable-with": "保存しています..." }, disabled: "disabled" %>
         <% end %>
     </div>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>

@@ -4,11 +4,10 @@ var timecard_data;
 
 function judgeTimeCardEditApp(){
   //呼び出したいLIFFアプリをuriから特定
-  var referrer = document.referrer;
-  let timecardEditPass = "https://liff.line.me/1654154094-1nd8zDod";
-  //if (referrer == timecardEditPass){
-  initializeTimeCardEditLiff();
-  //};
+  let timecardEditPass = "/timecard/edit";
+  if (location.pathname == timecardEditPass){
+    initializeTimeCardEditLiff();
+  };
 }
 
 //LIFFを起動----------------------------------------------------------------------------------
@@ -23,7 +22,7 @@ function initializeTimeCardEditLiff() {
       timecard_data = return_timecard();
       //日付に値が入ると他のフォームを選択可能にする関数
       judgeDateFormStatus();
-      sendMessage('timecard_edit_form');
+      judgeWorktime();
       changeSubmitBtnStatus();
     })
     .catch((err) => {
@@ -83,7 +82,7 @@ function judgeDateFormStatus(){
     }
   });
 }
-
+//保存されているレコードと内容が一致する場合はsubmitをdisabledに、そうでない場合はableに変更する関数
 function changeSubmitBtnStatus(){
   $("#timecard_edit_form").change(function(){
     if (timecard_data !== undefined){
@@ -106,5 +105,42 @@ function changeSubmitBtnStatus(){
   });
 }
 
+//勤務終了時刻が勤務開始時刻よりも後であることを確認する関数。falseの場合は送信をキャンセル
 
+function judgeWorktime(){
+  $("#timecard_edit_form").on('submit', function(event){
+    event.preventDefault();
+    var start_time = document.getElementById("timecard_start_time").value;
+    var finish_time = document.getElementById("timecard_finish_time").value;
+    if (start_time<finish_time){
+      //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
+      var checkValid = document.getElementById('timecard_edit_form').checkValidity();
+      //バリデーションが問題なければ送信するかどうかの判断をする
+      if (checkValid == true){
+        var userIdToken = liff.getIDToken();
+        document.getElementById("userIdToken").value = userIdToken;
+        var formData = new FormData(this);
+        var url = $(this).attr('action');
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: formData,
+          dataType: 'json',
+          processData: false,
+          contentType: false
+        })
+        .success(function(data){
+          reset_form();
+        })
+      }
+      return false;
+    }else{
+      alert("終了時刻を開始時刻よりも後に設定してください")
+      return false;
+    }
+  });
+};
 
+function reset_form(){
+  $("#timecard_edit_form")[0].reset();
+}
