@@ -133,6 +133,7 @@ function judgeWorktime(){
           reset_form();
         })
       }
+      return false;
     }else{
       alert("終了時刻を開始時刻よりも後に設定してください")
       return false;
