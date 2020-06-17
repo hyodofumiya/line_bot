@@ -4,11 +4,10 @@ var timecard_data;
 
 function judgeTimeCardEditApp(){
   //呼び出したいLIFFアプリをuriから特定
-  var referrer = document.referrer;
-  let timecardEditPass = "https://liff.line.me/1654154094-1nd8zDod";
-  //if (referrer == timecardEditPass){
-  initializeTimeCardEditLiff();
-  //};
+  let timecardEditPass = "/timecard/edit";
+  if (location.pathname == timecardEditPass){
+    initializeTimeCardEditLiff();
+  };
 }
 
 //LIFFを起動----------------------------------------------------------------------------------
