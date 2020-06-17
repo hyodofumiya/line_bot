@@ -2,9 +2,8 @@ window.addEventListener('turbolinks:load', judgeUserNewApp);
 
 function judgeUserNewApp(){
   //呼び出したいLIFFアプリをuriから特定
-  var referrer = document.referrer;
-  let userNewLiffPass = "https://liff.line.me/1654154094-1nd8zDod";
-  if (referrer == userNewLiffPass){
+  let userNewLiffPass = "/usernew";
+  if (location.pathname == userNewLiffPass){
     initializeUserNewLiff();
   };
 }
