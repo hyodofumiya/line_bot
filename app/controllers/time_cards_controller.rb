@@ -49,7 +49,6 @@ class TimeCardsController < ApplicationController
       format.html { render "edit"}
       format.json
     end
-    binding.pry
   end
 
   #勤怠修正フォームの日付が変更された時にuserIdと日付に該当するTimeCardレコードをユーザーに返すアクション

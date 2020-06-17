@@ -11,7 +11,6 @@ class TimeCard < ApplicationRecord
   def starttime_and_finishtime_valid
     errors.add(:finish_time, "終了時刻を開始時刻よりも前に設定してください") unless 
       self.start_time < self.finish_time
-    binding.pry
   end
 
   def self.create_new_record_flow(work_time, standby)
