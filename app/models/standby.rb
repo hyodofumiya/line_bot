@@ -1,7 +1,13 @@
 class Standby < ApplicationRecord
+  require "date"
+
   belongs_to :user
 
-  require "date"
+  validates :user, presence: true
+  validates :date, presence: true
+  validates :start, presence:true
+  validates :break_start
+  validates :break_sum, length: { maximum: 60*60*24}
 
   #standbyレコードを作成するメソッド
   def self.add_new_record
