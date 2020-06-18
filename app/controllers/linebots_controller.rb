@@ -23,6 +23,7 @@ class LinebotsController < ApplicationController
         $user = User.find_by(line_id: $user_line_id)
         if $user.nil?
           not_exist_user_message
+          Richmenu.check_and_change_richmenu
         else
           #ユーザーのリッチメニューIDを取得
           $user_richmenu_id = Richmenu.get_user_richmenu_id
