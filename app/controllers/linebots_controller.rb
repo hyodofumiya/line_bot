@@ -50,12 +50,10 @@ class LinebotsController < ApplicationController
       when Line::Bot::Event::Join
         group_line_id = @event['source']['groupId']
         #new_group = Group.add_new_group(group_line_id)
-        binding.pry
         #if new_group == true
         UserGroup.add_member_to_new_group(group_line_id, @event['replyToken'])
         #else
         #end
-        binding.pry
         #参加していたグループから削除された又は退出した場合
       when Line::Bot::Event::Leave
 
