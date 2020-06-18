@@ -18,7 +18,7 @@ class Richmenu < ApplicationRecord
 
   def self.check_and_change_richmenu
     #状態に応じた最適なリッチメニュー
-    standby = Standby.find_by(user_id: $user.id) if present?
+    standby = Standby.find_by(user_id: $user.id) if $user.present?
     if standby.nil?
       current_answer_richmenu_id = 1
     elsif standby.break_start.nil?
