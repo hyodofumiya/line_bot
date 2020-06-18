@@ -17,11 +17,16 @@ class LinebotsController < ApplicationController
       $user_line_id = @event['source']['userId']
       $group_line_id = @event['source']['groupId']
       $room_line_id = @event['source']["roomId"]
-      #送信者がuserだった場合はUserレコードと現在のリッチメニューを取得
+      #送信者がuserだった場合
       if $user_line_id.present?
-        #ユーザーのリッチメニューIDを取得
-        $user_richmenu_id = Richmenu.get_user_richmenu_id
+        #ユーザー登録済みでない場合はユーザー登録へ
         $user = User.find_by(line_id: $user_line_id)
+        if $user.nil?
+          not_exist_user_message
+        else
+          #ユーザーのリッチメニューIDを取得
+          $user_richmenu_id = Richmenu.get_user_richmenu_id
+        end
       end
       #リクエストの送信日時を定義。timestampのarea_codeを消すため下３桁を消している
       $timestamp = Time.at(event["timestamp"]/1000)
@@ -72,9 +77,7 @@ class LinebotsController < ApplicationController
           create_user
         else
           #user登録してあるか確認
-          if $user.nil?
-            not_exist_user_message
-          elsif @postback_data[0]["name"] == "others"
+          if @postback_data[0]["name"] == "others"
             res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
           else
             case @postback_data[0]["name"]
