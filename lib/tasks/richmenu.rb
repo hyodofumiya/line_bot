@@ -85,7 +85,6 @@ class Richmenu
       }
     response = client.create_rich_menu(rich_menu)
     p response
-    binding.pry
   end
 
   def self.show
@@ -95,7 +94,6 @@ class Richmenu
     }
     response = client.get_rich_menus
     body = JSON.parse(response.body)
-    binding.pry
   end
 
   def self.image_uproad
