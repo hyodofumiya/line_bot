@@ -16,7 +16,6 @@ function initializeUserNewLiff() {
     })
     .then(() => {
       sendMessage('signup_form');
-      liff.closeWindow();
     })
     .catch((err) => {
       console.log(err.code, err.message);
@@ -25,13 +24,34 @@ function initializeUserNewLiff() {
 
 function sendMessage(formId){
   //メッセージ送信機能
-  document.getElementById("sendMessageButton").addEventListener('click', function(){
+  $("#signup_form").on('submit', function(event){
+    event.preventDefault();
     //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
-    var checkValid=document.getElementById(formId).checkValidity();
+    var checkValid = document.getElementById('signup_form').checkValidity();
     //バリデーションが問題なければ送信するかどうかの判断をする
-    if (checkValid==true){
+    if (checkValid == true){
       var userIdToken = liff.getIDToken();
       document.getElementById("userIdToken").value = userIdToken;
+      var formData = new FormData(this);
+      var url = $(this).attr('action');
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: formData,
+        dataType: 'json',
+        processData: false,
+        contentType: false
+      })
+      .success(function(data){
+        liff.closeWindow();
+      })
+      .error(function(){
+        alert("失敗しました。")
+      })
     }
-  })
+    return false;
+  });
 }
+
+
+
