@@ -64,3 +64,4 @@ gem 'line-bot-api'
 gem 'pry-rails'
 gem 'google-api-client'
 gem 'jquery-rails'
+gem 'whenever', require: false
