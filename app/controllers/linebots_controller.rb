@@ -17,20 +17,22 @@ class LinebotsController < ApplicationController
       $user_line_id = @event['source']['userId']
       $group_line_id = @event['source']['groupId']
       $room_line_id = @event['source']["roomId"]
+
       #送信者がuserだった場合
       if $user_line_id.present?
-        #ユーザー登録済みでない場合はユーザー登録へ
+        #ユーザー登録済みの場合、リッチメニューIDを取得
         $user = User.find_by(line_id: $user_line_id)
-        if $user.nil?
-          not_exist_user_message
-          Richmenu.check_and_change_richmenu
-        else
-          #ユーザーのリッチメニューIDを取得
-          $user_richmenu_id = Richmenu.get_user_richmenu_id
-        end
+        $user_richmenu_id = Richmenu.get_user_richmenu_id if $user.present?
       end
       #リクエストの送信日時を定義。timestampのarea_codeを消すため下３桁を消している
       $timestamp = Time.at(event["timestamp"]/1000)
+      if event["type"] == "postback"
+        @postback_data = JSON.parse(@event["postback"]["data"])
+        if (@postback_data[0]["name"] != "user_form") && $user.nil?
+          not_exist_user_message
+          client.link_user_rich_menu($user_line_id, Richmenu.find(1).richmenu_id)
+        end
+      end
       case event
       #メッセージイベントだった場合
       when Line::Bot::Event::Message
@@ -38,7 +40,7 @@ class LinebotsController < ApplicationController
         case event.type
         #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
-          #LINEからのテキストメッセージが「ユーザー登録フォームを送信しました」と一致した場合
+          #LINEからのテキストメッセージが「新規ユーザー登録」と一致した場合
           if event.message['text'].eql?('新規ユーザー登録')
             client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
           end
@@ -62,10 +64,6 @@ class LinebotsController < ApplicationController
         #end
         #参加していたグループから削除された又は退出した場合
       when Line::Bot::Event::Leave
-
-      #すでに参加しているグループにメンバーが追加された場合
-      when Line::Bot::Event::MemberJoined
-
       #参加しているグループからメンバーが退出又は削除された場合
       when Line::Bot::Event::MemberLeft
 
@@ -74,10 +72,9 @@ class LinebotsController < ApplicationController
         #postbackリクエストのdataプロパティを＠post_dataとして定義
         @postback_data = JSON.parse(@event["postback"]["data"])
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
-      if @postback_data[0]["name"] == "user_form"
+        if @postback_data[0]["name"] == "user_form"
           create_user
         else
-          #user登録してあるか確認
           if @postback_data[0]["name"] == "others"
             res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
           else
@@ -149,9 +146,9 @@ class LinebotsController < ApplicationController
       client.reply_message(@event['replyToken'], success_create_user_message)
     else
       if User.find_by(employee_number: form_data["employee_number"]).present?
-        client.reply_message(@event['replyToken'], already_exist_emmplyee_number_message)
+        client.reply_message(@event['replyToken'], [already_exist_emmplyee_number_message, create_user_message])
       else
-        client.reply_message(@event['replyToken'], fails_create_user_message)
+        client.reply_message(@event['replyToken'], [fails_create_user_message, create_user_message])
       end
     end
   end
@@ -186,11 +183,6 @@ class LinebotsController < ApplicationController
   def no_user_message
     {"type": "text",
       "text": "ユーザーが登録されていません"}
-  end
-
-  def message
-    {"type": "text",
-      "text": "test"}
   end
 
   def success_create_user_message
