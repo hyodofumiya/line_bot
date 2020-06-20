@@ -124,19 +124,24 @@ class Standby < ApplicationRecord
     $timestamp = Time.new(now.year, now.month, now.day, hour = 23, min = 59, sec = nil, utc_offset = nil)
     
     standbies.each do |standby|
-      #ユーザーにTimeCardの修正を促すメッセージを送信する
-      message = {
-        type: 'text',
-        text: "#{now.month}月#{now.day}日の勤怠簿が退勤していません。修正ボタンから正しい内容に修正してください。"
-      }
-      Standby.client.push_message(standby.user.line_id, message)
-      
-      #ユーザーのリッチメニューに修正ボタンを表示させる
-      richmenu_id = Richmenu.find(4).richmenu_id
-      Standby.client.link_user_rich_menu(standby.user.line_id, richmenu_id)
+      #途中でエラーが生じても残りのレコードの処理が中断されないように例外処理の記述をしている
+      begin
+        #ユーザーにTimeCardの修正を促すメッセージを送信する
+        message = {
+          type: 'text',
+          text: "#{now.month}月#{now.day}日の勤怠簿が退勤していません。修正ボタンから正しい内容に修正してください。"
+        }
+        Standby.client.push_message(standby.user.line_id, message)
 
-      #StandbyレコードをTimeCardレコードとして保存する
-      standby.finish_work(standby.user)
+        #ユーザーのリッチメニューに修正ボタンを表示させる
+        richmenu_id = Richmenu.find(4).richmenu_id
+        Standby.client.link_user_rich_menu(standby.user.line_id, richmenu_id)
+
+        #StandbyレコードをTimeCardレコードとして保存する
+        standby.finish_work(standby.user)
+      rescue => error
+        puts error
+      end
     end
   end
 
