@@ -30,6 +30,7 @@ class Standby < ApplicationRecord
     end
   end
 
+  #休憩開始処理をするメソッド
   def self.add_startbreak_to_record
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
@@ -48,6 +49,7 @@ class Standby < ApplicationRecord
     end
   end
 
+  #休憩終了処理をするメソッド
   def self.add_breaksum_to_record
     @record = Standby.find_by(user_id: $user.id)
     if @record.present?
@@ -66,33 +68,41 @@ class Standby < ApplicationRecord
     end
   end
 
+  #Standbyをユーザーのリクエストを受けて退勤処理する際にこのメソッドで退勤処理をしていいのか判断するメソッド
   def self.finish_work_flow
     standby = Standby.find_by(user_id: $user.id)
     #出勤しているか確認する
     if standby.present?
-      #休憩中か判断し、休憩中の場合は休憩を終了する。
-      work_status = standby.break_start
-      if work_status.present?
-        update_break_sum = standby.update_break_sum
-        return "退勤に失敗しました。休憩を終了できませんでした。" if update_break_sum.break_start.present?
-      end
-      work_start = standby.start
-      break_sum = standby.break_sum
-      full_work_hour = $timestamp - work_start
-      #前日の入力忘れの場合とで条件分け
-      if full_work_hour <= 60*60*24
-        work_time = full_work_hour
-        work_time -= break_sum if break_sum.present?
-        TimeCard.create_new_record_flow(work_time, standby)
-      else
-        standby.delete
-        return "連続勤務が24時間を超えているため登録できません。１日の勤務時間が24時間以内になるように編集画面から分けて入力してください。"
-      end
+      #退勤処理を実行
+      standby.finish_work($user)
     else
       return "先に出勤してください"
     end
   end
 
+  #StandbyレコードからTimeCardレコードを作成するメソッド
+  def finish_work(user)
+    #休憩中か判断し、休憩中の場合は休憩を終了する。
+    work_status = self.break_start
+    if work_status.present?
+      update_break_sum = self.update_break_sum
+      return "退勤に失敗しました。休憩を終了できませんでした。" if update_break_sum == false
+    end
+    work_start = self.start
+    break_sum = self.break_sum
+    full_work_hour = $timestamp - work_start
+    #前日の入力忘れの場合とで条件分け
+    if full_work_hour <= 60*60*24
+      work_time = full_work_hour
+      work_time -= break_sum if break_sum.present?
+      TimeCard.create_new_record_flow(work_time, self, user)
+    else
+      self.delete
+      return "連続勤務が24時間を超えているため登録できません。１日の勤務時間が24時間以内になるように編集画面から分けて入力してください。"
+    end
+  end
+
+  #２回目以降の休憩終了処理で休憩時間を更新するメソッド
   def update_break_sum
     this_breaktime_sum = $timestamp - self.break_start
     all_breaktime_sum = this_breaktime_sum
@@ -101,7 +111,37 @@ class Standby < ApplicationRecord
     return update_record
   end
 
+  #出勤していない場合のメッセージ
   def self.no_stanby_record
     "出勤していません"
   end
+
+  #日付が変わったタイミングで定時実行されるメソッド。Standbyテーブルの全てのレコードをTimeCardに保存した上でユーザーにTimeCardの修正を促すメッセージを送信する
+  def self.task_to_reset_standby_table
+    standbies = Standby.all.includes(:user)
+    #処理の順番で退勤時間にムラがないように退勤時間を定義しておく
+    now = Time.now
+    $timestamp = Time.Time.new(now.year, now.month, now.day, hour = 23, min = 59, sec = nil, utc_offset = nil)
+    
+    standbies.each do |standby|
+      #ユーザーにTimeCardの修正を促すメッセージを送信する
+      message = {
+        type: 'text',
+        text: "#{now.month}月#{now.day}日の勤怠簿が退勤していません。\n修正ボタンから正しい内容に修正してください。"
+      }
+      Standby.client.push_message(standby.user.line_id, message)
+
+      #StandbyレコードをTimeCardレコードとして保存する
+      standby.finish_work(standby.user)
+    end
+  end
+
+  #LINEのメッセージAPIを使用するためのメソッド
+  def self.client
+    client = Line::Bot::Client.new { |config|
+      config.channel_secret = "<channel secret>"
+      config.channel_token = "<channel access token>"
+      }  
+  end
+
 end

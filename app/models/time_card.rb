@@ -13,12 +13,12 @@ class TimeCard < ApplicationRecord
       self.start_time < self.finish_time
   end
 
-  def self.create_new_record_flow(work_time, standby)
-    time_card = TimeCard.find_by(user_id: $user.id, date: standby.date)
+  def self.create_new_record_flow(work_time, standby, user)
+    time_card = TimeCard.find_by(user_id: user.id, date: standby.date)
     #ユーザーのレコードが同日に被っていないか確認する
     if time_card.nil?
       standby.break_sum = 0 if nil?
-      time_card = TimeCard.new(user_id: $user.id, date: standby.date, work_time: work_time, start_time: standby.start, finish_time: $timestamp, break_time: standby.break_sum)
+      time_card = TimeCard.new(user_id: user.id, date: standby.date, work_time: work_time, start_time: standby.start, finish_time: $timestamp, break_time: standby.break_sum)
       result = time_card.save
     else
       work_time = work_time + time_card.work_time
