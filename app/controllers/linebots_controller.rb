@@ -56,16 +56,24 @@ class LinebotsController < ApplicationController
 
       #既存のグループにアプリが招待された場合
       when Line::Bot::Event::Join
-        group_line_id = @event['source']['groupId']
-        #new_group = Group.add_new_group(group_line_id)
+        #new_group = Group.add_new_group($group_line_id)
         #if new_group == true
-        UserGroup.add_member_to_new_group(group_line_id, @event['replyToken'])
-        #else
+          #UserGroup.add_member_to_new_group($group_line_id, @event['replyToken'])
         #end
-        #参加していたグループから削除された又は退出した場合
+
+      #参加していたグループから削除された又は退出した場合
       when Line::Bot::Event::Leave
+        #グループを削除する
+        #Group.find_by(line_id: $group_line_id).delete
+      
       #参加しているグループからメンバーが退出又は削除された場合
       when Line::Bot::Event::MemberLeft
+        #グループから退出したメンバーのline_id配列を取得
+        #user_ids = @event["left"]["members"]
+        #UserGroupテーブルからグループとユーザーが一致するレコードを削除する
+        #user_ids.each do |user|
+          #UserGroup.find_by(user: User.findby(line_id: user["userID"]).id, group: Group.find_by(line_id: $group_line_id).id ).delete
+        #end
 
       #ポストバックだった場合
       when Line::Bot::Event::Postback
@@ -79,30 +87,48 @@ class LinebotsController < ApplicationController
             res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
           else
             case @postback_data[0]["name"]
+            
+            #勤怠簿一覧を表示ボタンを押した時
             when "timecard_index"
               selected_timecards_messages = TimeCard.index_selected_date
               return_message = selected_timecards_messages
+
+            #日付を指定した勤怠簿表示ボタンを押した時
             when "timecard_show"
               selected_date = event["postback"]["params"]["date"]
               selected_timecard = TimeCard.show_selected_date(selected_date)
               return_message = set_return_message(selected_timecard)
+
+            #勤怠簿修正ボタンを押した時
             when "timecard-fix"
               redirect_to timecard_edit_path
+            
+            #報連相ボタンを押した時
             when "search_member"
+            
+            #戻るボタンを押した時
             when "back"
               Richmenu.check_and_change_richmenu
+            
+            #勤務開始ボタンを押した時
             when "start_work"
               create_standby_record = Standby.add_new_record
               return_message = set_return_message(create_standby_record)
               Richmenu.check_and_change_richmenu
+
+            #勤務開始ボタンを押した時
             when "start_break"
               update_standby_record = Standby.add_startbreak_to_record
               return_message = set_return_message(update_standby_record)
               Richmenu.check_and_change_richmenu
+
+            #休憩終了ボタンを押した時
             when "finish_break"
               update_standby_record = Standby.add_breaksum_to_record
               return_message = set_return_message(update_standby_record)
               Richmenu.check_and_change_richmenu
+
+            #退勤ボタンを押した時
             when "finish_work"
               finish_standby = Standby.finish_work_flow
               return_message = set_return_message(finish_standby)
