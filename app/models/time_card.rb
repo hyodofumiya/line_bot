@@ -41,8 +41,9 @@ class TimeCard < ApplicationRecord
     selected_date = Date.parse(selected_date)
     if timecard.present?
       start_time = timecard.start_time.in_time_zone('Tokyo')
-      finish_time = timecard.finish_time.in_time_zone('Tokyo')  
-      message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time%(60*60)/60}分\n休憩：#{timecard.break_time/(60*60)}時間#{timecard.break_time%(60*60)/60}分"
+      finish_time = timecard.finish_time.in_time_zone('Tokyo')
+      break_time = timecard.return_break_time 
+      message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time%(60*60)/60}分\n休憩：#{break_time/(60*60)}時間#{break_time%(60*60)/60}分"
 
     elsif selected_date >= Time.now
       message = "勤務履歴\n\n未登録"
@@ -61,6 +62,15 @@ class TimeCard < ApplicationRecord
     last_month_timecards_message = TimeCard.create_timecards_index_message(last_month_timecards, last_month, Time.now.last_month.to_date)
     this_and_last_month_timecards_message = TimeCard.compile_this_and_last_month_timecards_message(this_month_timecards_message, last_month_timecards_message)
     return this_and_last_month_timecards_message
+  end
+
+  def return_break_time
+    if self.break_time != nil
+      break_time = self.break_time                   
+    else
+      break_time = 0
+    end
+    return break_time
   end
 
   private
@@ -82,6 +92,7 @@ class TimeCard < ApplicationRecord
   end
 
   def self.record_into_message(date,timecard)
+    break_time = timecard.return_break_time
     message =  {
       "type": "box",
       "layout": "horizontal",
@@ -140,7 +151,7 @@ class TimeCard < ApplicationRecord
               "contents": [
                 {
                   "type": "text",
-                  "text": "#{timecard.break_time/(60*60)}時間",
+                  "text": "#{break_time/(60*60)}時間",
                   "align": "end"
                 }
               ]
@@ -151,7 +162,7 @@ class TimeCard < ApplicationRecord
               "contents": [
                 {
                   "type": "text",
-                  "text": "#{timecard.break_time%(60*60)/60}分",
+                  "text": "#{break_time%(60*60)/60}分",
                   "align": "end"
                 }
               ],
