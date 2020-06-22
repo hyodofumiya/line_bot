@@ -201,14 +201,14 @@ class LinebotsController < ApplicationController
           }
         ],
         "title": "ユーザー登録",
-        "text": "勤怠入力を行うためのユーザー登録を行いますか？"
+        "text": "ユーザー登録を行いますか？"
       }
     }
   end
 
   def no_user_message
     {"type": "text",
-      "text": "ユーザーが登録されていません"}
+      "text": "ユーザー登録をしてください"}
   end
 
   def success_create_user_message
