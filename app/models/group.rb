@@ -21,17 +21,17 @@ end
 
 #グループの概要を取得してグルーム名を返すメソッド
 def get_group_name(groupId)
-  uri = URI.parse("https://api.line.me/v2/bot/group/#{groupId}/summary")
-  http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = uri.scheme
+  #uri = URI.parse("https://api.line.me/v2/bot/group/#{groupId}/summary")
+  #http = Net::HTTP.new(uri.host, uri.port)
+  #http.use_ssl = uri.scheme
 
-  headers = 'Authorization: Bearer{channel access token}' #channel access tokenの部分が認証済みアカウントになると取得できる
-  req = Net::HTTP::GET.new(uri.path)
-  req.initialize_http_header(headers)
+  #headers = 'Authorization: Bearer{channel access token}' #channel access tokenの部分が認証済みアカウントになると取得できる
+  #req = Net::HTTP::GET.new(uri.path)
+  #req.initialize_http_header(headers)
 
-  res = http.request(req)
+  #res = http.request(req)
   
-  result = ActiveSupport::JSON.decode(res.body)
-  group_name = result["groupName"]
-  return group_name
+  #result = ActiveSupport::JSON.decode(res.body)
+  #group_name = result["groupName"]
+  #return group_name
 end
