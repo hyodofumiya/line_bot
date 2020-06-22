@@ -16,7 +16,7 @@ class Standby < ApplicationRecord
       user_id = $user.id
       record = Standby.new(user_id: user_id, date: $timestamp, start:$timestamp )
       create_record = record.save
-      if create_record = true
+      if create_record == true
         return "出勤しました"
       else
         return "出勤に失敗しました。やり直してください。"
