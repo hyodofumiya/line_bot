@@ -1,5 +1,8 @@
 class Group < ApplicationRecord
-  require "net/http"
+  require 'line/bot'
+  require 'net/https'
+  require 'uri'
+  require 'json'
 
   has_many :user_groups
   has_many :users, through: :user_groups
