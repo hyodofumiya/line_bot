@@ -20,7 +20,7 @@ end
 def get_group_name(groupId)
   uri = URI.parse("https://api.line.me/v2/bot/group/#{groupId}/summary")
   http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = uri.scheme === "https"
+  http.use_ssl = uri.scheme
 
   headers = 'Authorization: Bearer{channel access token}' #channel access tokenの部分が認証済みアカウントになると取得できる
   req = Net::HTTP::GET.new(uri.path)
