@@ -16,8 +16,7 @@ class UserGroup < ApplicationRecord
     #メンバーをグループに紐付けるための中間テーブルに保存
     members_line_id.each do |member_line_id|
       user = User.find_by(line_id: member_line_id)
-      if user.present?
-      UserGroup.create(user: user.id, group: group.id)
+      UserGroup.create(user: user.id, group: group.id) if user.present?
     end
   end
 end
