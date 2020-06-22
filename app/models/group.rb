@@ -22,7 +22,7 @@ def get_group_name(groupId)
   http = Net::HTTP.new(uri.host, uri.port)
   http.use_ssl = uri.scheme === "https"
 
-  headers = { "Authorization: Bearer {channel access token}" } #channel access tokenの部分が認証済みアカウントになると取得できる
+  headers = 'Authorization: Bearer{channel access token}' #channel access tokenの部分が認証済みアカウントになると取得できる
   req = Net::HTTP::GET.new(uri.path)
   req.initialize_http_header(headers)
 
