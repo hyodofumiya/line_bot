@@ -30,19 +30,20 @@ function initializeTimeCardEditLiff() {
     });
 }
 //LIFFの機能------------------------------------------------------------------------------------
-//timecardのレコードをフォームにいれる関数
+//日付フォームが変更されるとAjax通信を実行してtimecardのレコードを取得する関数
 function return_timecard(){
-  $("#timecard_date").change(function(){ //日付を変更するとイベントが発火します
-    var input_date = $("#timecard_date").val(); // フォームの値を'input_date'という名前の変数に代入します
+  $("#timecard_date").change(function(){
+    var input_date = $("#timecard_date").val(); // フォームの値を'input_date'という名前の変数に代入
     var userIdToken = liff.getIDToken(); //LIFFを使用してusersのlineIDトークンを取得
     $.ajax({
       type:'POST',
-      url: '/timecard/set_record',//送信先コントローラのpass
+      url: '/timecard/set_record',
       data: {input_date: input_date, user_id_token: userIdToken}, // コントローラへ日付とuserIDトークンの値を非同期で送信
       dataType: 'json'
     })
     .done(function(data){
-      if (data.exist == true){
+      if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
+        document.getElementById('timecard_day_off').value = 1;
         document.getElementById('timecard_start_time').value = data.start_time;
         document.getElementById("timecard_finish_time").value = data.finish_time;
         document.getElementById("timecard_break_time").value = data.break_time/60;
@@ -50,7 +51,8 @@ function return_timecard(){
         $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
         timecard_data = data;
         return timecard_data
-      }else{
+      }else{  //jsonにTimeCardレコードが存在しなかった時、各フォームの値を空にする
+        document.getElementById('timecard_day_off').value = "";
         $("#timecard_start_time").attr({"value": ""});
         $("#timecard_finish_time").attr({"value": ""});
         $("#timecard_break_time").attr({"value": ""});
@@ -66,6 +68,8 @@ function return_timecard(){
     })
   })
 }
+
+//勤怠状況が変更された時に、残りのフォームを制御する関数
 
 //日付が入力されているか確認し、状態に応じて他のフォームを選択可能にする関数
 function judgeDateFormStatus(){
@@ -106,7 +110,6 @@ function changeSubmitBtnStatus(){
 }
 
 //勤務終了時刻が勤務開始時刻よりも後であることを確認する関数。falseの場合は送信をキャンセル
-
 function judgeWorktime(){
   $("#timecard_edit_form").on('submit', function(event){
     event.preventDefault();
