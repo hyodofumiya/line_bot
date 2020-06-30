@@ -5,21 +5,29 @@
             <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
             <div class="timecard_edit_form__form-holder">
               <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_date">出勤日</label>
+                <label class="control-label timecard_edit_form_label" for="timecard_date">日付</label>
                 <%= f.date_field :date, id:'timecard_date' , class: 'timecard_edit_form_input', use_month_numbers: "true", required: "required" %>
               </div>
               <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_start_time">勤務開始時刻</label>
+                <label class="control-label timecard_edit_form_label" for="timecard_day_off">勤怠</label>
+                <%= f.select :day_off, {'勤務日': 1, '休日': 2}, {}, {id: "timecard_day_off", class: "timecard_edit_form_input", disabled: "disabled", required: "required"} %>
+              </div>
+              <div class="timecard_edit_form__form-holder__a_form">
+                <label class="control-label timecard_edit_form_label" for="timecard_start_time">出勤時刻</label>
                 <%= f.time_field :start_time, id: "timecard_start_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
               </div>
               <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_finish_time">勤務終了時刻</label>
+                <label class="control-label timecard_edit_form_label" for="timecard_finish_time">退勤時刻</label>
                 <%= f.time_field :finish_time, id: "timecard_finish_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
               </div>
               <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_break_time">休憩時間（分）</label>
-                <%= f.number_field :break_time, id: "timecard_break_time", class: "timecard_edit_form_input", required: "required", max: 1440, min:0, disabled: "disabled" %>
+                <label class="control-label timecard_edit_form_label" for="timecard_break_time">休憩時間</label>
+                <div>
+                  <%= f.number_field :break_time, id: "timecard_break_time", class: "timecard_edit_form_input", required: "required", max: 1440, min:0, disabled: "disabled" %>
+                  <a class="form_scale">分</a>
+                  </div>
               </div>
+              <div>
                 <%= f.hidden_field :user_token, id:"userIdToken"%>
                 <%= f.hidden_field :timecard_id, id:"timecardId"%>
             </div>

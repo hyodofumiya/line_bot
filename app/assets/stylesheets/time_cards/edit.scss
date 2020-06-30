@@ -31,7 +31,14 @@
           }
           .timecard_edit_form_input{
             font-size: 2em;
+            min-width: 25%;
+            padding-left: 5px;
+            text-align: center;
           }
+          .form_scale{
+            font-size: 2em;
+          }
+
         }
       }
       &__submit-btn{
