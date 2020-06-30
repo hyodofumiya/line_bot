@@ -71,6 +71,22 @@ function return_timecard(){
 }
 
 //勤怠状況が変更された時に、残りのフォームを制御する関数
+function changeAttendance(){
+  $("#timecard_day_off").change(function(){
+    var attendance = getElementById('timecard_day_off').value;
+    if (attendance == 1){ //勤怠が出勤日だった場合の処理
+      $("#timecard_start_time").removeAttr("disabled");
+      $("#timecard_finish_time").removeAttr("disabled");
+      $("#timecard_break_time").removeAttr("disabled");
+      $("#sendMessageButton").attr({"disabled": "disabled"});
+    }else{  //勤怠が休日だった時の処理
+      $("#timecard_start_time").attr({"disabled": "disabled"});
+      $("#timecard_finish_time").attr({"disabled": "disabled"});
+      $("#timecard_break_time").attr({"disabled": "disabled"});
+      $("#sendMessageButton").removeAttr("disabled");
+    }
+  });
+}
 
 //日付が入力されているか確認し、状態に応じて他のフォームを選択可能にする関数
 function judgeDateFormStatus(){
