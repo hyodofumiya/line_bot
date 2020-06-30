@@ -51,8 +51,8 @@ function return_timecard(){
         $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
         timecard_data = data;
         return timecard_data
-      }else{  //jsonにTimeCardレコードが存在しなかった時、各フォームの値を空にする
-        document.getElementById('timecard_day_off').value = "";
+      }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
+        document.getElementById('timecard_day_off').value = 2;
         $("#timecard_start_time").attr({"value": ""});
         $("#timecard_finish_time").attr({"value": ""});
         $("#timecard_break_time").attr({"value": ""});
