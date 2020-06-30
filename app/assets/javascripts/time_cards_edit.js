@@ -42,6 +42,7 @@ function return_timecard(){
       dataType: 'json'
     })
     .done(function(data){
+      $("#timecard_day_off").removeAttr("disabled");
       if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
         document.getElementById('timecard_day_off').value = 1;
         document.getElementById('timecard_start_time').value = data.start_time;
