@@ -12,6 +12,7 @@ function judgeTimeCardEditApp(){
 
 //LIFFを起動----------------------------------------------------------------------------------
 function initializeTimeCardEditLiff() {
+  var timecard_data = "";
   MyLiffId= "1654154094-1nd8zDod";
   liff
     .init({
@@ -51,7 +52,7 @@ function return_timecard(){
         document.getElementById("timecardId").value = data.timecard_id;
         $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
         timecard_data = data;
-        return timecard_data
+        return timecard_data;
       }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
 
         document.getElementById('timecard_day_off').value = 2;
@@ -61,6 +62,7 @@ function return_timecard(){
         $("#timecardId").attr({"value": ""});
         $("#timecard_edit_form").attr({"action": '/time_cards/'});
         timecard_data = undefined;
+        return timecard_data;
       }
     })
     .fail(function(){
