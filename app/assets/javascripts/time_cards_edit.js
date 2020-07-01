@@ -53,6 +53,7 @@ function return_timecard(){
         timecard_data = data;
         return timecard_data
       }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
+
         document.getElementById('timecard_day_off').value = 2;
         $("#timecard_start_time").attr({"value": ""});
         $("#timecard_finish_time").attr({"value": ""});
@@ -97,16 +98,16 @@ function changeSubmitBtnStatus(){
       var finish_time_status = document.getElementById("timecard_finish_time").value == timecard_data.finish_time;
       var break_time_status = document.getElementById("timecard_break_time").value == timecard_data.break_time/60;
       if (start_time_status == false||finish_time_status == false||break_time_status == false ){
-        $("#sendMessageButton").removeAttr("disabled");
+        changeSubmitBtnStatus("able");
       }else{
-        $("#sendMessageButton").attr({"disabled": "disabled"});
+        changeSubmitBtnStatus("disabled");
       }
     }else{
       var checkValid=document.getElementById('timecard_edit_form').checkValidity();
       if (checkValid == true){
-        $("#sendMessageButton").removeAttr("disabled");
+        changeSubmitBtnStatus("able");
       }else{
-        $("#sendMessageButton").attr({"disabled": "disabled"});
+        changeSubmitBtnStatus("disabled");
       }
     }
   });
@@ -149,4 +150,41 @@ function judgeWorktime(){
 
 function reset_form(){
   $("#timecard_edit_form")[0].reset();
+}
+
+function judgeDateFormStatus(){
+  $("#timecard_date").change(function(){ //日付を変更するとイベントが発火します
+    var date_status = document.getElementById("timecard_date").value !== "";
+    if(date_status == true){
+      $("#timecard_start_time").removeAttr("disabled");
+      $("#timecard_finish_time").removeAttr("disabled");
+      $("#timecard_break_time").removeAttr("disabled");
+    }else{
+      $("#timecard_start_time").attr({"disabled": "disabled"});
+      $("#timecard_finish_time").attr({"disabled": "disabled"});
+      $("#timecard_break_time").attr({"disabled": "disabled"});
+    }
+  });
+}
+
+//勤務時間等のフォームのアクティブ状況を一括で切り替える関数
+function changeStatusOfTimesInTimeCardEditForm(status){
+  if(status == "able"){
+    $("#timecard_start_time").removeAttr("disabled");
+    $("#timecard_finish_time").removeAttr("disabled");
+    $("#timecard_break_time").removeAttr("disabled");
+  }else{
+    $("#timecard_start_time").attr({"disabled": "disabled"});
+    $("#timecard_finish_time").attr({"disabled": "disabled"});
+    $("#timecard_break_time").attr({"disabled": "disabled"});
+  }
+}
+
+//submitボタンのアクティブ状況を切り替える関数
+function changeStatusOfSubmitbtnInTimeCardEditForm(status){
+  if(status == "able"){
+    $("#sendMessageButton").removeAttr("disabled");
+  }else{
+    $("#sendMessageButton").attr({"disabled": "disabled"});
+  }
 }
