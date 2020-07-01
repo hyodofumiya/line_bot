@@ -59,7 +59,6 @@ function return_timecard(){
         $("#timecard_break_time").attr({"value": ""});
         $("#timecardId").attr({"value": ""});
         $("#timecard_edit_form").attr({"action": '/time_cards/'});
-        $("#sendMessageBtn").attr({"disabled": "disabled"});
         timecard_data = undefined;
       }
     })
@@ -89,20 +88,7 @@ function changeAttendance(){
 }
 
 //日付が入力されているか確認し、状態に応じて他のフォームを選択可能にする関数
-function judgeDateFormStatus(){
-  $("#timecard_date").change(function(){ //日付を変更するとイベントが発火します
-    var date_status = document.getElementById("timecard_date").value !== "";
-    if(date_status == true){
-      $("#timecard_start_time").removeAttr("disabled");
-      $("#timecard_finish_time").removeAttr("disabled");
-      $("#timecard_break_time").removeAttr("disabled");
-    }else{
-      $("#timecard_start_time").attr({"disabled": "disabled"});
-      $("#timecard_finish_time").attr({"disabled": "disabled"});
-      $("#timecard_break_time").attr({"disabled": "disabled"});
-    }
-  });
-}
+
 //保存されているレコードと内容が一致する場合はsubmitをdisabledに、そうでない場合はableに変更する関数
 function changeSubmitBtnStatus(){
   $("#timecard_edit_form").change(function(){
