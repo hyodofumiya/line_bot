@@ -25,6 +25,7 @@ function initializeTimeCardEditLiff() {
       judgeDateFormStatus();
       judgeWorktime();
       changeSubmitBtnStatus();
+      changeAttendance();
     })
     .catch((err) => {
       console.log(err.code, err.message);
@@ -54,14 +55,15 @@ function return_timecard(){
         timecard_data = data;
         return timecard_data;
       }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
-
-        document.getElementById('timecard_day_off').value = 2;
-        $("#timecard_start_time").attr({"value": ""});
-        $("#timecard_finish_time").attr({"value": ""});
-        $("#timecard_break_time").attr({"value": ""});
-        $("#timecardId").attr({"value": ""});
+        document.getElementById('timecard_day_off').value = "2";
+        document.getElementById('timecard_start_time').value = "";
+        document.getElementById("timecard_finish_time").value = "";
+        document.getElementById("timecard_break_time").value = "";
+        document.getElementById("timecardId").value = "";
         $("#timecard_edit_form").attr({"action": '/time_cards/'});
         timecard_data = undefined;
+        changeStatusOfDetailsInTimeCardEditForm("disabled");
+        changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
         return timecard_data;
       }
     })
@@ -75,41 +77,43 @@ function return_timecard(){
 //勤怠状況が変更された時に、残りのフォームを制御する関数
 function changeAttendance(){
   $("#timecard_day_off").change(function(){
-    var attendance = getElementById('timecard_day_off').value;
+    
+    var attendance = document.getElementById('timecard_day_off').value;
     if (attendance == 1){ //勤怠が出勤日だった場合の処理
-      $("#timecard_start_time").removeAttr("disabled");
-      $("#timecard_finish_time").removeAttr("disabled");
-      $("#timecard_break_time").removeAttr("disabled");
-      $("#sendMessageButton").attr({"disabled": "disabled"});
+      changeStatusOfDetailsInTimeCardEditForm("able");
+      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
     }else{  //勤怠が休日だった時の処理
-      $("#timecard_start_time").attr({"disabled": "disabled"});
-      $("#timecard_finish_time").attr({"disabled": "disabled"});
-      $("#timecard_break_time").attr({"disabled": "disabled"});
-      $("#sendMessageButton").removeAttr("disabled");
+      changeStatusOfDetailsInTimeCardEditForm("disable");
+      console.log(timecard_data);
+      if (timecard_data == undefined){
+        changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+      }else{
+        changeStatusOfSubmitbtnInTimeCardEditForm("able");
+      } 
     }
   });
 }
 
-//日付が入力されているか確認し、状態に応じて他のフォームを選択可能にする関数
-
 //保存されているレコードと内容が一致する場合はsubmitをdisabledに、そうでない場合はableに変更する関数
 function changeSubmitBtnStatus(){
   $("#timecard_edit_form").change(function(){
-    if (timecard_data !== undefined){
-      var start_time_status = document.getElementById('timecard_start_time').value == timecard_data.start_time;
-      var finish_time_status = document.getElementById("timecard_finish_time").value == timecard_data.finish_time;
-      var break_time_status = document.getElementById("timecard_break_time").value == timecard_data.break_time/60;
-      if (start_time_status == false||finish_time_status == false||break_time_status == false ){
-        changeSubmitBtnStatus("able");
+    if (document.getElementById('timecard_day_off').value == 1){
+      if (timecard_data !== undefined){
+        var start_time_status = document.getElementById('timecard_start_time').value == timecard_data.start_time;
+        var finish_time_status = document.getElementById("timecard_finish_time").value == timecard_data.finish_time;
+        var break_time_status = document.getElementById("timecard_break_time").value == timecard_data.break_time/60;
+        if (start_time_status == false||finish_time_status == false||break_time_status == false ){
+          changeStatusOfSubmitbtnInTimeCardEditForm("able");
+        }else{
+          changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+        }
       }else{
-        changeSubmitBtnStatus("disabled");
-      }
-    }else{
-      var checkValid=document.getElementById('timecard_edit_form').checkValidity();
-      if (checkValid == true){
-        changeSubmitBtnStatus("able");
-      }else{
-        changeSubmitBtnStatus("disabled");
+        var checkValid=document.getElementById('timecard_edit_form').checkValidity();
+        if (checkValid == true){
+          changeStatusOfSubmitbtnInTimeCardEditForm("able");
+        }else{
+          changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+        }
       }
     }
   });
@@ -170,7 +174,7 @@ function judgeDateFormStatus(){
 }
 
 //勤務時間等のフォームのアクティブ状況を一括で切り替える関数
-function changeStatusOfTimesInTimeCardEditForm(status){
+function changeStatusOfDetailsInTimeCardEditForm(status){
   if(status == "able"){
     $("#timecard_start_time").removeAttr("disabled");
     $("#timecard_finish_time").removeAttr("disabled");
@@ -185,6 +189,7 @@ function changeStatusOfTimesInTimeCardEditForm(status){
 //submitボタンのアクティブ状況を切り替える関数
 function changeStatusOfSubmitbtnInTimeCardEditForm(status){
   if(status == "able"){
+    
     $("#sendMessageButton").removeAttr("disabled");
   }else{
     $("#sendMessageButton").attr({"disabled": "disabled"});
