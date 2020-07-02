@@ -36,41 +36,53 @@ function initializeTimeCardEditLiff() {
 function return_timecard(){
   $("#timecard_date").change(function(){
     var input_date = $("#timecard_date").val(); // フォームの値を'input_date'という名前の変数に代入
-    var userIdToken = liff.getIDToken(); //LIFFを使用してusersのlineIDトークンを取得
-    $.ajax({
-      type:'POST',
-      url: '/timecard/set_record',
-      data: {input_date: input_date, user_id_token: userIdToken}, // コントローラへ日付とuserIDトークンの値を非同期で送信
-      dataType: 'json'
-    })
-    .done(function(data){
-      $("#timecard_day_off").removeAttr("disabled");
-      if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
-        document.getElementById('timecard_day_off').value = 1;
-        document.getElementById('timecard_start_time').value = data.start_time;
-        document.getElementById("timecard_finish_time").value = data.finish_time;
-        document.getElementById("timecard_break_time").value = data.break_time/60;
-        document.getElementById("timecardId").value = data.timecard_id;
-        $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
-        timecard_data = data;
-        return timecard_data;
-      }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
-        document.getElementById('timecard_day_off').value = "2";
-        document.getElementById('timecard_start_time').value = "";
-        document.getElementById("timecard_finish_time").value = "";
-        document.getElementById("timecard_break_time").value = "";
-        document.getElementById("timecardId").value = "";
-        $("#timecard_edit_form").attr({"action": '/time_cards/'});
-        timecard_data = undefined;
-        changeStatusOfDetailsInTimeCardEditForm("disabled");
-        changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
-        return timecard_data;
-      }
-    })
-    .fail(function(){
-      // 通信に失敗した場合の処理です
-      alert('通信に失敗しました') // alertで通信失敗の旨を表示します
-    })
+    debugger
+    if (input_date == ""){
+      reset_form();
+      $("#timecard_day_off").attr({"disabled": "disabled"});
+      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+      }else{
+      var userIdToken = liff.getIDToken(); //LIFFを使用してusersのlineIDトークンを取得
+      $.ajax({
+        type:'POST',
+        url: '/timecard/set_record',
+        data: {input_date: input_date, user_id_token: userIdToken}, // コントローラへ日付とuserIDトークンの値を非同期で送信
+        dataType: 'json'
+      })
+      .done(function(data){
+        if (input_date == ""){
+          reset_form()
+        }else{
+          $("#timecard_day_off").removeAttr("disabled");
+          if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
+            document.getElementById('timecard_day_off').value = 1;
+            document.getElementById('timecard_start_time').value = data.start_time;
+            document.getElementById("timecard_finish_time").value = data.finish_time;
+            document.getElementById("timecard_break_time").value = data.break_time/60;
+            document.getElementById("timecardId").value = data.timecard_id;
+            $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
+            timecard_data = data;
+            return timecard_data;
+          }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
+            document.getElementById('timecard_day_off').value = "2";
+            document.getElementById('timecard_start_time').value = "";
+            document.getElementById("timecard_finish_time").value = "";
+            document.getElementById("timecard_break_time").value = "";
+            document.getElementById("timecardId").value = "";
+            $("#timecard_edit_form").attr({"action": '/time_cards/'});
+            timecard_data = undefined;
+            changeStatusOfDetailsInTimeCardEditForm("disabled");
+            changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+            return timecard_data;
+          }
+        }
+      })
+      .fail(function(){
+        // 通信に失敗した場合の処理です
+        alert('通信に失敗しました') // alertで通信失敗の旨を表示します
+      })
+    }
   })
 }
 
