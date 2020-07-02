@@ -36,13 +36,12 @@ function initializeTimeCardEditLiff() {
 function return_timecard(){
   $("#timecard_date").change(function(){
     var input_date = $("#timecard_date").val(); // フォームの値を'input_date'という名前の変数に代入
-    debugger
     if (input_date == ""){
       reset_form();
       $("#timecard_day_off").attr({"disabled": "disabled"});
       changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
       changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
-      }else{
+    }else{
       var userIdToken = liff.getIDToken(); //LIFFを使用してusersのlineIDトークンを取得
       $.ajax({
         type:'POST',
@@ -89,18 +88,18 @@ function return_timecard(){
 //勤怠状況が変更された時に、残りのフォームを制御する関数
 function changeAttendance(){
   $("#timecard_day_off").change(function(){
-    
+    debugger
     var attendance = document.getElementById('timecard_day_off').value;
     if (attendance == 1){ //勤怠が出勤日だった場合の処理
       changeStatusOfDetailsInTimeCardEditForm("able");
-      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");;
     }else{  //勤怠が休日だった時の処理
       changeStatusOfDetailsInTimeCardEditForm("disable");
-      console.log(timecard_data);
       if (timecard_data == undefined){
         changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
       }else{
         changeStatusOfSubmitbtnInTimeCardEditForm("able");
+        $('#timecard_edit_form').prepend('<input type="hidden"  id="timecard_edit_form_delete" name="_method" value="DELETE">');
       } 
     }
   });
