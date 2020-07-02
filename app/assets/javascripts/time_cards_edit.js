@@ -88,11 +88,11 @@ function return_timecard(){
 //勤怠状況が変更された時に、残りのフォームを制御する関数
 function changeAttendance(){
   $("#timecard_day_off").change(function(){
-    debugger
     var attendance = document.getElementById('timecard_day_off').value;
     if (attendance == 1){ //勤怠が出勤日だった場合の処理
       changeStatusOfDetailsInTimeCardEditForm("able");
-      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");;
+      changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+      $('#timecard_edit_form_delete').remove();
     }else{  //勤怠が休日だった時の処理
       changeStatusOfDetailsInTimeCardEditForm("disable");
       if (timecard_data == undefined){
