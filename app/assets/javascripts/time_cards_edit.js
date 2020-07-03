@@ -134,30 +134,44 @@ function changeSubmitBtnStatus(){
 function judgeWorktime(){
   $("#timecard_edit_form").on('submit', function(event){
     event.preventDefault();
+    var date = document.getElementById("timecard_date").value;
     var start_time = document.getElementById("timecard_start_time").value;
     var finish_time = document.getElementById("timecard_finish_time").value;
+    
+    debugger
+    //勤務開始時刻が終了時刻よりも前か確認
     if (start_time<finish_time){
-      //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
-      var checkValid = document.getElementById('timecard_edit_form').checkValidity();
-      //バリデーションが問題なければ送信するかどうかの判断をする
-      if (checkValid == true){
-        var userIdToken = liff.getIDToken();
-        document.getElementById("userIdToken").value = userIdToken;
-        var formData = new FormData(this);
-        var url = $(this).attr('action');
-        $.ajax({
-          url: url,
-          type: "POST",
-          data: formData,
-          dataType: 'json',
-          processData: false,
-          contentType: false
-        })
-        .success(function(data){
-          reset_form();
-        })
+      var start_date_time = Date.parse(date + " " + start_time);
+      var finish_date_time = Date.parse(date + " " + finish_time);
+      var working_minites = (finish_date_time - start_date_time)/60/1000;
+      var breaking_minites = document.getElementById("timecard_break_time").value;
+      //勤務時間が休憩時間よりも多いことを確認
+      if (working_minites > breaking_minites){
+        //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
+        var checkValid = document.getElementById('timecard_edit_form').checkValidity();
+        //バリデーションが問題なければ送信するかどうかの判断をする
+        if (checkValid == true){
+          var userIdToken = liff.getIDToken();
+          document.getElementById("userIdToken").value = userIdToken;
+          var formData = new FormData(this);
+          var url = $(this).attr('action');
+          $.ajax({
+            url: url,
+            type: "POST",
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false
+          })
+          .success(function(data){
+            reset_form();
+          })
+        }
+        return false;
+      }else{
+        alert("休憩時間を勤務時間よりも短くしてください")
+        return false;
       }
-      return false;
     }else{
       alert("終了時刻を開始時刻よりも後に設定してください")
       return false;
