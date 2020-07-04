@@ -4,6 +4,7 @@ class LinebotsController < ApplicationController
   protect_from_forgery :except => [:callback]
 
   def callback
+    
     $body = request.body.read
     #リクエストがlineからのものかを確認する
     check_from_line($body)
@@ -13,13 +14,14 @@ class LinebotsController < ApplicationController
       @event = event
       #メッセージ送信者のLINEidを個人・グループ・トークルーム_line_idとして定義
       #変数のリセットのために個人・グループ・トークルームを全部宣言する
+      
       $user_line_id = @event['source']['userId']
       $group_line_id = @event['source']['groupId']
       $room_line_id = @event['source']["roomId"]
 
       #@senderに、送信元が個人からuser,グループならgroup,トークルームならtalkroomを入れる
       @sender = check_request_sender
-
+      
       #送信者がuserだった場合
       if $user_line_id.present?
         #ユーザー登録済みの場合、リッチメニューIDを取得
@@ -44,20 +46,20 @@ class LinebotsController < ApplicationController
         when Line::Bot::Event::MessageType::Text
           #送信元が個人かグループかトークルームかで処理を分ける
           case @sender
-          when user
+          when "user"
             #LINEからのテキストメッセージが「新規ユーザー登録」と一致した場合
             if event.message['text'].eql?('新規ユーザー登録')
               client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
             end
-          when group
-          when talkroom
+          when "group"
+          when "talkroom"
           end
         end
       
       #友達追加の場合
       when Line::Bot::Event::Follow
         #リクエストの送信者が個人かつユーザー登録していない場合はユーザー登録を促す
-        client.reply_message(@event['replyToken'], create_user_message) if if check_request_sender == user && get_user_table == true
+        client.reply_message(@event['replyToken'], create_user_message) if check_request_sender == user && get_user_table == true
       
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
@@ -91,7 +93,7 @@ class LinebotsController < ApplicationController
 
         #ポストバックの送信元ごとに処理を分ける
         case @sender
-        when user
+        when "user"
           if get_user_table == true #ユーザーが登録されていた場合
           else #ユーザー登録していない個人からのリクエストだった場合
             #ユーザー登録フォームからのリクエスト以外は全てユーザー登録を促すメッセージを送信する
@@ -101,8 +103,8 @@ class LinebotsController < ApplicationController
               not_exist_user_message
             end
           end
-        when group
-        when talkroom
+        when "group"
+        when "talkroom"
         end
 
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
@@ -111,7 +113,7 @@ class LinebotsController < ApplicationController
         else
 
           case @postback_data[0]["name"]
-          when == "others"
+          when "others"
             res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
           
           #勤怠簿一覧を表示ボタンを押した時
@@ -188,11 +190,12 @@ class LinebotsController < ApplicationController
 
   def check_request_sender
     if $user_line_id.present?
-      @sender = user
+      @sender = "user"
     elsif $group_line_id.present?
-      @sender = group
+      @sender = "group"
     else
-      @sender = talkroom
+      @sender = "talkroom"
+    end
   end
 
   #Userテーブルから該当するユーザー情報を検索する
