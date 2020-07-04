@@ -144,9 +144,7 @@ function judgeWorktime(){
       var finish_date_time = Date.parse(date + " " + finish_time);
       var working_minites = (finish_date_time - start_date_time)/60/1000;
       var breaking_minites = document.getElementById("timecard_break_time").value;
-      alert(working_minites);
-      alert(start_date_time);
-      alert('a');
+      
       //勤務時間が休憩時間よりも多いことを確認
       if (working_minites > breaking_minites){
         //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
