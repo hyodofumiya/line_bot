@@ -130,11 +130,11 @@ function changeSubmitBtnStatus(){
   });
 }
 
-//勤務終了時刻が勤務開始時刻よりも後であることを確認する関数。falseの場合は送信をキャンセル
+//フォームの入力内容に不備がないか確認する関数
 function judgeWorktime(){
   $("#timecard_edit_form").on('submit', function(event){
     event.preventDefault();
-    var date = document.getElementById("timecard_date").value;
+    var date = document.getElementById("timecard_date").value.replace(/-/g,"/");
     var start_time = document.getElementById("timecard_start_time").value;
     var finish_time = document.getElementById("timecard_finish_time").value;
     
@@ -144,6 +144,9 @@ function judgeWorktime(){
       var finish_date_time = Date.parse(date + " " + finish_time);
       var working_minites = (finish_date_time - start_date_time)/60/1000;
       var breaking_minites = document.getElementById("timecard_break_time").value;
+      alert(working_minites);
+      alert(start_date_time);
+      alert('a');
       //勤務時間が休憩時間よりも多いことを確認
       if (working_minites > breaking_minites){
         //htmlでフォームのバリデーションに引っかかったらfalse,問題なければtrueが入る
