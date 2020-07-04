@@ -138,7 +138,6 @@ function judgeWorktime(){
     var start_time = document.getElementById("timecard_start_time").value;
     var finish_time = document.getElementById("timecard_finish_time").value;
     
-    debugger
     //勤務開始時刻が終了時刻よりも前か確認
     if (start_time<finish_time){
       var start_date_time = Date.parse(date + " " + start_time);
