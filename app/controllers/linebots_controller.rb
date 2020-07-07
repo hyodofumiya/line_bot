@@ -4,20 +4,24 @@ class LinebotsController < ApplicationController
   protect_from_forgery :except => [:callback]
 
   def callback
+    
     $body = request.body.read
     #リクエストがlineからのものかを確認する
     check_from_line($body)
-    #Lineでuserから送られてきた内容のみをeventsとしてパース
+    #Lineから送られてきた内容をeventsとしてパース
     events = client.parse_events_from($body)
-    #userがlineで送ってきたイベントタイプに応じて処理を割り振る
     events.each { |event|
       @event = event
       #メッセージ送信者のLINEidを個人・グループ・トークルーム_line_idとして定義
       #変数のリセットのために個人・グループ・トークルームを全部宣言する
+      
       $user_line_id = @event['source']['userId']
       $group_line_id = @event['source']['groupId']
       $room_line_id = @event['source']["roomId"]
 
+      #@senderに、送信元が個人からuser,グループならgroup,トークルームならtalkroomを入れる
+      @sender = check_request_sender
+      
       #送信者がuserだった場合
       if $user_line_id.present?
         #ユーザー登録済みの場合、リッチメニューIDを取得
@@ -40,19 +44,26 @@ class LinebotsController < ApplicationController
         case event.type
         #テキストメッセージの場合
         when Line::Bot::Event::MessageType::Text
-          #LINEからのテキストメッセージが「新規ユーザー登録」と一致した場合
-          if event.message['text'].eql?('新規ユーザー登録')
-            client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
+          #送信元が個人かグループかトークルームかで処理を分ける
+          case @sender
+          when "user"
+            #LINEからのテキストメッセージが「新規ユーザー登録」と一致した場合
+            if event.message['text'].eql?('新規ユーザー登録')
+              client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
+            end
+          when "group"
+          when "talkroom"
           end
         end
       
       #友達追加の場合
       when Line::Bot::Event::Follow
-        #lineのuser_idに対応するユーザーがDBに存在するか判断
-        #DBにline_idが存在しなかった場合ユーザー登録させる
-        client.reply_message(@event['replyToken'], create_user_message) if $user.nil?
+        #リクエストの送信者が個人かつユーザー登録していない場合はユーザー登録を促す
+        client.reply_message(@event['replyToken'], create_user_message) if check_request_sender == user && get_user_table == true
+      
       #友達ブロックされた場合
       when Line::Bot::Event::Unfollow
+        #友達ブロックされても何もしない
 
       #既存のグループにアプリが招待された場合
       when Line::Bot::Event::Join
@@ -79,63 +90,79 @@ class LinebotsController < ApplicationController
       when Line::Bot::Event::Postback
         #postbackリクエストのdataプロパティを＠post_dataとして定義
         @postback_data = JSON.parse(@event["postback"]["data"])
+
+        #ポストバックの送信元ごとに処理を分ける
+        case @sender
+        when "user"
+          if get_user_table == true #ユーザーが登録されていた場合
+          else #ユーザー登録していない個人からのリクエストだった場合
+            #ユーザー登録フォームからのリクエスト以外は全てユーザー登録を促すメッセージを送信する
+            if @postback_data[0]["name"] == "user_form"
+              create_user
+            else
+              not_exist_user_message
+            end
+          end
+        when "group"
+        when "talkroom"
+        end
+
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
         if @postback_data[0]["name"] == "user_form"
           create_user
         else
-          if @postback_data[0]["name"] == "others"
+
+          case @postback_data[0]["name"]
+          when "others"
             res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
-          else
-            case @postback_data[0]["name"]
-            
-            #勤怠簿一覧を表示ボタンを押した時
-            when "timecard_index"
-              selected_timecards_messages = TimeCard.index_selected_date
-              return_message = selected_timecards_messages
+          
+          #勤怠簿一覧を表示ボタンを押した時
+          when "timecard_index"
+            selected_timecards_messages = TimeCard.index_selected_date
+            return_message = selected_timecards_messages
 
-            #日付を指定した勤怠簿表示ボタンを押した時
-            when "timecard_show"
-              selected_date = event["postback"]["params"]["date"]
-              selected_timecard = TimeCard.show_selected_date(selected_date)
-              return_message = set_return_message(selected_timecard)
+          #日付を指定した勤怠簿表示ボタンを押した時
+          when "timecard_show"
+            selected_date = event["postback"]["params"]["date"]
+            selected_timecard = TimeCard.show_selected_date(selected_date)
+            return_message = set_return_message(selected_timecard)
 
-            #勤怠簿修正ボタンを押した時
-            when "timecard-fix"
-              redirect_to timecard_edit_path
-            
-            #報連相ボタンを押した時
-            when "search_member"
-            
-            #戻るボタンを押した時
-            when "back"
-              Richmenu.check_and_change_richmenu
-            
-            #勤務開始ボタンを押した時
-            when "start_work"
-              create_standby_record = Standby.add_new_record
-              return_message = set_return_message(create_standby_record)
-              Richmenu.check_and_change_richmenu
+          #勤怠簿修正ボタンを押した時
+          when "timecard-fix"
+            redirect_to timecard_edit_path
+          
+          #報連相ボタンを押した時
+          when "search_member"
+          
+          #戻るボタンを押した時
+          when "back"
+            Richmenu.check_and_change_richmenu
+          
+          #勤務開始ボタンを押した時
+          when "start_work"
+            create_standby_record = Standby.add_new_record
+            return_message = set_return_message(create_standby_record)
+            Richmenu.check_and_change_richmenu
 
-            #勤務開始ボタンを押した時
-            when "start_break"
-              update_standby_record = Standby.add_startbreak_to_record
-              return_message = set_return_message(update_standby_record)
-              Richmenu.check_and_change_richmenu
+          #勤務開始ボタンを押した時
+          when "start_break"
+            update_standby_record = Standby.add_startbreak_to_record
+            return_message = set_return_message(update_standby_record)
+            Richmenu.check_and_change_richmenu
 
-            #休憩終了ボタンを押した時
-            when "finish_break"
-              update_standby_record = Standby.add_breaksum_to_record
-              return_message = set_return_message(update_standby_record)
-              Richmenu.check_and_change_richmenu
+          #休憩終了ボタンを押した時
+          when "finish_break"
+            update_standby_record = Standby.add_breaksum_to_record
+            return_message = set_return_message(update_standby_record)
+            Richmenu.check_and_change_richmenu
 
-            #退勤ボタンを押した時
-            when "finish_work"
-              finish_standby = Standby.finish_work_flow
-              return_message = set_return_message(finish_standby)
-              Richmenu.check_and_change_richmenu
-            end
-            response = client.reply_message(@event['replyToken'], return_message)
+          #退勤ボタンを押した時
+          when "finish_work"
+            finish_standby = Standby.finish_work_flow
+            return_message = set_return_message(finish_standby)
+            Richmenu.check_and_change_richmenu
           end
+          response = client.reply_message(@event['replyToken'], return_message)
         end
       end
     }
@@ -153,12 +180,33 @@ class LinebotsController < ApplicationController
     end
   end
 
-  #メッセージの送信元lineのアカウントを@clientとして定義する。
+  #アプリの管理者lineのアカウントをclientとして定義する。
   def client
     client ||= Line::Bot::Client.new { |config|
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
+  end
+
+  def check_request_sender
+    if $user_line_id.present?
+      @sender = "user"
+    elsif $group_line_id.present?
+      @sender = "group"
+    else
+      @sender = "talkroom"
+    end
+  end
+
+  #Userテーブルから該当するユーザー情報を検索する
+  def get_user_table
+    $user = User.find_by(line_id: $user_line_id)
+    if $user.present?
+      $user_richmenu_id = Richmenu.get_user_richmenu_id
+      return true
+    else
+      return false
+    end
   end
 
   def not_exist_user_message
@@ -201,14 +249,14 @@ class LinebotsController < ApplicationController
           }
         ],
         "title": "ユーザー登録",
-        "text": "勤怠入力を行うためのユーザー登録を行いますか？"
+        "text": "ユーザー登録を行いますか？"
       }
     }
   end
 
   def no_user_message
     {"type": "text",
-      "text": "ユーザーが登録されていません"}
+      "text": "ユーザー登録をしてください"}
   end
 
   def success_create_user_message

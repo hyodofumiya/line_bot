@@ -7,22 +7,28 @@ class TimeCardsController < ApplicationController
   def create
     user_id_token = params[:time_card][:user_token]
     user_line_id = get_user_id_from_token(user_id_token)
-    user_id = User.find_by(line_id: user_line_id)
+    user = User.find_by(line_id: user_line_id)
     timecard_id = params[:time_card][:timecard_id]
-    if user_id.nil?
-      redirect_to action: 'edit', notice: 'ユーザーが見つかりません。'
+    if user.nil?
+      return_message = 'ユーザーが見つかりません。'
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message))
+      redirect_to action: 'edit'
     elsif timecard_id.present?
       redirect_to action: 'update'
-    end
-    time_card = TimeCard.find(params[:time_card][:timecard_id])
-    work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
-    start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
-    finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
-    result = time_card.create
-    if result == true
-      return_message = "修正しました"
     else
-      return_message = "修正できませんでした"
+      date = params[:time_card][:date]
+      work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
+      start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
+      finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
+      break_time = params[:time_card][:break_time].to_i*60
+      time_card = TimeCard.new(user_id: user.id, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
+      result = time_card.save
+      if result == true
+        return_message = "修正しました"
+      else
+        return_message = "修正できませんでした"
+      end
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message))
     end
   end
 
@@ -51,14 +57,34 @@ class TimeCardsController < ApplicationController
     end
   end
 
+  def destroy
+    time_card = TimeCard.find(params[:time_card][:timecard_id])
+    user_id_token = params[:time_card][:user_token]
+    user_line_id = get_user_id_from_token(user_id_token)
+    if time_card.destroy
+      return_message = "#{params[:time_card][:date].to_date.strftime("%m/%d")}の勤怠を修正しました"
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message)) #LINEに修正成功のメッセージを送信する
+    else
+      return_message ="勤怠の修正に失敗しました"
+      response = client.push_message(user_line_id, return_change_timecard_message(return_message))
+    end
+    respond_to do |format|
+      format.html { render "edit"}
+      format.json
+    end
+
+
+  end
+
+
   #勤怠修正フォームの日付が変更された時にuserIdと日付に該当するTimeCardレコードをユーザーに返すアクション
   def set_record_for_form
     input_date = params[:input_date]
     user_id_token = params[:user_id_token]
     user_line_id = get_user_id_from_token(user_id_token)
     user_id = User.find_by(line_id: user_line_id)
-    @timecard = TimeCard.find_by(user_id: user_id, date: input_date)
-    #@timecard = TimeCard.find_by(user_id: 1, date: input_date)
+    #@timecard = TimeCard.find_by(user_id: user_id, date: input_date)
+    @timecard = TimeCard.find_by(user_id: 2, date: input_date)
   end
 
   private
