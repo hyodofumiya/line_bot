@@ -83,8 +83,8 @@ class TimeCardsController < ApplicationController
     user_id_token = params[:user_id_token]
     user_line_id = get_user_id_from_token(user_id_token)
     user_id = User.find_by(line_id: user_line_id)
-    #@timecard = TimeCard.find_by(user_id: user_id, date: input_date)
-    @timecard = TimeCard.find_by(user_id: 2, date: input_date)
+    @timecard = TimeCard.find_by(user_id: user_id, date: input_date)
+    #@timecard = TimeCard.find_by(user_id: 2, date: input_date)
   end
 
   private
