@@ -83,15 +83,15 @@ class TimeCardsController < ApplicationController
     user_id_token = params[:user_id_token]
     user_line_id = get_user_id_from_token(user_id_token)
     user_id = User.find_by(line_id: user_line_id)
-    #@timecard = TimeCard.find_by(user_id: user_id, date: input_date)
-    @timecard = TimeCard.find_by(user_id: 2, date: input_date)
+    @timecard = TimeCard.find_by(user_id: user_id, date: input_date)
+    #@timecard = TimeCard.find_by(user_id: 2, date: input_date)
   end
 
   private
   def client
     client ||= Line::Bot::Client.new { |config|
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "uRbTi0SYK1jKGmffyjvmzZdj+H/xVnfZ5Skey+ToaSkJKGGV+bZl8FA8/ENhdkKUsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJN4ZbLJNrRSVqjUPWXfuPZY/o87s47+pga1RubZabBZgwdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
   end
 
