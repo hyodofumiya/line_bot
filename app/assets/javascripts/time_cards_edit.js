@@ -56,8 +56,8 @@ function return_timecard(){
           debugger
           $(".timecard_day_off").removeAttr("disabled");
           if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
-            document.getElementById('timecard_workday').setAttribute("checked", "true");
-            document.getElementById('timecard_holiday').removeAttribute("checked");
+            document.getElementById('time_card_workday').setAttribute("checked", "true");
+            document.getElementById('time_card_holiday').removeAttribute("checked");
             document.getElementById('timecard_start_time').value = data.start_time;
             document.getElementById("timecard_finish_time").value = data.finish_time;
             document.getElementById("timecard_break_time").value = data.break_time/60;
@@ -66,8 +66,8 @@ function return_timecard(){
             timecard_data = data;
             return timecard_data;
           }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
-            document.getElementById('timecard_workday').removeAttribute("checked");
-            document.getElementById('timecard_holiday').setAttribute("checked", "true");
+            document.getElementById('time_card_workday').removeAttribute("checked");
+            document.getElementById('time_card_holiday').setAttribute("checked", "true");
             document.getElementById('timecard_start_time').value = "";
             document.getElementById("timecard_finish_time").value = "";
             document.getElementById("timecard_break_time").value = "";
@@ -168,6 +168,9 @@ function judgeWorktime(){
           })
           .success(function(data){
             reset_form();
+            timecard_data = undefined
+            changeStatusOfDetailsInTimeCardEditForm("disabled");
+            changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
           })
         }
         return false;
@@ -184,6 +187,9 @@ function judgeWorktime(){
 
 function reset_form(){
   $("#timecard_edit_form")[0].reset();
+  document.getElementById('time_card_workday').removeAttribute("checked", "true");
+  document.getElementById('time_card_holiday').removeAttribute("checked", "true");
+
 }
 
 function judgeDateFormStatus(){
