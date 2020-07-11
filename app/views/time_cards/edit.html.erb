@@ -9,8 +9,11 @@
                 <%= f.date_field :date, id:'timecard_date' , class: 'timecard_edit_form_input', use_month_numbers: "true", required: "required" %>
               </div>
               <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_day_off">勤怠</label>
-                <%= f.select :day_off, {'勤務日': 1, '休日': 2}, {}, {id: "timecard_day_off", class: "timecard_edit_form_input", disabled: "disabled", required: "required"} %>
+                <label class="control-label timecard_edit_form_label" for="timecard_date">勤怠</label>
+                <%= f.radio_button :day_off, :"1", {disabled: "disabled", id: "timecard_workday", class: "timecard_day_off"} %>
+                <%= f.label :day_off_1, "出勤日"%>
+                <%= f.radio_button :day_off, :"2", {disabled: "disabled", id: "timecard_holiday", class: "timecard_day_off"} %>
+                <%= f.label :day_off_2, "休日" %>
               </div>
               <div class="timecard_edit_form__form-holder__a_form">
                 <label class="control-label timecard_edit_form_label" for="timecard_start_time">出勤時刻</label>
