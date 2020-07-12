@@ -1,12 +1,20 @@
 .timecard_edit_body{
   font-size: 16px;
   background-color: #E1E8EE;
+  font-family: "Fira Sans", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   //height: 100vh;
   &__form-structor{
     text-align: center;
     background-color: #fff;
     margin: auto;
     width: 90%;
+    border-radius: 15px;
+    background-position: center;
+    background-size: 100%;
+    background: round;
+  
     .timecard_edit_form{
       &__form-title{
         font-size: 4em;
@@ -16,7 +24,7 @@
       &__form-holder{
         margin-bottom: 1em;
         &__a_form{
-          font-size: 20px;
+          font-size: 25px;
           margin: auto;
           margin-bottom: 2em;
           text-align: left;
@@ -28,9 +36,10 @@
             display: inline-block;
             font-size: 2em;
             text-align: left;
+            margin: auto 0;
           }
           .timecard_edit_form_input{
-            font-size: 2em;
+            font-size: 3em;
             min-width: 25%;
             padding-left: 5px;
             text-align: center;
@@ -38,7 +47,13 @@
           .form_scale{
             font-size: 2em;
           }
-
+          .timecard_day_off{
+            -webkit-transform: scale(2);
+            margin: auto;
+          }
+          .timecard_day_off_label{
+            font-size: 2em;
+          }
         }
       }
       &__submit-btn{

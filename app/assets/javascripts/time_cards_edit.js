@@ -53,9 +53,11 @@ function return_timecard(){
         if (input_date == ""){
           reset_form()
         }else{
-          $("#timecard_day_off").removeAttr("disabled");
+          debugger
+          $(".timecard_day_off").removeAttr("disabled");
           if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
-            document.getElementById('timecard_day_off').value = 1;
+            document.getElementById('time_card_workday').setAttribute("checked", "true");
+            document.getElementById('time_card_holiday').removeAttribute("checked");
             document.getElementById('timecard_start_time').value = data.start_time;
             document.getElementById("timecard_finish_time").value = data.finish_time;
             document.getElementById("timecard_break_time").value = data.break_time/60;
@@ -64,7 +66,8 @@ function return_timecard(){
             timecard_data = data;
             return timecard_data;
           }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
-            document.getElementById('timecard_day_off').value = "2";
+            document.getElementById('time_card_workday').removeAttribute("checked");
+            document.getElementById('time_card_holiday').setAttribute("checked", "true");
             document.getElementById('timecard_start_time').value = "";
             document.getElementById("timecard_finish_time").value = "";
             document.getElementById("timecard_break_time").value = "";
@@ -87,8 +90,8 @@ function return_timecard(){
 
 //勤怠状況が変更された時に、残りのフォームを制御する関数
 function changeAttendance(){
-  $("#timecard_day_off").change(function(){
-    var attendance = document.getElementById('timecard_day_off').value;
+  $(".timecard_day_off").change(function(){
+    var attendance = $('input:radio[name="time_card[day_off]"]:checked').val();
     if (attendance == 1){ //勤怠が出勤日だった場合の処理
       changeStatusOfDetailsInTimeCardEditForm("able");
       changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
@@ -108,7 +111,7 @@ function changeAttendance(){
 //保存されているレコードと内容が一致する場合はsubmitをdisabledに、そうでない場合はableに変更する関数
 function changeSubmitBtnStatus(){
   $("#timecard_edit_form").change(function(){
-    if (document.getElementById('timecard_day_off').value == 1){
+    if ($('input:radio[name="time_card[day_off]"]:checked').val() == 1){
       if (timecard_data !== undefined){
         var start_time_status = document.getElementById('timecard_start_time').value == timecard_data.start_time;
         var finish_time_status = document.getElementById("timecard_finish_time").value == timecard_data.finish_time;
@@ -165,6 +168,9 @@ function judgeWorktime(){
           })
           .success(function(data){
             reset_form();
+            timecard_data = undefined
+            changeStatusOfDetailsInTimeCardEditForm("disabled");
+            changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
           })
         }
         return false;
@@ -181,6 +187,9 @@ function judgeWorktime(){
 
 function reset_form(){
   $("#timecard_edit_form")[0].reset();
+  document.getElementById('time_card_workday').removeAttribute("checked", "true");
+  document.getElementById('time_card_holiday').removeAttribute("checked", "true");
+
 }
 
 function judgeDateFormStatus(){
