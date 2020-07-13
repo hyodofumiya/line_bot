@@ -108,7 +108,7 @@ class LinebotsController < ApplicationController
           if @postback_data[0]["name"] == "user_form"
             create_user
           elsif @postback_data[0]["name"] == "fix_user_form"
-            response = client.reply_message(@event['replyToken'], create_user_message)
+            client.reply_message(@event['replyToken'], create_user_message)
           else
             case @postback_data[0]["name"]
             when "others"

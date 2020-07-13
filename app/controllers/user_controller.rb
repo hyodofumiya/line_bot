@@ -161,7 +161,7 @@ class UserController < ApplicationController
               "action": {
                 "type": "postback",
                 "label": "いいえ",
-                "displayText": "いいえ"
+                "displayText": "いいえ",
                 "data": [{name: "fix_user_form"}].to_json
               },
               "style": "secondary"
