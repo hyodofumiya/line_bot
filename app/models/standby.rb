@@ -96,6 +96,7 @@ class Standby < ApplicationRecord
       work_time = full_work_hour
       work_time -= break_sum if break_sum.present?
       TimeCard.create_new_record_flow(work_time, self, user)
+      
     else
       self.delete
       return "連続勤務が24時間を超えているため登録できません。１日の勤務時間が24時間以内になるように編集画面から分けて入力してください。"

@@ -159,9 +159,10 @@ class UserController < ApplicationController
             {
               "type": "button",
               "action": {
-                "type": "message",
+                "type": "postback",
                 "label": "いいえ",
-                "text": "いいえ"
+                "displayText": "いいえ"
+                "data": [{name: "fix_user_form"}].to_json
               },
               "style": "secondary"
             }
