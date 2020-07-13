@@ -103,66 +103,67 @@ class LinebotsController < ApplicationController
               not_exist_user_message
             end
           end
-        when "group"
-        when "talkroom"
-        end
 
         #dataプロパティ配列の[0]["name"]に入っている内容でフォーム元を判断し、条件分け
-        if @postback_data[0]["name"] == "user_form"
-          create_user
-        else
+          if @postback_data[0]["name"] == "user_form"
+            create_user
+          elsif @postback_data[0]["name"] == "fix_user_form"
+            response = client.reply_message(@event['replyToken'], create_user_message)
+          else
+            case @postback_data[0]["name"]
+            when "others"
+              res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
+            
+            #勤怠簿一覧を表示ボタンを押した時
+            when "timecard_index"
+              selected_timecards_messages = TimeCard.index_selected_date
+              return_message = selected_timecards_messages
 
-          case @postback_data[0]["name"]
-          when "others"
-            res = client.link_user_rich_menu($user_line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
-          
-          #勤怠簿一覧を表示ボタンを押した時
-          when "timecard_index"
-            selected_timecards_messages = TimeCard.index_selected_date
-            return_message = selected_timecards_messages
+            #日付を指定した勤怠簿表示ボタンを押した時
+            when "timecard_show"
+              selected_date = event["postback"]["params"]["date"]
+              selected_timecard = TimeCard.show_selected_date(selected_date)
+              return_message = set_return_message(selected_timecard)
 
-          #日付を指定した勤怠簿表示ボタンを押した時
-          when "timecard_show"
-            selected_date = event["postback"]["params"]["date"]
-            selected_timecard = TimeCard.show_selected_date(selected_date)
-            return_message = set_return_message(selected_timecard)
+            #勤怠簿修正ボタンを押した時
+            when "timecard-fix"
+              redirect_to timecard_edit_path
+            
+            #報連相ボタンを押した時
+            when "search_member"
+            
+            #戻るボタンを押した時
+            when "back"
+              Richmenu.check_and_change_richmenu
+            
+            #勤務開始ボタンを押した時
+            when "start_work"
+              create_standby_record = Standby.add_new_record
+              return_message = set_return_message(create_standby_record)
+              Richmenu.check_and_change_richmenu
 
-          #勤怠簿修正ボタンを押した時
-          when "timecard-fix"
-            redirect_to timecard_edit_path
-          
-          #報連相ボタンを押した時
-          when "search_member"
-          
-          #戻るボタンを押した時
-          when "back"
-            Richmenu.check_and_change_richmenu
-          
-          #勤務開始ボタンを押した時
-          when "start_work"
-            create_standby_record = Standby.add_new_record
-            return_message = set_return_message(create_standby_record)
-            Richmenu.check_and_change_richmenu
+            #勤務開始ボタンを押した時
+            when "start_break"
+              update_standby_record = Standby.add_startbreak_to_record
+              return_message = set_return_message(update_standby_record)
+              Richmenu.check_and_change_richmenu
 
-          #勤務開始ボタンを押した時
-          when "start_break"
-            update_standby_record = Standby.add_startbreak_to_record
-            return_message = set_return_message(update_standby_record)
-            Richmenu.check_and_change_richmenu
+            #休憩終了ボタンを押した時
+            when "finish_break"
+              update_standby_record = Standby.add_breaksum_to_record
+              return_message = set_return_message(update_standby_record)
+              Richmenu.check_and_change_richmenu
 
-          #休憩終了ボタンを押した時
-          when "finish_break"
-            update_standby_record = Standby.add_breaksum_to_record
-            return_message = set_return_message(update_standby_record)
-            Richmenu.check_and_change_richmenu
-
-          #退勤ボタンを押した時
-          when "finish_work"
-            finish_standby = Standby.finish_work_flow
-            return_message = set_return_message(finish_standby)
-            Richmenu.check_and_change_richmenu
+            #退勤ボタンを押した時
+            when "finish_work"
+              finish_standby = Standby.finish_work_flow
+              return_message = set_return_message(finish_standby)
+              Richmenu.check_and_change_richmenu
+            end
+            response = client.reply_message(@event['replyToken'], return_message)
           end
-          response = client.reply_message(@event['replyToken'], return_message)
+        when "group"
+        when "talkroom"
         end
       end
     }
