@@ -33,11 +33,26 @@
 }
 
 .form-structor .signup .form-holder {
+  padding-bottom: 1em;
+}
+
+.signup_input_list{
+  text-align: initial;
+  margin-top: 1em;
+}
+
+.signup_input_zone{
   border-radius: 15px;
   background-color: #fff;
   overflow: hidden;
-  margin-top: 1em;
 }
+
+.signup_error_message{
+  color: orangered;
+  padding: 0 0 8px 15px;
+  font-size: 0.8em;
+}
+
 .form-structor .signup .form-holder .input {
   border: 0;
   outline: none;
@@ -45,17 +60,20 @@
   display: block;
   height: 30px;
   line-height: 30px;
-  padding: 8px 15px;
-  border-bottom: 1px solid #eee;
+  padding: 8px 15px 0;
   width: 100%;
   font-size: 16px;
 }
-.form-structor .signup .form-holder .input:last-child {
-  border-bottom: 0;
-}
+
 .form-structor .signup .form-holder .input::-webkit-input-placeholder {
   color: rgba(0, 0, 0, 0.4);
 }
+
+.signup_form_label{
+  padding-left: 15px;
+  color: floralwhite;
+}
+
 .form-structor .signup .submit-btn {
   background-color: rgba(0, 0, 0, 0.4);
   color: rgba(255, 255, 255, 0.7);
@@ -64,7 +82,7 @@
   display: block;
   margin: 15px auto;
   padding: 15px 45px;
-  width: 100%;
+  width: 70%;
   font-size: 13px;
   font-weight: bold;
   opacity: 1;
