@@ -53,7 +53,6 @@ function return_timecard(){
         if (input_date == ""){
           reset_form()
         }else{
-          debugger
           $(".timecard_day_off").removeAttr("disabled");
           if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
             document.getElementById('time_card_workday').setAttribute("checked", "true");

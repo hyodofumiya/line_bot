@@ -55,11 +55,12 @@ function check_number_value(){
 //フォームの入力内容に不備がないか確認する関数
 function judgeSignupForm(){
   $("#signup_form").on('submit', function(event){
-    event.preventDefault();
     var checkFamilyName = /^[ァ-ヶー]+$/.test(document.getElementById("familyName").value);
     var checkFirstName = /^[ァ-ヶー]+$/.test(document.getElementById("firstName").value);
     var checkEmplyeeNumber = /[1-9][0-9]{4}/.test(document.getElementById("employeeNumber").value);
     if ((checkFamilyName&&checkFirstName&&checkEmplyeeNumber) == true){
+      var userIdToken = liff.getIDToken();
+      document.getElementById("userIdToken").value = userIdToken;
       var formData = new FormData(this);
       var url = $(this).attr('action');
       $.ajax({
@@ -71,7 +72,6 @@ function judgeSignupForm(){
         contentType: false
       })
       .success(function(data){
-        reset_form();
         liff.closeWindow();
       })
       return false;
@@ -97,7 +97,7 @@ function judgeSignupForm(){
         document.getElementById('employeeNumber_input_zone').style.border = '';
         $('#employeeNumber_error').text('')
       }
-
+      return false;
     }
   })
 }
