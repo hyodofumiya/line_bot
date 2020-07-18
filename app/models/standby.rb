@@ -6,7 +6,7 @@ class Standby < ApplicationRecord
   validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
-  validates :break_sum, length: { maximum: 60*60*24}
+  validates :break_sum, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 60*60*24}
 
   #standbyレコードを作成するメソッド
   def self.add_new_record
