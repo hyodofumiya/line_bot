@@ -1,7 +1,7 @@
 class TimeCard < ApplicationRecord
   belongs_to :user
 
-  validates :date, presence: true 
+  validates :date, presence: true
   validates :work_time, presence: true
   validates :start_time, presence: true
   validates :finish_time, presence: true
@@ -14,25 +14,44 @@ class TimeCard < ApplicationRecord
   end
 
   def self.create_new_record_flow(work_time, standby, user)
-    time_card = TimeCard.find_by(user_id: user.id, date: standby.date)
+    timecard = TimeCard.find_by(user_id: user.id, date: standby.date)
     #ユーザーのレコードが同日に被っていないか確認する
-    if time_card.nil?
+    if timecard.nil?
       standby.break_sum = 0 if nil?
-      time_card = TimeCard.new(user_id: user.id, date: standby.date, work_time: work_time, start_time: standby.start, finish_time: $timestamp, break_time: standby.break_sum)
-      result = time_card.save
+      timecard = TimeCard.new(user_id: user.id, date: standby.date, work_time: work_time, start_time: standby.start, finish_time: $timestamp, break_time: standby.break_sum)
+      result = timecard.save
+      #DBに保存できたか確認
+      if result == true
+        standby.delete
+        return "退勤しました"
+      else
+        return "退勤に失敗しました"
+      end
     else
-      work_time = work_time + time_card.work_time
-      break_time =  time_card.break_time
-      break_time += standby.break_sum if standby.break_sum.present?
-      result = time_card.update(work_time: work_time, finish_time: $timestamp, break_time: break_time)
-    end
+      case
+      #正常の動作をする条件
+      when standby.start >= timecard.finish_time && $timestamp > timecard.finish_time
+        work_time = work_time + timecard.work_time
+        break_time = $timestamp - timecard.start_time  - work_time
+        binding.pry
+        result = timecard.update(work_time: work_time, finish_time: $timestamp, break_time: break_time)
+        #DBに保存できたか確認
+        if result == true
+          standby.delete
+          return "退勤しました"
+        else
+          return "退勤に失敗しました"
+        end
+      #「出勤時間が異常です。 修正画面より正しい時間に修正してください。」とエラーメッセージが表示されるパターン
+      when standby.start < timecard.finish_time && $timestamp > timecard.finish_time
+        standby.delete
+        return "出勤時間が異常です。 修正画面より正しい時間に修正してください。"
 
-    #DBに保存できたか確認
-    if result == true
-      standby.delete
-      return "退勤しました"
-    else
-      return "退勤に失敗しました"
+      #「出勤時間、退勤時間が異常です。修正画面より正しい時間に修正してください。」とエラーが表示されるパターン
+      when standby.start < timecard.finish_time && $timestamp <= timecard.finish_time
+        standby.delete
+        return "出勤時間、退勤時間が異常です。修正画面より正しい時間に修正してください。"
+      end
     end
   end
 

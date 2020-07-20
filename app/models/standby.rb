@@ -6,7 +6,7 @@ class Standby < ApplicationRecord
   validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
-  validates :break_sum, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 60*60*24}
+  validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 60*60*24}
 
   #standbyレコードを作成するメソッド
   def self.add_new_record
@@ -83,32 +83,38 @@ class Standby < ApplicationRecord
   #StandbyレコードからTimeCardレコードを作成するメソッド
   def finish_work(user)
     #休憩中か判断し、休憩中の場合は休憩を終了する。
-    work_status = self.break_start
-    if work_status.present?
+    if self.break_start.present?
       update_break_sum = self.update_break_sum
       return "退勤に失敗しました。休憩を終了できませんでした。" if update_break_sum == false
     end
+
     work_start = self.start
-    break_sum = self.break_sum
-    full_work_hour = $timestamp - work_start
+    time_from_start_to_finish = $timestamp - work_start
     #前日の入力忘れの場合とで条件分け
-    if full_work_hour <= 60*60*24
-      work_time = full_work_hour
-      work_time -= break_sum if break_sum.present?
+    if time_from_start_to_finish <= 60*60*24
+      if break_sum.present?
+        work_time = time_from_start_to_finish - self.break_sum 
+      else
+        work_time = time_from_start_to_finish
+      end
       TimeCard.create_new_record_flow(work_time, self, user)
-      
     else
       self.delete
-      return "連続勤務が24時間を超えているため登録できません。１日の勤務時間が24時間以内になるように編集画面から分けて入力してください。"
+      return "連続勤務が24時間を超えているため登録できません。日付を分けて修正画面から入力してください。"
     end
   end
 
   #２回目以降の休憩終了処理で休憩時間を更新するメソッド
   def update_break_sum
     this_breaktime_sum = $timestamp - self.break_start
-    all_breaktime_sum = this_breaktime_sum
-    all_breaktime_sum += self.break_sum if self.break_sum.present?
-    update_record = self.update(break_start: nil, break_sum: all_breaktime_sum)
+    #休憩の合計時間を算出する
+    if self.break_sum.present?
+      all_breaktime_sum = this_breaktime_sum + self.break_sum
+    else
+      all_breaktime_sum = this_breaktime_sum
+    end
+    update_record = self.update(break_start: nil, break_sum: all_breaktime_sum.to_i)
+    binding.pry
     return update_record
   end
 
