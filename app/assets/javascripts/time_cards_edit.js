@@ -59,7 +59,7 @@ function return_timecard(){
             document.getElementById('time_card_holiday').removeAttribute("checked");
             document.getElementById('timecard_start_time').value = data.start_time;
             document.getElementById("timecard_finish_time").value = data.finish_time;
-            document.getElementById("timecard_break_time").value = data.break_time/60;
+            document.getElementById("timecard_break_time").value = data.break_time/60|0;
             document.getElementById("timecardId").value = data.timecard_id;
             $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
             timecard_data = data;
