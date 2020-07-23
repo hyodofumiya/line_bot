@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+    omniauth_callbacks: "omniauth_callbacks"
+  }
+
   post '/callback' => 'linebots#callback'
   get '/usernew' => 'user#new'
   post '/usercreate' => 'user#create'
