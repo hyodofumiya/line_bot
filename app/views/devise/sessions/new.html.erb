@@ -21,6 +21,19 @@
   <div class="actions">
     <%= f.submit "Log in" %>
   </div>
+
+  <ol>
+    <li class="sns_login_btn" id="line_login">
+      <%= link_to (user_line_omniauth_authorize_path) do %>
+        <p class="sns_btn_inner">
+          <span class="line-img">
+            
+          </span>
+          <span class="sns_msg">LINE</span>
+        </p>
+      <% end %>
+    </li>
+  </ol>
 <% end %>
 
 <%= render "devise/shared/links" %>

@@ -1,0 +1,26 @@
+.line-img{
+  margin-right: 4px;
+}
+
+.line-img img{
+  width: 17px;
+  height: 17px;
+  margin: 1px 0px 3px -3px;
+}
+
+#line_login{
+  background: #00B900;
+  color: #ffffff;
+}
+
+
+#line_login .sns_btn_inner{
+  color: #ffffff;
+}
+
+.sns_btn_inner{
+  font-size: 1.2rem;
+  color: #FFFFFF;
+  letter-spacing: 1px;
+  line-height: 34px;
+}
