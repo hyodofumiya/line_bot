@@ -1,2 +1,3 @@
-class OmniauthCallbacksController < ApplicationController
+class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  def line; ; end
 end
