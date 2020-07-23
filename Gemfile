@@ -65,3 +65,5 @@ gem 'pry-rails'
 gem 'google-api-client'
 gem 'jquery-rails'
 gem 'whenever', require: false
+gem 'devise'
+gem 'omniauth-line'

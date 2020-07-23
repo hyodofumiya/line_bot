@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   post '/callback' => 'linebots#callback'
   get '/usernew' => 'user#new'
   post '/usercreate' => 'user#create'
