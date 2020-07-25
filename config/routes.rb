@@ -1,14 +1,4 @@
 Rails.application.routes.draw do
-  namespace :admin do
-      resources :users
-      resources :groups
-      resources :richmenus
-      resources :standbies
-      resources :time_cards
-      resources :user_groups
-
-      root to: "users#index"
-    end
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks"
   }
