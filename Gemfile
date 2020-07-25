@@ -68,3 +68,4 @@ gem 'whenever', require: false
 gem 'devise'
 gem 'omniauth-line'
 gem 'activeadmin'
+gem 'devise-i18n'
