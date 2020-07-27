@@ -33,19 +33,19 @@ class UserDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
+  id
+  employee_number
+  family_name
+  first_name
+  line_id
+  admin_user
   standby
-  time_cards
-  user_groups
-  groups
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
   standby
-  time_cards
-  user_groups
-  groups
   id
   family_name
   first_name
@@ -54,31 +54,17 @@ class UserDashboard < Administrate::BaseDashboard
   admin_user
   created_at
   updated_at
-  email
-  encrypted_password
-  reset_password_token
-  reset_password_sent_at
-  remember_created_at
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-  standby
-  time_cards
-  user_groups
-  groups
+  employee_number
   family_name
   first_name
-  employee_number
   line_id
   admin_user
-  email
-  encrypted_password
-  reset_password_token
-  reset_password_sent_at
-  remember_created_at
   ].freeze
 
   # COLLECTION_FILTERS
@@ -96,7 +82,7 @@ class UserDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how users are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(user)
-  #   "User ##{user.id}"
-  # end
+  def display_resource(user)
+     "#{user.employee_number}"
+  end
 end

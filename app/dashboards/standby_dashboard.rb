@@ -26,6 +26,8 @@ class StandbyDashboard < Administrate::BaseDashboard
   id
   date
   start
+  break_start
+  break_sum
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -57,10 +59,11 @@ class StandbyDashboard < Administrate::BaseDashboard
   # For example to add an option to search for open resources by typing "open:"
   # in the search field:
   #
-  #   COLLECTION_FILTERS = {
+  #COLLECTION_FILTERS = {
   #     open: ->(resources) { resources.where(open: true) }
   #   }.freeze
-  COLLECTION_FILTERS = {}.freeze
+  COLLECTION_FILTERS = {
+  }.freeze
 
   # Overwrite this method to customize how standbies are displayed
   # across all pages of the admin dashboard.

@@ -15,7 +15,7 @@ ja:
       long: "%Y年%m月%d日(%a) %H時%M分%S秒 %Z"
     am: "午前"
     pm: "午後"
-  active_admin:
+  administrate:
     dashboard: "ダッシュボード"
     comment: "コメント"
     dashboard_welcome:
@@ -166,6 +166,8 @@ ja:
       board: 掲示板
       time_card: 出勤簿
       standby: 出勤情報
+      richmenu: LINEリッチメニュー
+      group: グループ
     # model毎に定義したいattributesを記述
     attributes:
         user:

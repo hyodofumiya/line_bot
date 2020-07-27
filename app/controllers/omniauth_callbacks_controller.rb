@@ -11,13 +11,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = User.find_by(line_id: @omniauth['uid'])
       if user
         bypass_sign_in(user)
-        binding.pry
       else
         redirect_to new_user_session_path
       end
     else
       redirect_to new_user_session_path
     end
-    binding.pry
+    redirect_to admin_root_path
   end
 end

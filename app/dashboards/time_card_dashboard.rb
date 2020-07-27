@@ -29,13 +29,15 @@ class TimeCardDashboard < Administrate::BaseDashboard
   id
   date
   work_time
+  finish_time
+  break_time
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
-  user
   id
+  user
   date
   work_time
   start_time
@@ -67,7 +69,9 @@ class TimeCardDashboard < Administrate::BaseDashboard
   #   COLLECTION_FILTERS = {
   #     open: ->(resources) { resources.where(open: true) }
   #   }.freeze
-  COLLECTION_FILTERS = {}.freeze
+  COLLECTION_FILTERS = {
+    #user: ->(resources) { resources.where(user: true) }
+  }.freeze
 
   # Overwrite this method to customize how time cards are displayed
   # across all pages of the admin dashboard.
