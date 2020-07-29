@@ -11,8 +11,8 @@ class StandbyDashboard < Administrate::BaseDashboard
     user: Field::BelongsTo,
     id: Field::Number,
     date: Field::Date,
-    start: Field::DateTime,
-    break_start: Field::DateTime,
+    start: Field::DateTime.with_options(format: "%H:%M"),
+    break_start: Field::DateTime.with_options(format: "%H:%M"),
     break_sum: Field::Number,
   }.freeze
 

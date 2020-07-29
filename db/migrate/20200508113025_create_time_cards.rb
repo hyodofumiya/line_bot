@@ -6,7 +6,7 @@ class CreateTimeCards < ActiveRecord::Migration[5.2]
       t.integer :work_time, null:false
       t.timestamp :start_time, null:false
       t.timestamp :finish_time, null:false
-      t.integer :break_time
+      t.integer :break_time, null:false, default: 0
       t.timestamps
     end
   end

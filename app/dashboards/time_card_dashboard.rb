@@ -8,13 +8,16 @@ class TimeCardDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    user: Field::BelongsTo,
+    user: Field::BelongsTo.with_options(
+      searchable: true,
+      searchable_fields: ['employee_number']
+    ),
     id: Field::Number,
     date: Field::Date,
     work_time: Field::Number,
-    start_time: Field::DateTime,
-    finish_time: Field::DateTime,
-    break_time: Field::Number,
+    start_time: Field::DateTime.with_options(format: "%H:%M"),
+    finish_time: Field::DateTime.with_options(format: "%H:%M"),
+    break_time: Field::Number.with_options(suffix: "分"),
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
