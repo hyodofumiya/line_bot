@@ -8,6 +8,10 @@ module Admin
     #   send_foo_updated_email(requested_resource)
     # end
 
+    def create
+      binding.pry
+    end
+
     # Override this method to specify custom lookup behavior.
     # This will be used to set the resource for the `show`, `edit`, and `update`
     # actions.
@@ -43,6 +47,6 @@ module Admin
     # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
     # for more information
 
-    
+
   end
 end

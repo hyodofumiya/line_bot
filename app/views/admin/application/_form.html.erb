@@ -39,6 +39,23 @@ and renders all form fields for a resource's editable attributes.
     </div>
   <% end -%>
 
+  <div class="field-unit" id="field-unit--line_send">
+    <div class="field-unit__label">  
+      <%= label_tag :line_send, "LINEに通知"%>
+    </div>
+    <div class="field-unit__field">
+      <%= check_box_tag :line_send, true, false, {class: "line_send", id: "line_send"} %>
+    </div>
+  </div>
+  <div class="field-unit hidden_zone" id="field-unit--line_message">
+    <div class="field-unit__label field-unit--required">  
+      <%= label_tag "line_message", "LINEメッセージ" %>
+    </div>
+    <div class="field-unit__field">
+      <%= text_field_tag "line_message", "#{@line_default_message}" ,{class: "line_message", id: "line_message", disabled: "disabled"} %>
+    </div>
+  </div>
+
   <div class="form-actions">
     <%= f.submit %>
   </div>
