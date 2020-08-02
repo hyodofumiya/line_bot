@@ -6,15 +6,19 @@ class TimeCard < ApplicationRecord
   validates :start_time, presence: true
   validates :finish_time, presence: true
   validates :break_time, presence: true
-  validate :starttime_and_finishtime_valid
+  validate :starttime_and_finishtime_valid, if: :date_and_start_and_finish_is_present?
+
+  def date_and_start_and_finish_is_present?
+    self.date.present? and self.start_time.present? and self.finish_time.present?
+  end
 
   #勤務開始時刻が勤務終了時刻よりも前であることを確認するメソッド。カスタムバリデーションとして作成。
   def starttime_and_finishtime_valid
     date = self.date
     start_time = self.start_time
     finish_time = self.finish_time
-    unless (self.date == self.start_time.to_date && self.date == self.finish_time.to_date)||(self.start_time < self.finish_time)
-      errors.add(:finish_time, "終了時刻を開始時刻より後ろに設定してください")
+    unless (self.date == self.start_time.to_date && self.date == self.finish_time.to_date)&&(self.start_time < self.finish_time)
+      errors.add(:finish_time, "を開始時刻より後ろに設定してください")
     end
   end
 

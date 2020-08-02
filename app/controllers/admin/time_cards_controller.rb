@@ -1,5 +1,6 @@
 module Admin
   class TimeCardsController < Admin::ApplicationController
+
     # Overwrite any of the RESTful controller actions to implement custom behavior
     # For example, you may want to send an email after a foo is updated.
     #
@@ -39,6 +40,15 @@ module Admin
     #     permit(dashboard.permitted_attributes).
     #     transform_values { |value| value == "" ? nil : value }
     # end
+
+    private
+
+    def resource_params
+      fixed_start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}"
+      fixed_finish_time = "#{params[:time_card][:date]} #{params[:time_card][:finish_time]}"
+      params.require(resource_class.model_name.param_key).
+        permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time})
+    end
 
     # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
     # for more information

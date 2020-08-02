@@ -1,0 +1,85 @@
+ja:
+  date:
+    formats:
+      default: "%Y/%m/%d"
+      short: "%m/%d"
+      long: "%Y年%m月%d日(%a)"
+    day_names: [日曜日, 月曜日, 火曜日, 水曜日, 木曜日, 金曜日, 土曜日]
+    abbr_day_names: [日, 月, 火, 水, 木, 金, 土]
+    month_names: [~, 1月, 2月, 3月, 4月, 5月, 6月, 7月, 8月, 9月, 10月, 11月, 12月]
+    abbr_month_names: [~, 1月, 2月, 3月, 4月, 5月, 6月, 7月, 8月, 9月, 10月, 11月, 12月]
+  time:
+    formats:
+      default: "%Y/%m/%d %H:%M:%S"
+      short: "%y/%m/%d %H:%M"
+      long: "%Y年%m月%d日(%a) %H時%M分%S秒 %Z"
+    am: "午前"
+    pm: "午後"
+  activerecord:
+    models:
+      # view側： User.model_name.human => "ユーザ" / t("activerecord.models.user")と同じ
+      user: 社員
+      board: 掲示板
+      time_card: 出勤簿
+      standby: 出勤情報
+      richmenu: LINEリッチメニュー
+      group: グループ
+    # model毎に定義したいattributesを記述
+    attributes:
+      user:
+        id: ID
+        # view側： User.human_attribute_name :name => "名前" /　t("activerecord.attributes.user.name")と同じ
+        first_name: 名前
+        family_name: 姓
+        employee_number: 社員番号
+        admin_user: 管理者権限
+        last_name: 姓
+        email: メールアドレス
+        file: プロフィール画像
+        crypted_password: パスワード
+      time_card:
+        user: 社員番号
+        user_id: 社員番号
+        date: 日付
+        work_time: 作業時間（sec)
+        start_time: 出勤時刻
+        finish_time: 退勤時刻
+        break_time: 休憩時間
+      standby: &standby_setting
+        user_id: 社員番号
+        date: 日付
+        start: 出勤時刻
+        break_start: 休憩開始時刻
+        break_sum: 過去の休憩時間
+  administrate:
+    actions:
+      confirm: 本当によろしいですか？
+      destroy: 削除
+      edit: 編集
+      edit_resource: 編集 %{name}
+      show_resource: 参照 %{name}
+      new_resource: 新規 %{name}
+      back: 戻る
+    controller:
+      create:
+        success: "%{resource}を作成しました。"
+      destroy:
+        success: "%{resource}を削除しました。"
+      update:
+        success: "%{resource}を更新しました。"
+    fields:
+      has_many:
+        more: "%{total_count} 件中 %{count} 件表示"
+        none: データがありません
+    form:
+      error: エラー
+      errors: "%{pluralized_errors}のため%{resource_name}を保存できません。"
+    navigation:
+      back_to_app: アプリに戻る
+    search:
+      clear: 検索をクリアする
+      label: サーチ %{resource}
+  # 全てのmodelで共通して使用するattributesを定義
+  attributes:
+    created_at: 作成日
+    updated_at: 更新日

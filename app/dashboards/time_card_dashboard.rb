@@ -56,9 +56,9 @@ class TimeCardDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
   user
   date
-  work_time
   start_time
   finish_time
+  work_time
   break_time
   ].freeze
 
