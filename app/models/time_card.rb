@@ -14,6 +14,7 @@ class TimeCard < ApplicationRecord
 
   #勤務開始時刻が勤務終了時刻よりも前であることを確認するメソッド。カスタムバリデーションとして作成。
   def starttime_and_finishtime_valid
+    binding.pry
     date = self.date
     start_time = self.start_time
     finish_time = self.finish_time

@@ -58,7 +58,6 @@ class TimeCardDashboard < Administrate::BaseDashboard
   date
   start_time
   finish_time
-  work_time
   break_time
   ].freeze
 

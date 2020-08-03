@@ -46,8 +46,11 @@ module Admin
     def resource_params
       fixed_start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}"
       fixed_finish_time = "#{params[:time_card][:date]} #{params[:time_card][:finish_time]}"
+      fixed_break_time = "#{params[:time_card][:break_time].to_i*60}"
+      work_time = (fixed_finish_time.to_time - fixed_start_time.to_time) - params[:time_card][:break_time].to_i*60
+      binding.pry
       params.require(resource_class.model_name.param_key).
-        permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time})
+        permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time, "work_time"=> "#{work_time}", "break_time"=> fixed_break_time})
     end
 
     # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
