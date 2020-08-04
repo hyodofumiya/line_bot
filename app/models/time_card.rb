@@ -7,6 +7,18 @@ class TimeCard < ApplicationRecord
   validates :finish_time, presence: true
   validates :break_time, presence: true
   validate :starttime_and_finishtime_valid, if: :date_and_start_and_finish_is_present?
+  validate :break_time_and_work_time_sum_is_true
+  #休憩時間と作業時間の合計が勤務時間の合計よりも少ないことを確認するメソッド
+  def break_time_and_work_time_sum_is_true
+    if finish_time.present? && start_time.present? && break_time.present? && work_time.present?
+      work_time = self.work_time.to_i
+      break_time = self.break_time.to_i
+      between_start_to_finish_time = self.finish_time.to_time - self.start_time.to_time
+      if between_start_to_finish_time < work_time + break_time
+        errors.add(:break_time, "勤務時間の内訳が異常です。")
+      end
+    end
+  end
 
   def date_and_start_and_finish_is_present?
     self.date.present? and self.start_time.present? and self.finish_time.present?
@@ -14,7 +26,6 @@ class TimeCard < ApplicationRecord
 
   #勤務開始時刻が勤務終了時刻よりも前であることを確認するメソッド。カスタムバリデーションとして作成。
   def starttime_and_finishtime_valid
-    binding.pry
     date = self.date
     start_time = self.start_time
     finish_time = self.finish_time
@@ -43,7 +54,6 @@ class TimeCard < ApplicationRecord
       when standby.start >= timecard.finish_time && $timestamp > timecard.finish_time
         work_time = work_time + timecard.work_time
         break_time = $timestamp - timecard.start_time  - work_time
-        binding.pry
         result = timecard.update(work_time: work_time, finish_time: $timestamp, break_time: break_time)
         #DBに保存できたか確認
         if result == true
