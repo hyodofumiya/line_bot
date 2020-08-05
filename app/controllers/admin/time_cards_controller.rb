@@ -25,7 +25,20 @@ module Admin
       end
     end
 
-
+    def update
+      if requested_resource.update(resource_params)
+        requested_resource[:break_time] /= 60
+        redirect_to(
+          [namespace, requested_resource],
+          notice: translate_with_resource("update.success"),
+        )
+      else
+        requested_resource[:break_time] /= 60
+        render :edit, locals: {
+          page: Administrate::Page::Form.new(dashboard, requested_resource),
+        }
+      end
+    end
 
     # Override this method to specify custom lookup behavior.
     # This will be used to set the resource for the `show`, `edit`, and `update`
@@ -68,6 +81,12 @@ module Admin
       work_time = (fixed_finish_time.to_time - fixed_start_time.to_time) - params[:time_card][:break_time].to_i*60 if fixed_start_time.present? && fixed_finish_time.present? && fixed_break_time.present?
       params.require(resource_class.model_name.param_key).
         permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time, "work_time"=> "#{work_time}", "break_time"=> fixed_break_time})
+    end
+
+    def requested_resource
+      @requested_resource ||= find_resource(params[:id]).tap do |resource|
+        authorize_resource(resource)
+      end
     end
 
     #lineにプッシュメッセージを送信するメソッド
