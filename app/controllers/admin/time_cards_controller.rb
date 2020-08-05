@@ -32,6 +32,7 @@ module Admin
           [namespace, requested_resource],
           notice: translate_with_resource("update.success"),
         )
+        send_line(User.find(params[:time_card][:user_id]）.line_id, "#{params[:line_messsage]}", "#{params[:time_card][:date]}の出勤簿にアクションがありました")
       else
         requested_resource[:break_time] /= 60
         render :edit, locals: {
@@ -93,7 +94,6 @@ module Admin
     #第一引数 送信先のline_id
     #第二引数 送信するメッセージ
     #第三引数 タイトルに表示するメッセージ　例：出勤簿にアクションが付きました
-  
     def send_line(user_line_id, return_message, title_message)
       line_send = params[:line_send]
       if line_send == "true"
