@@ -25,6 +25,16 @@ module Admin
       end
     end
 
+    def edit
+      binding.pry
+      requested_resource[:break_time] /= 60
+      requested_resource[:start_time] = requested_resource[:start_time].strftime("%H:%M")
+      requested_resource[:finish_time] = requested_resource[:finish_time].strftime("%H:%M")
+      render locals: {
+        page: Administrate::Page::Form.new(dashboard, requested_resource),
+      }
+    end
+
     def update
       if requested_resource.update(resource_params)
         requested_resource[:break_time] /= 60
@@ -32,7 +42,7 @@ module Admin
           [namespace, requested_resource],
           notice: translate_with_resource("update.success"),
         )
-        send_line(User.find(params[:time_card][:user_id]）.line_id, "#{params[:line_messsage]}", "#{params[:time_card][:date]}の出勤簿にアクションがありました")
+        send_line(User.find(params[:time_card][:user_id]).line_id, "#{params[:line_messsage]}", "#{params[:time_card][:date]}の出勤簿にアクションがありました")
       else
         requested_resource[:break_time] /= 60
         render :edit, locals: {
@@ -40,6 +50,8 @@ module Admin
         }
       end
     end
+
+
 
     # Override this method to specify custom lookup behavior.
     # This will be used to set the resource for the `show`, `edit`, and `update`

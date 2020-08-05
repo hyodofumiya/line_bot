@@ -16,4 +16,9 @@ using the formatting options given in the resource's dashboard.
 [1]: http://www.rubydoc.info/gems/administrate/Administrate/Field/Number
 %>
 
-<%= field.to_s %>
+
+<% if field.attribute == :work_time or field.attribute == :break_time or field.attribute == :break_sum %>
+  <%= "#{field.data/60}分" if field.data.present? %>
+<% else%>
+  <%= field.data %>
+<% end%>
