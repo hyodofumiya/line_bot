@@ -2,26 +2,39 @@ class TimeCard < ApplicationRecord
   belongs_to :user
 
   validates :date, presence: true
-  validates :work_time, presence: true
   validates :start_time, presence: true
   validates :finish_time, presence: true
-  validates :break_time, presence: true
+  validates :break_time, presence: true 
+  validates :work_time, presence: { message: "が異常です"}, if: Proc.new { |resource| resource.start_time.present? and resource.finish_time.present? }
+  validate :no_same_date_record_of_user, if: Proc.new { |resource| resource.date.present? and resource.user_id.present? }
   validate :starttime_and_finishtime_valid, if: :date_and_start_and_finish_is_present?
   validate :break_time_and_work_time_sum_is_true
+
+  #ユーザーの同日レコードが存在しないことを確認するメソッド
+  def no_same_date_record_of_user
+    timecard_record = TimeCard.find_by(user_id: self.user_id, date: self.date)
+    if timecard_record.present?
+      errors.add(:base, "すでに同日のレコードが存在します")
+    end
+    binding.pry
+  end
+
   #休憩時間と作業時間の合計が勤務時間の合計よりも少ないことを確認するメソッド
   def break_time_and_work_time_sum_is_true
-    if finish_time.present? && start_time.present? && break_time.present? && work_time.present?
-      work_time = self.work_time.to_i
+    if finish_time.present? && start_time.present? && break_time.present?
       break_time = self.break_time.to_i
       between_start_to_finish_time = self.finish_time.to_time - self.start_time.to_time
-      if between_start_to_finish_time < work_time + break_time
-        errors.add(:break_time, "勤務時間の内訳が異常です。")
+      if work_time.present?
+        work_time = self.work_time.to_i
+        errors.add(:base, "勤務時間の内訳が異常です。") if between_start_to_finish_time < work_time + break_time
+      else
+        errors.add(:base, "勤務時間の内訳が異常です。") if between_start_to_finish_time <= break_time
       end
     end
   end
 
   def date_and_start_and_finish_is_present?
-    self.date.present? and self.start_time.present? and self.finish_time.present?
+    self.start_time.present? and self.finish_time.present?
   end
 
   #勤務開始時刻が勤務終了時刻よりも前であることを確認するメソッド。カスタムバリデーションとして作成。
@@ -30,7 +43,7 @@ class TimeCard < ApplicationRecord
     start_time = self.start_time
     finish_time = self.finish_time
     unless (self.date == self.start_time.to_date && self.date == self.finish_time.to_date)&&(self.start_time < self.finish_time)
-      errors.add(:finish_time, "を開始時刻より後ろに設定してください")
+      errors.add(:base, "退勤時刻を出勤時刻より遅くしてください")
     end
   end
 

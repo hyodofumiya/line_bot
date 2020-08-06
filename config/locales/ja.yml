@@ -41,7 +41,7 @@ ja:
         user: 社員番号
         user_id: 社員番号
         date: 日付
-        work_time: 作業時間（sec)
+        work_time: 作業時間
         start_time: 出勤時刻
         finish_time: 退勤時刻
         break_time: 休憩時間
