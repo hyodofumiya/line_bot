@@ -19,5 +19,11 @@ By default, the input is a text field.
   <%= f.label field.attribute %>
 </div>
 <div class="field-unit__field">
-  <%= f.number_field field.attribute, min: 0, max: 60*24, step: 1 %>
+  <% if field.attribute == :break_time %>
+    <%= f.number_field field.attribute, min: 0, max: 60*24, step: 1, maxlength: 4, required: true %>
+  <% elsif field.attribute == :employee_number %>
+    <%= f.number_field field.attribute, min: 10000, max: 99999, step: 1, maxlength: 5, required: true %>
+  <% else %>
+    <%= f.number_field field.attribute, min: 0, step: 1 %>
+  <% end %>
 </div>
