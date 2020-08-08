@@ -8,6 +8,34 @@ module Admin
     #   send_foo_updated_email(requested_resource)
     # end
 
+    def create
+      resource = resource_class.new(resource_params)
+      if resource.save
+        redirect_to(
+          [namespace, resource],
+          notice: translate_with_resource("create.success"),
+        )
+        send_line(User.find(params[:user][:line_id]).line_id, "#{params[:line_message]}", "管理者がユーザー情報を登録しました")
+      else 
+        render action: :new, locals: {
+          page: Administrate::Page::Form.new(dashboard, resource),
+        }
+
+      end
+    end
+
+    private
+
+    def resource_params
+      params.require(resource_class.model_name.param_key).
+        permit(dashboard.permitted_attributes).merge!({"email"=>"", "admin_user"=>false})
+    end
+
+    def requested_resource
+      @requested_resource ||= find_resource(params[:id]).tap do |resource|
+        authorize_resource(resource)
+      end
+    end
     # Override this method to specify custom lookup behavior.
     # This will be used to set the resource for the `show`, `edit`, and `update`
     # actions.
