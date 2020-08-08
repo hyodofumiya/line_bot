@@ -26,7 +26,6 @@ module Admin
     end
 
     def edit
-      binding.pry
       requested_resource[:break_time] /= 60
       requested_resource[:start_time] = requested_resource[:start_time].strftime("%H:%M")
       requested_resource[:finish_time] = requested_resource[:finish_time].strftime("%H:%M")
