@@ -4,47 +4,54 @@ class TimeCard < ApplicationRecord
   validates :date, presence: true
   validates :start_time, presence: true
   validates :finish_time, presence: true
-  validates :break_time, presence: true 
+  validates :break_time, presence: true
+  validates :break_time, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 60*60*24}, if: Proc.new { |resource| resource.break_time.present?}
   validates :work_time, presence: { message: "が異常です"}, if: Proc.new { |resource| resource.start_time.present? and resource.finish_time.present? }
-  validate :no_same_date_record_of_user, if: Proc.new { |resource| resource.date.present? and resource.user_id.present? }
-  validate :starttime_and_finishtime_valid, if: :date_and_start_and_finish_is_present?
+  validates :work_time, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 60*60*24}, if: Proc.new { |resource| resource.work_time.present? and resource.start_time.present? and resource.finish_time.present?}
+  validate :no_same_date_record_of_user, if: Proc.new { |resource| resource.date.present? and resource.user.present? }
+  validate :start_time_is_before_finish_time, if: Proc.new { |resource| resource.start_time.present? and resource.finish_time.present?}
+  validate :check_start_time_date, if: Proc.new {|resource| resource.date.present? and resource.start_time.present?}
+  validate :check_finish_time_date, if: Proc.new {|resource| resource.date.present? and resource.finish_time.present?}
   validate :break_time_and_work_time_sum_is_true
 
   #ユーザーの同日レコードが存在しないことを確認するメソッド
   def no_same_date_record_of_user
-    timecard_record = TimeCard.find_by(user_id: self.user_id, date: self.date)
-    if timecard_record.present?
-      errors.add(:base, "すでに同日のレコードが存在します")
+    timecard_records = TimeCard.where(user_id: self.user_id, date: self.date)
+    same_date_record = timecard_records.select {|t| t.id != self.id }
+    if same_date_record.present?
+      errors.add(:base, "同日の勤怠簿が存在します")
     end
-    binding.pry
   end
 
   #休憩時間と作業時間の合計が勤務時間の合計よりも少ないことを確認するメソッド
   def break_time_and_work_time_sum_is_true
-    if finish_time.present? && start_time.present? && break_time.present?
+    if self.finish_time.present? && self.start_time.present? && self.break_time.present?
       break_time = self.break_time.to_i
       between_start_to_finish_time = self.finish_time.to_time - self.start_time.to_time
       if work_time.present?
         work_time = self.work_time.to_i
-        errors.add(:base, "勤務時間の内訳が異常です。") if between_start_to_finish_time < work_time + break_time
+        errors.add(:base, "勤務時間の内訳が異常です") if between_start_to_finish_time < work_time + break_time
       else
-        errors.add(:base, "勤務時間の内訳が異常です。") if between_start_to_finish_time <= break_time
+        errors.add(:base, "勤務時間の内訳が異常です") if between_start_to_finish_time <= break_time
       end
     end
   end
 
-  def date_and_start_and_finish_is_present?
-    self.start_time.present? and self.finish_time.present?
+  #勤務開始時刻が勤務終了時刻よりも前であることを確認する
+  def start_time_is_before_finish_time
+    errors.add(:base, "退勤時刻を出勤時刻より遅くしてください") if self.start_time >= self.finish_time
   end
 
-  #勤務開始時刻が勤務終了時刻よりも前であることを確認するメソッド。カスタムバリデーションとして作成。
-  def starttime_and_finishtime_valid
-    date = self.date
-    start_time = self.start_time
-    finish_time = self.finish_time
-    unless (self.date == self.start_time.to_date && self.date == self.finish_time.to_date)&&(self.start_time < self.finish_time)
-      errors.add(:base, "退勤時刻を出勤時刻より遅くしてください")
-    end
+  #日付と出勤時刻の日付が同一であることを確認する
+  def check_start_time_date
+    start_time_date = self.start_time.to_date
+    errors.add(:start_time, "の日付が勤務日と違います") if self.date != start_time_date
+  end
+
+  #日付と退勤時刻が同一であることを確認する
+  def check_finish_time_date
+    finish_time_date = self.finish_time.to_date
+    errors.add(:finish_time, "の日付が勤務日と違います") if self.date != finish_time_date
   end
 
   def self.create_new_record_flow(work_time, standby, user)

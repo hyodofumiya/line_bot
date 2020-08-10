@@ -10,7 +10,6 @@ module Admin
 
     def create
       resource = resource_class.new(resource_params)
-      binding.pry
       if resource.save
         redirect_to(
           [namespace, resource],

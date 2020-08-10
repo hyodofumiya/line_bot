@@ -66,12 +66,10 @@ RSpec.describe User, type: :model do
         expect(user.errors[:family_name]).to include("は全角カタカナのみ使用できます")
       end
     end
-    
 
     context "family_nameが異常" do
       it "存在しない場合無効" do
         user = FactoryBot.build(:user, first_name: nil)
-        expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
         user.valid?
         expect(user.errors[:first_name]).to include("を入力してください")
       end
@@ -80,21 +78,22 @@ RSpec.describe User, type: :model do
         user.valid?
         expect(user.errors[:first_name]).to include("は最大15文字です")
       end
-      user = FactoryBot.build(:user, first_name: "メイa")
-      user.valid?
-      expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
-    end
-    it "半角英字が含まれている場合無効" do
-    it "半角数字が含まれている場合無効" do
-      user = FactoryBot.build(:user, first_name: "メイ1")
-      user.valid?
-      expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
+      it "半角英字が含まれている場合無効" do
+        user = FactoryBot.build(:user, first_name: "メイa")
+        user.valid?
+        expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
+      end
+      it "半角数字が含まれている場合無効" do
+        user = FactoryBot.build(:user, first_name: "メイ1")
+        user.valid?
+        expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
+      end
       it "半角カナが含まれている場合無効" do
         user = FactoryBot.build(:user, first_name: "ｾｲ")
         user.valid?
+        expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
       end
       it "全角英字が含まれている場合無効" do
-      end
         user = FactoryBot.build(:user, first_name: "メイａ")
         user.valid?
         expect(user.errors[:first_name]).to include("は全角カタカナのみ使用できます")
@@ -141,52 +140,52 @@ RSpec.describe User, type: :model do
       it "5桁未満の場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は5ケタの半角数字で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "6桁以上の場合無効" do
         user = FactoryBot.build(:user, employee_number: "123456")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は5ケタの半角数字で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "小数点が存在する場合無効" do
-        user = FactoryBot.build(:user, employee_number: "11111.1")
+        user = FactoryBot.build(:user, employee_number: 11.1)
         user.valid?
-        expect(user.errors[:employee_number]).to include("は整数で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "全角数字の場合無効" do
         user = FactoryBot.build(:user, employee_number: "１１１１１")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "記号が含まれている場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111@")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "平仮名が含まれている場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111あ")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "半角カタカナが含まれている場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111ｱ")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "全角カタカナが含まれている場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111ア")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "半角英字が含まれる場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111a")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
       it "全角英字が含まれる場合無効" do
         user = FactoryBot.build(:user, employee_number: "1111ｑ")
         user.valid?
-        expect(user.errors[:employee_number]).to include("は数値で入力してください")
+        expect(user.errors[:employee_number]).to include("は5桁の半角数字で入力してください")
       end
     end
     

@@ -18,7 +18,7 @@ module Admin
         )
         send_line(User.find(params[:time_card][:user_id]).line_id, "#{params[:line_message]}", "#{params[:time_card][:date]}の出勤簿にアクションがありました。")
       else
-        resource[:break_time] /= 60
+        resource[:break_time] /= 60 if resource[:break_time].present?
         render action: :new, locals: {
           page: Administrate::Page::Form.new(dashboard, resource),
         }
@@ -26,9 +26,9 @@ module Admin
     end
 
     def edit
-      requested_resource[:break_time] /= 60
-      requested_resource[:start_time] = requested_resource[:start_time].strftime("%H:%M")
-      requested_resource[:finish_time] = requested_resource[:finish_time].strftime("%H:%M")
+      requested_resource[:break_time] /= 60 if resource[:break_time].present?
+      requested_resource[:start_time] = requested_resource[:start_time].strftime("%H:%M") if requested_resource[:start_time].present?
+      requested_resource[:finish_time] = requested_resource[:finish_time].strftime("%H:%M") if requested_resource[:finish_time].present?
       render locals: {
         page: Administrate::Page::Form.new(dashboard, requested_resource),
       }
@@ -36,61 +36,27 @@ module Admin
 
     def update
       if requested_resource.update(resource_params)
-        requested_resource[:break_time] /= 60
+        requested_resource[:break_time] /= 60 if requested_resource[:break_time].present?
         redirect_to(
           [namespace, requested_resource],
           notice: translate_with_resource("update.success"),
         )
         send_line(User.find(params[:time_card][:user_id]).line_id, "#{params[:line_messsage]}", "#{params[:time_card][:date]}の出勤簿にアクションがありました")
       else
-        requested_resource[:break_time] /= 60
+        requested_resource[:break_time] /= 60 if requested_resource[:break_time].present?
         render :edit, locals: {
           page: Administrate::Page::Form.new(dashboard, requested_resource),
         }
       end
     end
 
-
-
-    # Override this method to specify custom lookup behavior.
-    # This will be used to set the resource for the `show`, `edit`, and `update`
-    # actions.
-    #
-    # def find_resource(param)
-    #   Foo.find_by!(slug: param)
-    # end
-
-    # The result of this lookup will be available as `requested_resource`
-
-    # Override this if you have certain roles that require a subset
-    # this will be used to set the records shown on the `index` action.
-    #
-    # def scoped_resource
-    #   if current_user.super_admin?
-    #     resource_class
-    #   else
-    #     resource_class.with_less_stuff
-    #   end
-    # end
-
-    # Override `resource_params` if you want to transform the submitted
-    # data before it's persisted. For example, the following would turn all
-    # empty values into nil values. It uses other APIs such as `resource_class`
-    # and `dashboard`:
-    #
-    # def resource_params
-    #   params.require(resource_class.model_name.param_key).
-    #     permit(dashboard.permitted_attributes).
-    #     transform_values { |value| value == "" ? nil : value }
-    # end
-
     private
 
     def resource_params
       fixed_start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}"
       fixed_finish_time = "#{params[:time_card][:date]} #{params[:time_card][:finish_time]}"
-      fixed_break_time = "#{params[:time_card][:break_time].to_i*60}"
-      work_time = (fixed_finish_time.to_time - fixed_start_time.to_time) - params[:time_card][:break_time].to_i*60 if fixed_start_time.present? && fixed_finish_time.present? && fixed_break_time.present?
+      fixed_break_time = params[:time_card][:break_time].present? ? params[:time_card][:break_time].to_i*60 : 0 
+      work_time = fixed_start_time.present? && fixed_finish_time.present? ? (fixed_finish_time.to_time - fixed_start_time.to_time) - fixed_break_time : 0
       params.require(resource_class.model_name.param_key).
         permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time, "work_time"=> "#{work_time}", "break_time"=> fixed_break_time})
     end

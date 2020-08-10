@@ -114,7 +114,6 @@ class Standby < ApplicationRecord
       all_breaktime_sum = this_breaktime_sum
     end
     update_record = self.update(break_start: nil, break_sum: all_breaktime_sum.to_i)
-    binding.pry
     return update_record
   end
 
