@@ -108,12 +108,11 @@ module Admin
     def send_line(user_line_id, return_message, title_message)
       line_send = params[:line_send]
       if line_send == "true"
-        client.push_message(user_line_id, return_change_timecard_message(return_message, title_message))
+        client.push_message(user_line_id, change_timecard_message(return_message, title_message))
       end
     end
 
-    def return_change_timecard_message(return_message, title_message)
-      binding.pry
+    def change_timecard_message(return_message, title_message)
       {
         "type": "flex",
         "altText": "管理者がアクションしました",
