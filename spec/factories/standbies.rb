@@ -2,9 +2,9 @@ FactoryBot.define do
   datetime = DateTime.now
   factory :standby do
     association :user
-    date {datetime.to_date}
-    start {datetime.since(-1.hour)}
-    break_start {datetime.since(-30.minutes)}
-    break_sum {60}
+    date { Date.today}
+    start { Time.parse(Date.today.to_s + " 00:00:00")}
+    break_start { Time.parse(Date.today.to_s + " 01:00:00")}
+    break_sum {30}
   end
 end

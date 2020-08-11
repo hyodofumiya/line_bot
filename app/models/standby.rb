@@ -6,7 +6,7 @@ class Standby < ApplicationRecord
   validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
-  validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 60*60*24}
+  validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 86400}
   validate :date_is_today, if: Proc.new { |resource| resource.date.present?}
   validate :start_is_today, if: Proc.new { |resource| resource.start.present?}
   validate :break_start_is_today_and_after_start, if: Proc.new {|resource| resource.break_start.present?}
@@ -24,13 +24,15 @@ class Standby < ApplicationRecord
   def break_start_is_today_and_after_start
     if self.break_start.to_date != Date.today
       errors.add(:break_start, "は今日の時刻を入力してください")
-    elsif self.break_start < self.start
-      errors.add(:break_start, "を開始時刻より後にしてください")
+    elsif self.start.present?
+      if self.break_start < self.start
+        errors.add(:break_start, "を開始時刻より後にしてください")
+      end
     end
   end
 
   def break_sum_is_less_than_from_start
-    from_start_to_now = DateTime.now - self.start
+    from_start_to_now = Time.now - self.start.to_time
     if self.break_sum > from_start_to_now and self.break_sum < 60*60*24
       errors.add(:break_sum, "を勤務時間以内にしてください")
     end

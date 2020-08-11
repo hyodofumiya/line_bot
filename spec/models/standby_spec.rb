@@ -3,15 +3,15 @@ require 'rails_helper'
 RSpec.describe Standby, type: :model do
   describe "正常" do
     it "user_id, date, startが存在する時有効" do
-      standby = FactoryBot.create(:standby, break_start: nil, break_sum: nil)
+      standby = FactoryBot.build(:standby, break_start: nil, break_sum: nil)
       expect(standby).to be_valid
     end
     it "user_id, date, start,break_startが存在する時有効" do
-      standby = FactoryBot.create(:standby, break_sum: nil)
+      standby = FactoryBot.build(:standby, break_sum: nil)
       expect(standby).to be_valid
     end
     it "user_id, date, start, break_start, break_sumが存在する時有効" do
-      standby = FactoryBot.create(:standby)
+      standby = FactoryBot.build(:standby)
       expect(standby).to be_valid
     end
   end
@@ -90,37 +90,36 @@ RSpec.describe Standby, type: :model do
         it "半角英字の場合無効" do        
           standby = FactoryBot.build(:standby, break_sum: "a")
           standby.valid?
-          expect(standby.errors[:break_sum]).to include("は整数で入力してください")
+          expect(standby.errors[:break_sum]).to include("は数字で入力してください")
         end
         it "半角カタカナの場合無効" do
           standby = FactoryBot.build(:standby, break_sum: "ﾃｽﾄ")
           standby.valid?
-          expect(standby.errors[:break_sum]).to include("は整数で入力してください")
+          expect(standby.errors[:break_sum]).to include("は数字で入力してください")
         end
         it "全角カタカナの場合無効" do
           standby = FactoryBot.build(:standby, break_sum: "テスト")
           standby.valid?
-          expect(standby.errors[:break_sum]).to include("は整数で入力してください")
+          expect(standby.errors[:break_sum]).to include("は数字で入力してください")
         end
         it "平仮名の場合無効" do
           standby = FactoryBot.build(:standby, break_sum: "てすと")
           standby.valid?
-          expect(standby.errors[:break_sum]).to include("は整数で入力してください")
+          expect(standby.errors[:break_sum]).to include("は数字で入力してください")
         end
         it "全角英字の場合無効" do
           standby = FactoryBot.build(:standby, break_sum: "ａ")
           standby.valid?
-          expect(standby.errors[:break_sum]).to include("は整数で入力してください")
+          expect(standby.errors[:break_sum]).to include("は数字で入力してください")
         end
         it "記号の場合無効" do
           standby = FactoryBot.build(:standby, break_sum: "@")
           standby.valid?
-          expect(standby.errors[:break_sum]).to include("は整数で入力してください")
+          expect(standby.errors[:break_sum]).to include("は数字で入力してください")
         end
       end
       it "break_sum > now - startの場合無効" do
-        datetime = DateTime.now
-        standby = FactoryBot.build(:standby, date: datetime.to_date, start: datetime.since(-1.hour), break_sum: datetime - datetime.since(-70.minutes))
+        standby = FactoryBot.build(:standby, date: Date.today, start: Time.now.since(-60.minutes), break_start: Time.now.since(-20.minutes) ,break_sum: 70*60)
         standby.valid?
         expect(standby.errors[:break_sum]).to include( "を勤務時間以内にしてください")
       end
@@ -129,7 +128,7 @@ RSpec.describe Standby, type: :model do
     context "その他の異常" do
       it "userのレコードが他に存在する場合は無効" do
         standby1 = FactoryBot.create(:standby)
-        standby2 = FactoryBot.build(:standby, user_id: standby1.user)
+        standby2 = FactoryBot.build(:standby, user_id: standby1.user_id)
         standby2.valid?
         expect(standby2.errors[:base]).to include("すでに別の出勤情報が登録されています")
       end
