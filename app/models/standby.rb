@@ -2,11 +2,50 @@ class Standby < ApplicationRecord
   require "date"
 
   belongs_to :user
-
+  
   validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
   validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 60*60*24}
+  validate :date_is_today, if: Proc.new { |resource| resource.date.present?}
+  validate :start_is_today, if: Proc.new { |resource| resource.start.present?}
+  validate :break_start_is_today_and_after_start, if: Proc.new {|resource| resource.break_start.present?}
+  validate :break_sum_is_less_than_from_start, if: Proc.new { |resource| resource.break_sum.present? and resource.start.present?}
+  validate :no_record_same_user
+
+  def date_is_today
+    errors.add(:date, "は今日を入力してください") unless self.date == Date.today
+  end
+
+  def start_is_today
+    errors.add(:start, "は今日の時刻を入力してください") unless self.start.to_date == Date.today
+  end
+
+  def break_start_is_today_and_after_start
+    if self.break_start.to_date != Date.today
+      errors.add(:break_start, "は今日の時刻を入力してください")
+    elsif self.break_start < self.start
+      errors.add(:break_start, "を開始時刻より後にしてください")
+    end
+  end
+
+  def break_sum_is_less_than_from_start
+    from_start_to_now = DateTime.now - self.start
+    if self.break_sum > from_start_to_now and self.break_sum < 60*60*24
+      errors.add(:break_sum, "を勤務時間以内にしてください")
+    end
+  end
+
+  #同一userのレコードが存在していないことを確認するバリデーション
+  def no_record_same_user
+    if self.user_id.present?
+      standby_record = Standby.where(user_id: self.user_id)
+      another_standby_record = standby_record.select {|s| s.id != self.id }
+      if another_standby_record.present?
+        errors.add(:base, "すでに別の出勤情報が登録されています")
+      end
+    end
+  end
 
   #standbyレコードを作成するメソッド
   def self.add_new_record

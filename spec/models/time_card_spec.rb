@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe TimeCard, type: :model do
   describe '正常' do
     it "user_id, date, work_time, start_time, finish_time, break_timeがある場合有効" do
+      timecard = FactoryBot.create(:time_card)
+      expect(timecard).to be_valid
     end
   end
 
