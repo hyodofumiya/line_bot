@@ -28,4 +28,9 @@ def create_dammy_data
   end
 end
 
+def create_admin_user
+  User.create( employee_number: 99999, family_name: "テスト", first_name: "テスト", line_id: "000", email: "sample@sample.com", password: "testtest", admin_user: true)
+end
+
 create_richmenu_data
+create_admin_user
