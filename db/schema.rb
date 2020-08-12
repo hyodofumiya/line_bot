@@ -10,36 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_23_073817) do
+ActiveRecord::Schema.define(version: 2020_07_23_031817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "active_admin_comments", force: :cascade do |t|
-    t.string "namespace"
-    t.text "body"
-    t.string "resource_type"
-    t.bigint "resource_id"
-    t.string "author_type"
-    t.bigint "author_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
-    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
-    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
-  end
-
-  create_table "admin_users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_admin_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
-  end
 
   create_table "groups", force: :cascade do |t|
     t.text "line_id", null: false
@@ -53,20 +27,6 @@ ActiveRecord::Schema.define(version: 2020_07_23_073817) do
     t.string "explanation", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "social_profiles", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "provider"
-    t.string "uid"
-    t.string "name"
-    t.text "other"
-    t.text "credentials"
-    t.text "raw_info"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["provider", "uid"], name: "index_social_profiles_on_provider_and_uid", unique: true
-    t.index ["user_id"], name: "index_social_profiles_on_user_id"
   end
 
   create_table "standbies", force: :cascade do |t|
@@ -84,7 +44,7 @@ ActiveRecord::Schema.define(version: 2020_07_23_073817) do
     t.integer "work_time", null: false
     t.datetime "start_time", null: false
     t.datetime "finish_time", null: false
-    t.integer "break_time"
+    t.integer "break_time", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_time_cards_on_user_id"
@@ -107,17 +67,16 @@ ActiveRecord::Schema.define(version: 2020_07_23_073817) do
     t.boolean "admin_user", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
+    t.string "email"
+    t.string "encrypted_password", default: ""
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email"
     t.index ["employee_number", "line_id"], name: "index_users_on_employee_number_and_line_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "social_profiles", "users"
   add_foreign_key "standbies", "users", on_delete: :cascade
   add_foreign_key "user_groups", "groups"
   add_foreign_key "user_groups", "users"
