@@ -13,6 +13,21 @@
   color: #ffffff;
 }
 
+#line_login:hover{
+  background-color: #00e000;
+  color: #fff;
+}
+
+#line_login:focus{
+  background-color: #00b300;
+  color: #fff;
+}
+
+#line_login:disabled{
+  background-color: #c6c6c6;
+  color: #fff;
+}
+
 
 #line_login .sns_btn_inner{
   color: #ffffff;

@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get 'timecard/edit' => 'time_cards#edit'
   post 'time_cards/:id(.:format)' => 'time_cards#update'
   post 'timecard/set_record' => 'time_cards#set_record_for_form'
+  get '/user_session/login' => 'user_session#new'
   resources :time_cards
+
 
 end

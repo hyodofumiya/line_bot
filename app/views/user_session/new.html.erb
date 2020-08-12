@@ -1,0 +1,18 @@
+  <body>
+  <div class="wrapper">
+
+    <div class="container">
+      <h1 class="app_title">勤怠管理アプリ</h1>
+      <div class="sns_login_btn">
+        <%= link_to (user_line_omniauth_authorize_path), class: "user_login_link", id: "line_login" do %>
+          <div class="line_button_border">
+            <%= image_tag "/line_132.png", class: "line_logo" %>
+          </div>
+          <div class="line_button_text">
+            LINEでログイン
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</body>
