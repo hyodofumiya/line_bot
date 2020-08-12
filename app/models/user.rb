@@ -17,6 +17,6 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :first_name, format: {with: /\A([ァ-ン]|ー)+\z/, message: "は全角カタカナのみ使用できます"}, length: { in: 1..15, too_long: "は最大%{count}文字です", too_short: "を入力してください" }, if: Proc.new{ |resource| resource.first_name.present?}
   validates :line_id, uniqueness: true, presence: true
-  validates :email, allow_blank: true, uniqueness: true, format: {with: /\A\S+@\S+\.\S+\z/, message: "フォーマットが間違っています"}
+  validates :email, uniqueness: true, format: {with: /\A\S+@\S+\.\S+\z/, message: "フォーマットが間違っています"}, if: Proc.new{ |resource| resource.email.present? }
 
 end
