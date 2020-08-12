@@ -12,12 +12,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = User.find_by(line_id: @omniauth['uid'])
       if user
         bypass_sign_in(user)
-        redirect_to admin_root_path
+        redirect_to admin_time_cards_path
       else
-        redirect_to new_user_session_path
+        @errors = ["社員情報が見つかりません。", "先に社員登録をしてください。"]
+        render "user_session/new"
       end
     else
-      redirect_to new_user_session_path
+      @errors = ["lineログインできませんでした。"]
+      render "user_session/new"
     end
     
   end
