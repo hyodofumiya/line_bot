@@ -34,11 +34,14 @@ module Admin
     # empty values into nil values. It uses other APIs such as `resource_class`
     # and `dashboard`:
     #
-    # def resource_params
-    #   params.require(resource_class.model_name.param_key).
-    #     permit(dashboard.permitted_attributes).
-    #     transform_values { |value| value == "" ? nil : value }
-    # end
+    def scoped_resource
+      if current_user.admin_user?
+        resource_class
+      else
+        
+        super.where(user_id: current_user.id)
+      end
+    end
 
     # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
     # for more information

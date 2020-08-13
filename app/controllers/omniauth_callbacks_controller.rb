@@ -7,7 +7,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def basic_action
     @omniauth = request.env['omniauth.auth']
-    binding.pry
+    
     if @omniauth.present?
       user = User.find_by(line_id: @omniauth['uid'])
       if user

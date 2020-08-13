@@ -26,12 +26,14 @@ module Admin
     end
 
     def edit
-      requested_resource[:break_time] /= 60 if resource[:break_time].present?
+      
+      requested_resource[:break_time] /= 60 if requested_resource[:break_time].present?
       requested_resource[:start_time] = requested_resource[:start_time].strftime("%H:%M") if requested_resource[:start_time].present?
       requested_resource[:finish_time] = requested_resource[:finish_time].strftime("%H:%M") if requested_resource[:finish_time].present?
       render locals: {
         page: Administrate::Page::Form.new(dashboard, requested_resource),
       }
+      
     end
 
     def update
@@ -64,6 +66,14 @@ module Admin
     def requested_resource
       @requested_resource ||= find_resource(params[:id]).tap do |resource|
         authorize_resource(resource)
+      end
+    end
+
+    def scoped_resource
+      if current_user.admin_user?
+        resource_class
+      else
+        super.where(user_id: current_user.id)
       end
     end
 

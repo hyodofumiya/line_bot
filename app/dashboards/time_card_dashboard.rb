@@ -81,4 +81,8 @@ class TimeCardDashboard < Administrate::BaseDashboard
   # def display_resource(time_card)
   #   "TimeCard ##{time_card.id}"
   # end
+  def display_resource(time_card)
+    
+    "(#{time_card.date})"
+  end
 end
