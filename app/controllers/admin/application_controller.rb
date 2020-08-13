@@ -15,8 +15,9 @@ module Admin
     def request_path
       @path = controller_path + '#' + action_name
       def @path.is(*str)
-          str.map{|s| self.include?(s)}.include?(true)
+        str.map{|s| self.include?(s)}.include?(true)
       end
+    end
 
     def set_default_line_message
       case
@@ -30,13 +31,18 @@ module Admin
     end
 
     def user_category
-      @user_admin = current_user.admin_user
+      @admin = current_user.admin_user?
     end
-  end
-    # Override this value to specify the number of elements to display at a time
-    # on index pages. Defaults to 20.
-    # def records_per_page
-    #   params[:per_page] || 20
-    # end
+
+    def valid_action?(name, resource = resource_class)
+      if @admin
+        true
+      else
+        valid_array = [["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
+        !!valid_array.detect do |controller, action|
+          controller == resource.to_s.underscore.pluralize && action == name.to_s
+        end
+      end
+    end
   end
 end

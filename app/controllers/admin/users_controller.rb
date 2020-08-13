@@ -1,15 +1,9 @@
 module Admin
   class UsersController < Admin::ApplicationController
-    # Overwrite any of the RESTful controller actions to implement custom behavior
-    # For example, you may want to send an email after a foo is updated.
-    #
-    # def update
-    #   super
-    #   send_foo_updated_email(requested_resource)
-    # end
+    before_action :admin_user
 
     def index
-      if current_user.admin_user?
+      if @admin
         super
       else
         redirect_back(fallback_location: admin_root_path)
@@ -17,7 +11,6 @@ module Admin
     end
 
     def show
-      
       render locals: {
         page: Administrate::Page::Show.new(dashboard, requested_resource),
       }
@@ -25,7 +18,6 @@ module Admin
 
     def create
       resource = resource_class.new(resource_params)
-      
       if resource.save
         redirect_to(
           [namespace, resource],
@@ -107,33 +99,17 @@ module Admin
       }
     end
 
-
     def client
       client ||= Line::Bot::Client.new { |config|
         config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
         config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
       }
     end
-    # Override this method to specify custom lookup behavior.
-    # This will be used to set the resource for the `show`, `edit`, and `update`
-    # actions.
-    #
-    # def find_resource(param)
-    #   Foo.find_by!(slug: param)
-    # end
 
-    # The result of this lookup will be available as `requested_resource`
-
-    # Override this if you have certain roles that require a subset
-    # this will be used to set the records shown on the `index` action.
-
-    def scoped_resource
-      if current_user.admin_user?
-        resource_class
-      else
-        super.where(id: current_user.id)
-      end
+    def admin_user
+      redirect_back(fallback_location: admin_root_path) unless @admin
     end
 
+    
   end
 end

@@ -35,10 +35,9 @@ module Admin
     # and `dashboard`:
     #
     def scoped_resource
-      if current_user.admin_user?
+      if @admin
         resource_class
       else
-        
         super.where(user_id: current_user.id)
       end
     end

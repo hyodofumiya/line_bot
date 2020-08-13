@@ -1,6 +1,6 @@
 module Admin
   class TimeCardsController < Admin::ApplicationController
-
+    before_action :record_is_users, except: [:index, :new]
     # Overwrite any of the RESTful controller actions to implement custom behavior
     # For example, you may want to send an email after a foo is updated.
     #
@@ -26,7 +26,6 @@ module Admin
     end
 
     def edit
-      
       requested_resource[:break_time] /= 60 if requested_resource[:break_time].present?
       requested_resource[:start_time] = requested_resource[:start_time].strftime("%H:%M") if requested_resource[:start_time].present?
       requested_resource[:finish_time] = requested_resource[:finish_time].strftime("%H:%M") if requested_resource[:finish_time].present?
@@ -63,14 +62,8 @@ module Admin
         permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time, "work_time"=> "#{work_time}", "break_time"=> fixed_break_time})
     end
 
-    def requested_resource
-      @requested_resource ||= find_resource(params[:id]).tap do |resource|
-        authorize_resource(resource)
-      end
-    end
-
     def scoped_resource
-      if current_user.admin_user?
+      if @admin
         resource_class
       else
         super.where(user_id: current_user.id)
@@ -123,6 +116,10 @@ module Admin
         config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
         config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
       }
+    end
+
+    def record_is_users
+      redirect_back(fallback_location: admin_root_path) unless @admin || requested_resource[:user_id] == current_user.id
     end
 
     # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
