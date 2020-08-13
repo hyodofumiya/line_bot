@@ -9,8 +9,11 @@ module Admin
     # end
 
     def index
-      super
-      
+      if current_user.admin_user?
+        super
+      else
+        redirect_back(fallback_location: admin_root_path)
+      end
     end
 
     def show
