@@ -21,6 +21,11 @@ to display a collection of resources in an HTML table.
 <table aria-labelledby="<%= table_title %>">
   <thead>
     <tr>
+      <% if @admin %>
+        <th class="check_of_line_send" >
+          送信先
+        </th>
+      <% end %>
       <% collection_presenter.attribute_types.each do |attr_name, attr_type| %>
         <th class="cell-label
         cell-label--<%= attr_type.html_class %>
@@ -58,14 +63,19 @@ to display a collection of resources in an HTML table.
           <% if show_action? :show, resource %>
             <%= %(tabindex=0 role=link data-url=#{polymorphic_path([namespace, resource])}) %>
           <% end %>
-          >
+      >
+      <% if @admin %>
+          <td>
+            <input type="checkbox" name="check_of_line_send" class="check_of_line_send">
+          </td>
+        <% end%>
         <% collection_presenter.attributes_for(resource).each do |attribute| %>
           <td class="cell-data cell-data--<%= attribute.html_class %>">
             <% if show_action? :show, resource -%>
               <a href="<%= polymorphic_path([namespace, resource]) -%>"
-                 tabindex="-1"
-                 class="action-show"
-                 >
+                tabindex="-1"
+                class="action-show"
+                >
                 <%= render_field attribute %>
               </a>
             <% else %>
