@@ -21,7 +21,7 @@ By default, the input is a text field that is augmented with [DateTimePicker].
 </div>
 <div class="field-unit__field">
   <% if resource_name == :standby %>
-    <%= f.date_field field.attribute, disabled:true, value:Date.today %>
+    <%= f.date_field field.attribute, readonly:true, value:Date.today %>
   <% else %>
     <%= f.text_field field.attribute, data: { type: 'date' }  %>
   <% end%>

@@ -24,7 +24,7 @@ that displays all possible records to associate with.
     <% if @admin %>
       <%= options_for_select(field.associated_resource_options, field.selected_option) %>
     <% else %>
-      <%= options_for_select({"#{current_user.employee_number}": current_user.id}, 0 )%>
+      <%= options_for_select({"#{current_user.employee_number}": current_user.id}, 0 ) %>
     <% end %>
   <% end %>
 </div>
