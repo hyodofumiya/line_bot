@@ -6,8 +6,8 @@ Rails.application.routes.draw do
       resources :standbies
       resources :time_cards
       resources :user_groups
-
-      root to: "users#index"
+      resources :line_send, only: [:index, :create]
+      root to: "time_cards#index"
     end
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks"
