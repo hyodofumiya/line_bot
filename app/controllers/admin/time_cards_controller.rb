@@ -1,6 +1,5 @@
 module Admin
   class TimeCardsController < Admin::ApplicationController
-    before_action :record_is_users, except: [:index, :new]
     # Overwrite any of the RESTful controller actions to implement custom behavior
     # For example, you may want to send an email after a foo is updated.
     #
@@ -11,7 +10,6 @@ module Admin
     def new
       resource = new_resource
       authorize_resource(resource)
-      binding.pry
       render locals: {
         page: Administrate::Page::Form.new(dashboard, resource),
       }
@@ -124,10 +122,6 @@ module Admin
         config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
         config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
       }
-    end
-
-    def record_is_users
-      redirect_back(fallback_location: admin_root_path) unless @admin || requested_resource[:user_id] == current_user.id
     end
 
     # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
