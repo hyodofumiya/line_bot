@@ -38,7 +38,7 @@ module Admin
       if @admin
         true
       else
-        valid_array = [["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
+        valid_array = [["line_sends", "index"], ["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
         !!valid_array.detect do |controller, action|
           controller == resource.to_s.underscore.pluralize && action == name.to_s
         end
