@@ -8,6 +8,14 @@ module Admin
     #   super
     #   send_foo_updated_email(requested_resource)
     # end
+    def new
+      resource = new_resource
+      authorize_resource(resource)
+      binding.pry
+      render locals: {
+        page: Administrate::Page::Form.new(dashboard, resource),
+      }
+    end
 
     def create
       resource = resource_class.new(resource_params)
