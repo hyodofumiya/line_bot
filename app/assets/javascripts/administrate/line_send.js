@@ -2,7 +2,7 @@ window.addEventListener('load', function(){
   lineSendMessage();
   exist_line_message();
   controll_index_page();
-  unchecked_line_message();
+  //unchecked_line_message();
   change_all_line_send_check();
 });
 
@@ -51,6 +51,7 @@ function controll_index_page(){
 }
 
 function unchecked_line_message(){
+  debugger
   var line_send = document.getElementById("line_send").checked;
   if(line_send == true){
     $('#line_message').removeAttr("disabled");

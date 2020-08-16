@@ -67,9 +67,9 @@ to display a collection of resources in an HTML table.
         <% if @admin %>
           <td>
             <% if resource_name == (:time_card or :standby) %>
-              <input type="checkbox" name="<%=resource_name%>[<%=resource.id%>]" class="check_of_line_send" value=<%=resource.user%> >
+              <%= check_box_tag "checked_line_send#{[]}", resource.user.employee_number, false, class:"check_of_line_send"%>
             <% elsif resource_name == :user %>
-              <input type="checkbox" name="<%=resource_name%>[<%=resource.employee_number%>]" class="check_of_line_send" value=<%= resource.employee_number%>>
+              <%= check_box_tag "checked_line_send#{[]}", resource.line_id, false, class:"check_of_line_send" %>
             <%end%>
           </td>
         <% end%>
