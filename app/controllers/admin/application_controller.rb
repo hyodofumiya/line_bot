@@ -20,7 +20,6 @@ module Admin
     end
 
     def set_default_line_message
-      binding.pry
       case
       when (controller_path == "admin/time_cards" and action_name == ("new" or "edit"))
         @line_default_message = "管理者が出勤簿を変更しました。"
