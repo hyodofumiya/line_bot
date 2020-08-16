@@ -23,6 +23,7 @@ to display a collection of resources in an HTML table.
     <tr>
       <% if @admin %>
         <th class="check_of_line_send" >
+          <input type="checkbox" class="check_of_line_send__all" id="check_of_line_send__all">
           送信先
         </th>
       <% end %>
@@ -65,7 +66,11 @@ to display a collection of resources in an HTML table.
       >
         <% if @admin %>
           <td>
-            <input type="checkbox" name="<%=resource_name%>[<%=resource.id%>]" class="check_of_line_send" value="<%=resource.user%>">
+            <% if resource_name == (:time_card or :standby) %>
+              <input type="checkbox" name="<%=resource_name%>[<%=resource.id%>]" class="check_of_line_send" value=<%=resource.user%> >
+            <% elsif resource_name == :user %>
+              <input type="checkbox" name="<%=resource_name%>[<%=resource.employee_number%>]" class="check_of_line_send" value=<%= resource.employee_number%>>
+            <%end%>
           </td>
         <% end%>
         <% collection_presenter.attributes_for(resource).each do |attribute| %>

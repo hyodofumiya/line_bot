@@ -3,6 +3,7 @@ window.addEventListener('load', function(){
   exist_line_message();
   controll_index_page();
   unchecked_line_message();
+  change_all_line_send_check();
 });
 
 function lineSendMessage(){
@@ -68,4 +69,15 @@ function unchecked_line_message(){
     $('#line_send__submit').addClass("hidden_zone");
     $('.check_of_line_send').css({"visibility": "hidden"});
   }
+}
+
+function change_all_line_send_check(){
+  $('#check_of_line_send__all').change(function(){
+    var line_send_all = document.getElementById('check_of_line_send__all').checked;
+    if(line_send_all == true ){
+      $(".check_of_line_send").prop('checked', true);
+    }else{
+      $(".check_of_line_send").prop('checked', false);
+    }
+  })
 }
