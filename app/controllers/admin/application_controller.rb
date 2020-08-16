@@ -20,13 +20,20 @@ module Admin
     end
 
     def set_default_line_message
+      binding.pry
       case
-      when (@path.is "admin/time_cards")
+      when (controller_path == "admin/time_cards" and action_name == ("new" or "edit"))
         @line_default_message = "管理者が出勤簿を変更しました。"
-      when (@path.is "admin/standby")
+      when (controller_path == "admin/standbies" and action_name == ("new" or "edit"))
         @line_default_message = "管理者が勤怠を変更しました。"
-      when (@path.is "admin/user")
+      when (controller_path == "admin/users" and action_name == ("new" or "edit"))
         @line_default_message = "管理者が社員情報を変更しました。"
+      when (controller_path == "admin/users" and action_name == ("index" or "show"))
+        @line_default_message = "管理者から連絡があります。"
+      when (controller_path == "admin/time_cards" and action_name == ("index" or "show"))
+        @line_default_message = "管理者が出勤簿を確認しました。"
+      when (controller_path == "admin/standbies" and action_name == ("index" or "show"))
+        @line_default_message = "管理者が出勤情報を確認しました。"
       end
     end
 
