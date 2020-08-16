@@ -56,7 +56,6 @@ to display a collection of resources in an HTML table.
       <% end %>
     </tr>
   </thead>
-
   <tbody>
     <% resources.each do |resource| %>
       <tr class="js-table-row"
@@ -64,9 +63,9 @@ to display a collection of resources in an HTML table.
             <%= %(tabindex=0 role=link data-url=#{polymorphic_path([namespace, resource])}) %>
           <% end %>
       >
-      <% if @admin %>
+        <% if @admin %>
           <td>
-            <input type="checkbox" name="check_of_line_send" class="check_of_line_send">
+            <input type="checkbox" name="<%=resource_name%>[<%=resource.id%>]" class="check_of_line_send" value="<%=resource.user%>">
           </td>
         <% end%>
         <% collection_presenter.attributes_for(resource).each do |attribute| %>

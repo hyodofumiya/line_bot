@@ -2,7 +2,7 @@ $(function() {
   var keycodes = { space: 32, enter: 13 };
 
   var visitDataUrl = function(event) {
-    if (event.target.name != "check_of_line_send"){
+    if (event.target.className != "check_of_line_send"){
       if (event.type == "click" ||
           event.keyCode == keycodes.space ||
           event.keyCode == keycodes.enter) {
@@ -22,5 +22,4 @@ $(function() {
 
   $("table").on("click", ".js-table-row", visitDataUrl);
   $("table").on("keydown", ".js-table-row", visitDataUrl);
-
 });

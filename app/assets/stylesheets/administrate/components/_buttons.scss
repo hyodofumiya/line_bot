@@ -9,7 +9,7 @@ input[type="submit"],
   border-radius: $base-border-radius;
   color: $white;
   cursor: pointer;
-  display: inline-block;
+  //display: inline-block;
   font-family: $base-font-family;
   font-size: $base-font-size;
   -webkit-font-smoothing: antialiased;
@@ -49,3 +49,4 @@ input[type="submit"],
   color: $blue;
   margin-bottom: $base-spacing;
 }
+
