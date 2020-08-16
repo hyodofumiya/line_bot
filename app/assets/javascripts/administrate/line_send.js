@@ -2,8 +2,8 @@ window.addEventListener('load', function(){
   lineSendMessage();
   exist_line_message();
   controll_index_page();
-  //unchecked_line_message();
   change_all_line_send_check();
+  change_all_user_line_send_check();
 });
 
 function lineSendMessage(){
@@ -42,34 +42,14 @@ function controll_index_page(){
       $('#line_send__submit').removeAttr("disabled");
       $('#line_send__submit').removeClass("hidden_zone");
       $('.check_of_line_send').css({"visibility": "visible"});
+      $('#field-unit--line_send__all').removeClass("hidden_zone");
     }else{
       $('#line_send__submit').attr({"disabled": "disabled"});
       $('#line_send__submit').addClass("hidden_zone");
       $('.check_of_line_send').css({"visibility": "hidden"});
+      $('#field-unit--line_send__all').addClass("hidden_zone");
     }
   })
-}
-
-function unchecked_line_message(){
-  debugger
-  var line_send = document.getElementById("line_send").checked;
-  if(line_send == true){
-    $('#line_message').removeAttr("disabled");
-    $('#field-unit--line_message').removeClass("hidden_zone");
-    $("#field-unit--line_message").addClass("field-unit--required");
-    $('#field-unit--line_message').css({"color": "#293f54"});
-    $('#line_send__submit').removeAttr("disabled");
-    $('#line_send__submit').removeClass("hidden_zone");
-    $('.check_of_line_send').css({"visibility": "visible"});
-  }else{
-    $('#line_message').attr({"disabled": "disabled"});
-    $('#field-unit--line_message').addClass("hidden_zone");
-    $("#field-unit--line_message").removeClass("field-unit--required");
-    $('#field-unit--line_message').css({"color": "gray"});
-    $('#line_send__submit').attr({"disabled": "disabled"});
-    $('#line_send__submit').addClass("hidden_zone");
-    $('.check_of_line_send').css({"visibility": "hidden"});
-  }
 }
 
 function change_all_line_send_check(){
@@ -79,6 +59,23 @@ function change_all_line_send_check(){
       $(".check_of_line_send").prop('checked', true);
     }else{
       $(".check_of_line_send").prop('checked', false);
+    }
+  })
+}
+
+function change_all_user_line_send_check(){
+  $("#all_user_line_send").change(function(){
+    var change_all_user_line_send = document.getElementById("all_user_line_send").checked;
+    if(change_all_user_line_send == true ){
+      $(".check_of_line_send").prop('checked', true);
+      $(".check_of_line_send").attr({"disabled": "disabled"});
+      $("#check_of_line_send__all").attr({"disabled": "disabled"});
+      $("#check_of_line_send__all").prop({"checked": true});
+    }else{
+      $(".check_of_line_send").prop('checked', false);
+      $(".check_of_line_send").removeAttr("disabled");
+      $("#check_of_line_send__all").removeAttr("disabled");
+      $("#check_of_line_send__all").prop({"checked": false});
     }
   })
 }
