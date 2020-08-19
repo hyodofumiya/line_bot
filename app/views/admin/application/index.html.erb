@@ -55,7 +55,7 @@ It renders the `_table` partial to display details about the resources.
 
 <section class="main-content__body main-content__body--flush">
   <% if @admin %>
-    <%= form_with(url: admin_line_send_index_path, class: "line_send-form form") do |form| %>
+    <%= form_with(url: admin_line_send_index_path, class: "line_send-form form", id:"line_send_form_in_index") do |form| %>
       <section class="main-content__body line_send_form">
         <%= render("line_send", page: page) %>
         <div class="form-actions">

@@ -4,6 +4,8 @@ window.addEventListener('load', function(){
   controll_index_page();
   change_all_line_send_check();
   change_all_user_line_send_check();
+  more_than_one_user_be_selected();
+  exist_line_message();
 });
 
 function lineSendMessage(){
@@ -76,6 +78,35 @@ function change_all_user_line_send_check(){
       $(".check_of_line_send").removeAttr("disabled");
       $("#check_of_line_send__all").removeAttr("disabled");
       $("#check_of_line_send__all").prop({"checked": false});
+    }
+  })
+}
+
+//submitが押下された時に送信先userが１人以上選択されていることを確認するメソッド
+function more_than_one_user_be_selected(){
+  $("#line_send_form_in_index").on('submit',function(){
+    var checked_lists = 0 //チェックが入っているレコードの数を入れる変数
+    var checkbox_lists = document.getElementsByClassName('check_user_of_line_send');
+    for (var i = 0; i < checkbox_lists.length; i++){
+      if(checkbox_lists[i].checked == true ){
+        checked_lists++;
+      }
+    }
+    var checked_all_user_line_send = document.getElementById("all_user_line_send").checked;
+    if((checked_all_user_line_send != true)&&(checked_lists == 0)){
+      alert('送信先を選択してください。');
+      return false;
+    }
+  })
+}
+
+function exist_line_message(){
+  $("#line_send_form_in_index").on('submit',function(){
+    debugger
+    var line_message = document.getElementById("line_message").value;
+    if(line_message == ""){
+      alert("送信メッサージを入力してください。");
+      return false;
     }
   })
 }

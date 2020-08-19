@@ -2,7 +2,7 @@ $(function() {
   var keycodes = { space: 32, enter: 13 };
 
   var visitDataUrl = function(event) {
-    if (event.target.className != "check_of_line_send"){
+    if (event.target.className != "check_of_line_send check_user_of_line_send"){
       if (event.type == "click" ||
           event.keyCode == keycodes.space ||
           event.keyCode == keycodes.enter) {
