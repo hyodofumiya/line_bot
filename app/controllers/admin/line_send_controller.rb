@@ -13,12 +13,20 @@ module Admin
       #リクエストがどのページから送信されたものか判断する
       case resource_name
       when "time_card"
+        binding.pry
+        time_cards= TimeCard.includes(:user).where(id: resource_ids).reject{|s| s.user.admin_user == true}
+        time_cards.each do |time_card|
+          send_line(time_card.user.line_id, message, "勤怠簿にアクションがあります")
+        end
+        flash.now[:alert] = "メッセージを送信しました。"
+        render "admin/time_cards"
       when "standby"
         standbies = Standby.includes(:user).where(id: resource_ids).reject{|s| s.user.admin_user == true}
         standbies.each do |standby|
-          send_line(standby.user.line_id, message, "管理者から出勤情報にアクションがあります")
+          send_line(standby.user.line_id, message, "出勤情報にアクションがあります")
         end
-        redirect_to admin_standbies_path, notice: 'メッセージを送信しました。'
+        flash.now[:alert] = "メッセージを送信しました。"
+        render "admin/standbies"
       when "user"
         #一斉送信がONか確認する
         send_all = (params[:all_user_line_send] == "true")
@@ -26,20 +34,19 @@ module Admin
           User.all.reject{|u| u.admin_user == true}.each do |user|
             send_line(user.line_id, message, "管理者からの連絡");
           end
-          redirect_to admin_users_path, notice: 'メッセージを送信しました。'
+          flash.now[:alert] = "メッセージを送信しました。"
         else
           if resource_ids.present
             users = User.where(id: resource_ids).reject{|u| u.admin_user == true}
             users.each do |user|
-              send_line(user.line_id, message, "管理者からの連絡")
+              send_line(user.line_id, message, "管理者からアクションがあります")
             end
-            redirect_to admin_users_path, notice: 'メッセージを送信しました。'
+            flash.now[:alert] = "メッセージを送信しました。"
           else
             flash.now[:alert] = "メッセージは送信できませんでした"
-            render "admin/users"
           end
         end
-        #各userのline_idを取得して、全員に送信
+        render "admin/users"
       end
     end
 
