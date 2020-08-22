@@ -1,6 +1,6 @@
 <div class="field-unit line_send_check" id="field-unit--line_send">
   <div class="field-unit__label">  
-    <%= label_tag :line_send, "LINEに通知"%>
+    <%= label_tag :line_send, "メッセージを送信"%>
   </div>
   <div class="field-unit__field">
     <%= check_box_tag :line_send, true, false, {class: "line_send", id: "line_send", autocomplete: "off"} %>
@@ -21,6 +21,6 @@
     <%= label_tag "line_message", "LINEメッセージ" %>
   </div>
   <div class="field-unit__field">
-    <%= text_area_tag "line_message", "#{@line_default_message}" ,{class: "line_message", id: "line_message", disabled: "disabled"} %>
+    <%= text_area_tag "line_message", "#{@line_default_message}" ,{class: "line_message", id: "line_message", disabled: "disabled", required: true} %>
   </div>
 </div>

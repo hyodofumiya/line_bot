@@ -31,6 +31,17 @@ as well as a link to its edit page.
     ) if valid_action?(:edit) && show_action?(:edit, page.resource) %>
   </div>
 </header>
+<% if @admin %>
+  <%= form_with(url: admin_line_send_index_path, class: "line_send-form form", id:"line_send_form_in_index", html: { name: "line_send_form" } ) do |form| %>
+    <section class="main-content__body line_send_form">
+      <%= render("line_send", page: page) %>
+      <%= form.hidden_field :resource_name, value: resource_name %>
+      <div class="form-actions">
+        <%= form.submit '送信', class: "hidden_zone line_send__submit", id: "line_send__submit", disabled:"disabled" %>
+      </div>
+    </section>
+  <% end%>
+<% end%>
 
 <section class="main-content__body">
   <dl>

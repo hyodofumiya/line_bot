@@ -32,13 +32,14 @@ and renders all form fields for a resource's editable attributes.
       </ul>
     </div>
   <% end %>
-
+  <% if @admin%>
+    <%= render "line_send" %>
+  <% end%>
   <% page.attributes.each do |attribute| -%>
     <div class="field-unit field-unit--<%= attribute.html_class %> field-unit--<%= requireness(attribute) %>">
       <%= render_field attribute, f: f %>
     </div>
   <% end -%>
-  <%= render "line_send" %>
   <div class="form-actions">
     <%= f.submit %>
   </div>
