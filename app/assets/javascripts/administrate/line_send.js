@@ -1,11 +1,30 @@
 window.addEventListener('load', function(){
   lineSendMessage();
-  exist_line_message();
   controll_index_page();
   change_all_line_send_check();
   change_all_user_line_send_check();
   check_submit();
 });
+
+function check_submit(){
+  $("#line_send_form_in_index").on('submit',function(){
+    var message = exist_line_message();
+    var user = more_than_one_user_be_selected();
+    if((message == false) && (user == false)){
+      alert ('送信先とLINEメッセージを入力してください。');
+      return false;
+    }else if((message == false) && (user == true)){
+      alert ('LINEメッセージを入力してください。');
+      return false;
+    }else if((message == true) && (user == false)){
+      alert ('送信先を1つ以上選択してください。');
+      return false;
+    }else if ((message == true) && (user == true)){
+      return true;
+    }
+    return false
+  })
+}
 
 function lineSendMessage(){
   $("#line_send").change(function(){
@@ -101,30 +120,18 @@ function more_than_one_user_be_selected(){
 }
 
 function exist_line_message(){
-  var line_message = document.getElementById("line_message").value;
-  if(line_message == ""){
+  var line_message = document.getElementById("line_message");
+  if(line_message.value == ""){
     return false;
   }else{
     return true;
   }
 }
 
-function check_submit(){
-  $("#line_send_form_in_index").on('submit',function(){
-    var message = exist_line_message();
-    var user = more_than_one_user_be_selected();
-    if((message == false) && (user == false)){
-      alert ('送信先とLINEメッセージを入力してください。');
-      return false;
-    }else if((message == false) && (user == true)){
-      alert ('LINEメッセージを入力してください。');
-      return false;
-    }else if((message == true) && (user == false)){
-      alert ('送信先を1つ以上選択してください。');
-      return false;
-    }else if ((message == true) && (user == true)){
-      return true;
-    }
-    return false
-  })
-}
+
+$(document).ajaxSuccess(function(event, xhr, setting) {
+  if (setting.url == "/admin/line_send"){
+    alert('メッセージを送信しました');
+    document.line_send_form.reset();
+  }
+});
