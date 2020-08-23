@@ -1,39 +1,35 @@
 module Admin
   class StandbiesController < Admin::ApplicationController
-    # Overwrite any of the RESTful controller actions to implement custom behavior
-    # For example, you may want to send an email after a foo is updated.
-    #
-    # def update
-    #   super
-    #   send_foo_updated_email(requested_resource)
-    # end
 
-    # Override this method to specify custom lookup behavior.
-    # This will be used to set the resource for the `show`, `edit`, and `update`
-    # actions.
-    #
-    # def find_resource(param)
-    #   Foo.find_by!(slug: param)
-    # end
+    def create
+      resource = resource_class.new(resource_params)
+      if resource.save
+        redirect_to(
+          [namespace, resource],
+          notice: translate_with_resource("create.success"),
+        )
+        send_line(User.find(params[:standby][:user_id]).line_id, "#{params[:line_message]}", "出勤情報にアクションがありました。")
+      else
+        resource[:break_sum] /= 60 if resource[:break_sum].present?
+        render action: :new, locals: {
+          page: Administrate::Page::Form.new(dashboard, resource),
+        }
+      end
+    end
 
-    # The result of this lookup will be available as `requested_resource`
+    def edit
+      requested_resource[:break_sum] /= 60 if requested_resource[:break_sum].present?
+      render locals: {
+        page: Administrate::Page::Form.new(dashboard, requested_resource),
+      }
+    end
 
-    # Override this if you have certain roles that require a subset
-    # this will be used to set the records shown on the `index` action.
-    #
-    # def scoped_resource
-    #   if current_user.super_admin?
-    #     resource_class
-    #   else
-    #     resource_class.with_less_stuff
-    #   end
-    # end
+    private
 
-    # Override `resource_params` if you want to transform the submitted
-    # data before it's persisted. For example, the following would turn all
-    # empty values into nil values. It uses other APIs such as `resource_class`
-    # and `dashboard`:
-    #
+    def resource_params
+      break_sum = params[:standby][:break_sum].present? ? params[:standby][:break_sum].to_i*60 : 0
+      params.require(resource_class.model_name.param_key).permit(dashboard.permitted_attributes).merge!({"break_sum"=>break_sum})
+    end
     def scoped_resource
       if @admin
         resource_class
