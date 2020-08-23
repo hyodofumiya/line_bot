@@ -8,6 +8,8 @@ window.addEventListener('load', function(){
 
 function check_submit(){
   $("#line_send_form_in_index").on('submit',function(){
+    debugger
+    checked_line_send();
     var message = exist_line_message();
     var user = more_than_one_user_be_selected();
     if((message == false) && (user == false)){
@@ -43,16 +45,14 @@ function lineSendMessage(){
   })
 }
 
-function exist_line_message(){
-  $(".form").on('submit', function(){
-    var line_send = document.getElementById("line_send").checked;
-    var line_message = document.getElementById("line_message").value;
-    if((line_send == true)&& !line_message){
-      alert("LINEメッセージを入力してください。");
-      event.preventDefault();
-      return false;
-    }
-  })
+function checked_line_send(){
+  debugger
+  var line_send = document.getElementById("line_send").checked;
+  if(line_send != true){
+    alert("「メッセージを送信」にチェックを入れてください");
+    event.preventDefault();
+    return false;
+  }
 }
 
 function controll_index_page(){
@@ -102,20 +102,28 @@ function change_all_user_line_send_check(){
 
 //submitが押下された時に送信先userが１人以上選択されていることを確認するメソッド
 function more_than_one_user_be_selected(){
-  var checked_lists = 0 //チェックが入っているレコードの数を入れる変数
-  var checkbox_lists = document.getElementsByClassName('check_user_of_line_send');
-  for (var i = 0; i < checkbox_lists.length; i++){
-    if(checkbox_lists[i].checked == true ){
-      checked_lists++;
-    }
-  }
-  var checked_all_user_line_send = document.getElementById("all_user_line_send");
-  if(checked_lists >= 1){
-    return true;
-  }else if((checked_lists == 0) && ((checked_all_user_line_send != null) && (checked_all_user_line_send.checked == true))){
-    return true;
+  if(function(){
+    var url = document.URL
+    url.includes("admin/users/") || url.includes("admin/standbies/") || url.includes("admin/time_cards/")
+    })
+  {
+    return true
   }else{
-    return false;
+    var checked_lists = 0 //チェックが入っているレコードの数を入れる変数
+    var checkbox_lists = document.getElementsByClassName('check_user_of_line_send');
+    for (var i = 0; i < checkbox_lists.length; i++){
+      if(checkbox_lists[i].checked == true ){
+        checked_lists++;
+      }
+    }
+    var checked_all_user_line_send = document.getElementById("all_user_line_send");
+    if(checked_lists >= 1){
+      return true;
+    }else if((checked_lists == 0) && ((checked_all_user_line_send != null) && (checked_all_user_line_send.checked == true))){
+      return true;
+    }else{
+      return false;
+    }  
   }
 }
 
