@@ -14,9 +14,9 @@ class TimeCardDashboard < Administrate::BaseDashboard
     ),
     id: Field::Number,
     date: Field::Date,
-    work_time: Field::Number,
     start_time: Field::DateTime.with_options(format: "%H:%M"),
     finish_time: Field::DateTime.with_options(format: "%H:%M"),
+    work_time: Field::Number,
     break_time: Field::Number.with_options(suffix: "分"),
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
@@ -29,22 +29,21 @@ class TimeCardDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
   user
-  id
   date
-  work_time
+  start_time
   finish_time
+  work_time
   break_time
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
-  id
   user
   date
-  work_time
   start_time
   finish_time
+  work_time
   break_time
   created_at
   updated_at
