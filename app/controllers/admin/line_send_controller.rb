@@ -31,7 +31,7 @@ module Admin
             send_line(user.line_id, message, "管理者からの連絡");
           end
         else
-          if resource_ids.present
+          if resource_ids.present?
             users = User.where(id: resource_ids).reject{|u| u.admin_user == true}
             users.each do |user|
               send_line(user.line_id, message, "管理者からアクションがあります")

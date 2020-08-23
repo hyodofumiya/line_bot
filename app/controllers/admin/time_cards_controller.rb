@@ -38,7 +38,6 @@ module Admin
       render locals: {
         page: Administrate::Page::Form.new(dashboard, requested_resource),
       }
-      
     end
 
     def update
