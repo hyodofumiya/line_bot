@@ -20,8 +20,8 @@ ja:
       # view側： User.model_name.human => "ユーザ" / t("activerecord.models.user")と同じ
       user: 社員
       board: 掲示板
-      time_card: 出勤簿
-      standby: 出勤情報
+      time_card: 勤怠履歴
+      standby: 勤務状況
       richmenu: LINEリッチメニュー
       group: グループ
     # model毎に定義したいattributesを記述
@@ -49,8 +49,8 @@ ja:
         user_id: 社員番号
         date: 日付
         start: 出勤時刻
-        break_start: 休憩開始時刻
-        break_sum: 過去の休憩時間
+        break_start: 現在の休憩開始時刻
+        break_sum: 現在までの休憩時間合計
   administrate:
     actions:
       confirm: 本当によろしいですか？
