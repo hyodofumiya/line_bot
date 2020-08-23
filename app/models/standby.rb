@@ -10,7 +10,7 @@ class Standby < ApplicationRecord
   validate :date_is_today, if: Proc.new { |resource| resource.date.present?}
   validate :start_is_today, if: Proc.new { |resource| resource.start.present?}
   validate :break_start_is_today_and_after_start, if: Proc.new {|resource| resource.break_start.present?}
-  validate :break_sum_is_less_than_from_start, if: Proc.new { |resource| resource.break_sum.present? and resource.start.present?}
+  validate :break_time_sum_is_less_than_from_start, if: Proc.new { |resource| resource.break_sum.present? and resource.start.present?}
   validate :no_record_same_user
 
   def date_is_today
@@ -31,10 +31,12 @@ class Standby < ApplicationRecord
     end
   end
 
-  def break_sum_is_less_than_from_start
+  #休憩時間の合計＜勤務時間合計となっていることを確認するメソッド
+  def break_time_sum_is_less_than_from_start
     from_start_to_now = Time.now - self.start.to_time
-    if self.break_sum > from_start_to_now and self.break_sum < 60*60*24
-      errors.add(:break_sum, "を勤務時間以内にしてください")
+    this_break_time = self.break_start.present? ? Time.now - self.break_start.to_time : 0
+    if self.break_sum + this_break_time > from_start_to_now and self.break_sum < 60*60*24
+      errors.add(:base, "休憩時間を勤務時間よりも短くしてください")
     end
   end
 
