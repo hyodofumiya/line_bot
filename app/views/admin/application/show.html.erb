@@ -36,6 +36,7 @@ as well as a link to its edit page.
     <section class="main-content__body line_send_form">
       <%= render("line_send", page: page) %>
       <%= form.hidden_field :resource_name, value: resource_name %>
+      <%= form.hidden_field :checked_line_send, value: [page.resource.id] %>
       <div class="form-actions">
         <%= form.submit '送信', class: "hidden_zone line_send__submit", id: "line_send__submit", disabled:"disabled" %>
       </div>
