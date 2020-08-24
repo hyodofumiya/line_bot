@@ -10,7 +10,8 @@ Rails.application.routes.draw do
       root to: "time_cards#index"
     end
   devise_for :users, controllers: {
-    omniauth_callbacks: "omniauth_callbacks"
+    omniauth_callbacks: "omniauth_callbacks",
+    :sessions => 'users/sessions'   
   }
 
   post '/callback' => 'linebots#callback'
