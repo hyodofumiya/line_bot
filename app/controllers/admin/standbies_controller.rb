@@ -24,12 +24,31 @@ module Admin
       }
     end
 
+    def update
+      binding.pry
+      if requested_resource.update(resource_params)
+        requested_resource[:break_sum] /= 60 if requested_resource[:break_sum].present?
+        redirect_to(
+          [namespace, requested_resource],
+          notice: translate_with_resource("update.success")
+        )
+        send_line(User.find(params[:standby][:user_id]).line_id, "#{params[:line_messsage]}", "勤務状況にアクションがありました")
+      else
+        requested_resource[:break_sum] /= 60 if requested_resource[:break_sum].present?
+        redirect_to(
+          [namespace, requested_resource],
+          notice: translate_with_resource("update.fails")
+        )
+      end
+    end
+
     private
 
     def resource_params
       break_sum = params[:standby][:break_sum].present? ? params[:standby][:break_sum].to_i*60 : 0
       params.require(resource_class.model_name.param_key).permit(dashboard.permitted_attributes).merge!({"break_sum"=>break_sum})
     end
+
     def scoped_resource
       if @admin
         resource_class
@@ -37,8 +56,5 @@ module Admin
         super.where(user_id: current_user.id)
       end
     end
-
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
-    # for more information
   end
 end
