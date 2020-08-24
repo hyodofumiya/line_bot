@@ -1,39 +1,27 @@
-<h2>Log in</h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-
-  <ol>
-    <li class="sns_login_btn" id="line_login">
-      <%= link_to (user_line_omniauth_authorize_path) do %>
-        <p class="sns_btn_inner">
-          <span class="line-img">
-            
-          </span>
-          <span class="sns_msg">LINE</span>
-        </p>
+  <div class="wrapper">
+    <div class="container">
+      <h1 class="app_title">勤怠管理アプリ<p>（管理者用）</p></h1>
+      <% if @errors.present? %>
+        <ul class="error_messages">
+        <% @errors.each do |f| %>
+          <li class="error_message"><%= f %></li>
+        <% end %>
+        </ul>
       <% end %>
-    </li>
-  </ol>
-<% end %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "admin_login_form"}) do |f| %>
+        <div class="field">
+          <%= f.label :email %><br />
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "E-mail"%>
+        </div>
 
-<%= render "devise/shared/links" %>
+        <div class="field">
+          <%= f.label :password %><br />
+          <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password" %>
+        </div>
+
+        <div class="actions admin_login_action">
+          <%= f.submit "ログイン" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
