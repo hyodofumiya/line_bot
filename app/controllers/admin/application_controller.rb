@@ -42,12 +42,13 @@ module Admin
 
     def valid_action?(name, resource = resource_class)
       if @admin
-        true
+        valid_array = [["users", "index"], ["users", "new"], ["users", "show"], ["users", "edit"], ["users", "create"], ["users", "update"], ["users", "destroy"], ["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
       else
-        valid_array = [["line_sends", "index"], ["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
-        !!valid_array.detect do |controller, action|
-          controller == resource.to_s.underscore.pluralize && action == name.to_s
-        end
+        valid_array = [["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
+      end
+
+      !!valid_array.detect do |controller, action|
+        controller == resource.to_s.underscore.pluralize && action == name.to_s
       end
     end
 
