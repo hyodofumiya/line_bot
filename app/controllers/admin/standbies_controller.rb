@@ -56,5 +56,13 @@ module Admin
         super.where(user_id: current_user.id)
       end
     end
+
+    def default_sorting_attribute
+      :start
+    end
+    
+    def default_sorting_direction
+      :desc
+    end
   end
 end
