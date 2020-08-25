@@ -110,6 +110,13 @@ module Admin
       redirect_back(fallback_location: admin_root_path) unless @admin
     end
 
+    def default_sorting_attribute
+      :employee_number
+    end
     
+    def default_sorting_direction
+      :desc
+    end
+
   end
 end
