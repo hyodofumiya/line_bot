@@ -25,7 +25,6 @@ module Admin
     end
 
     def update
-      binding.pry
       if requested_resource.update(resource_params)
         requested_resource[:break_sum] /= 60 if requested_resource[:break_sum].present?
         redirect_to(
@@ -35,10 +34,9 @@ module Admin
         send_line(User.find(params[:standby][:user_id]).line_id, "#{params[:line_messsage]}", "勤務状況にアクションがありました")
       else
         requested_resource[:break_sum] /= 60 if requested_resource[:break_sum].present?
-        redirect_to(
-          [namespace, requested_resource],
-          notice: translate_with_resource("update.fails")
-        )
+        render :edit, locals: {
+          page: Administrate::Page::Form.new(dashboard, requested_resource),
+        }
       end
     end
 
