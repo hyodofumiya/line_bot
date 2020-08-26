@@ -8,9 +8,12 @@ class StandbyDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    user: Field::BelongsTo,
+    user: Field::BelongsTo.with_options(
+      searchable: true,
+      searchable_fields: ['employee_number']
+    ),
     id: Field::Number,
-    date: Field::Date,
+    date: Field::Date.with_options(searchable: true, format: "%Y-%m-%d"),
     start: Field::DateTime.with_options(format: "%H:%M"),
     break_start: Field::DateTime.with_options(format: "%H:%M"),
     break_sum: Field::Number,

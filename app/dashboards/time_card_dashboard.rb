@@ -13,7 +13,7 @@ class TimeCardDashboard < Administrate::BaseDashboard
       searchable_fields: ['employee_number']
     ),
     id: Field::Number,
-    date: Field::Date,
+    date: Field::Date.with_options(searchable: true, format: "%Y-%m-%d"),
     start_time: Field::DateTime.with_options(format: "%H:%M"),
     finish_time: Field::DateTime.with_options(format: "%H:%M"),
     work_time: Field::Number,
@@ -70,9 +70,6 @@ class TimeCardDashboard < Administrate::BaseDashboard
   #   COLLECTION_FILTERS = {
   #     open: ->(resources) { resources.where(open: true) }
   #   }.freeze
-  COLLECTION_FILTERS = {
-    #user: ->(resources) { resources.where(user: true) }
-  }.freeze
 
   # Overwrite this method to customize how time cards are displayed
   # across all pages of the admin dashboard.
