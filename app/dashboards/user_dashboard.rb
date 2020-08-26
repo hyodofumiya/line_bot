@@ -15,7 +15,7 @@ class UserDashboard < Administrate::BaseDashboard
     id: Field::Number,
     family_name: Field::String,
     first_name: Field::String,
-    employee_number: Field::Number,
+    employee_number: Field::Number.with_options(searchable: true),
     line_id: Field::Text,
     admin_user: Field::Boolean,
     created_at: Field::DateTime,
