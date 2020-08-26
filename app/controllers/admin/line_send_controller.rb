@@ -16,7 +16,7 @@ module Admin
       when "time_card"
         time_cards= TimeCard.includes(:user).where(id: resource_ids).reject{|s| s.user.admin_user == true}
         time_cards.each do |time_card|
-          send_line(time_card.user.line_id, message, "勤怠簿にアクションがあります")
+          send_line(time_card.user.line_id, message, "#{time_card.date}の勤怠にアクションがあります")
         end
       when "standby"
         standbies = Standby.includes(:user).where(id: resource_ids).reject{|s| s.user.admin_user == true}
