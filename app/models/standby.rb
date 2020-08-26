@@ -8,7 +8,7 @@ class Standby < ApplicationRecord
   validates :start, presence:true
   validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 86400}
   validate :date_is_today, if: Proc.new { |resource| resource.date.present?}
-  validate :start_is_today, if: Proc.new { |resource| resource.start.present?}
+  validate :start_is_before_now, if: Proc.new { |resource| resource.start.present?}
   validate :break_start_is_today_and_after_start, if: Proc.new {|resource| resource.break_start.present?}
   validate :break_time_sum_is_less_than_from_start, if: Proc.new { |resource| resource.break_sum.present? and resource.start.present?}
   validate :no_record_same_user
@@ -17,8 +17,8 @@ class Standby < ApplicationRecord
     errors.add(:date, "は今日を入力してください") unless self.date == Date.today
   end
 
-  def start_is_today
-    errors.add(:start, "は今日の時刻を入力してください") unless self.start.to_date == Date.today
+  def start_is_before_now
+    errors.add(:start, "は現在以前の時刻を入力してください") unless self.start <= Time.now
   end
 
   def break_start_is_today_and_after_start
