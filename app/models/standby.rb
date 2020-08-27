@@ -33,10 +33,12 @@ class Standby < ApplicationRecord
 
   #休憩時間の合計＜勤務時間合計となっていることを確認するメソッド
   def break_time_sum_is_less_than_from_start
-    from_start_to_now = Time.now - self.start.to_time
-    this_break_time = self.break_start.present? ? Time.now - self.break_start.to_time : 0
-    if self.break_sum + this_break_time > from_start_to_now and self.break_sum < 60*60*24
-      errors.add(:base, "休憩時間を勤務時間よりも短くしてください")
+    if self.start <= Time.now
+      from_start_to_now = Time.now - self.start.to_time
+      this_break_time = self.break_start.present? ? Time.now - self.break_start.to_time : 0
+      if self.break_sum + this_break_time > from_start_to_now and self.break_sum < 60*60*24
+        errors.add(:base, "休憩時間を勤務時間よりも短くしてください")
+      end
     end
   end
 

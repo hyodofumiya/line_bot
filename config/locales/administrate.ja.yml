@@ -27,3 +27,6 @@ ja:
     search:
       clear: 検索をクリアする
       label: サーチ %{resource}
+  page:
+    resource_name:
+      user: 社員

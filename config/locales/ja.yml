@@ -29,8 +29,8 @@ ja:
       user:
         id: ID
         # view側： User.human_attribute_name :name => "名前" /　t("activerecord.attributes.user.name")と同じ
-        first_name: 名前
-        family_name: 姓
+        first_name: メイ
+        family_name: セイ
         employee_number: 社員番号
         admin_user: 管理者権限
         last_name: 姓
@@ -56,9 +56,9 @@ ja:
       confirm: 本当によろしいですか？
       destroy: 削除
       edit: 編集
-      edit_resource: 編集 %{name}
-      show_resource: 参照 %{name}
-      new_resource: 新規 %{name}
+      edit_resource: "%{name}を編集"
+      show_resource: "%{name}　を参照"
+      new_resource: "%{name}を新規作成"
       back: 戻る
     controller:
       create:
@@ -78,8 +78,8 @@ ja:
       back_to_app: アプリに戻る
     search:
       clear: 検索をクリアする
-      label: サーチ %{resource}
-  # 全てのmodelで共通して使用するattributesを定義
+      label: "%{resource}"
+      # 全てのmodelで共通して使用するattributesを定義
   attributes:
     created_at: 作成日
     updated_at: 更新日
@@ -121,6 +121,37 @@ ja:
       create: 登録する
       submit: 保存する
       update: 更新する
+    label:
+      user:
+        first_name: メイ
+        family_name: セイ
+        employee_number: 社員番号
+        admin_user: 管理者権限
+        last_name: 姓
+        email: メールアドレス
+        file: プロフィール画像
+        crypted_password: パスワード
+        line_id: Line ID
+        created_at: 作成日
+        updated_at: 更新日
+      time_card:
+        user: 社員番号
+        user_id: 社員番号
+        date: 日付
+        work_time: 作業時間
+        start_time: 出勤時刻
+        finish_time: 退勤時刻
+        break_time: 休憩時間        
+        created_at: 作成日
+        updated_at: 更新日
+      standby:
+        user_id: 社員番号
+        date: 日付
+        start: 出勤時刻
+        break_start: 現在の休憩開始時刻
+        break_sum: 現在までの休憩時間合計    
+        created_at: 作成日
+        updated_at: 更新日
   number:
     currency:
       format:
