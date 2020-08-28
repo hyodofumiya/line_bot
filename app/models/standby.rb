@@ -2,7 +2,8 @@ class Standby < ApplicationRecord
   require "date"
 
   belongs_to :user
-  
+  attr_accessor :on_break
+
   validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
@@ -15,7 +16,14 @@ class Standby < ApplicationRecord
 
   def date_is_today
     errors.add(:date, "は今日を入力してください") unless self.date == Date.today
+  def on_break
+    if self.break_start.present?
+      true
+    else
+      false
+    end
   end
+
 
   def start_is_before_now
     errors.add(:start, "は現在以前の時刻を入力してください") unless self.start <= Time.now
