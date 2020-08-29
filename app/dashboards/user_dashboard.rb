@@ -25,6 +25,7 @@ class UserDashboard < Administrate::BaseDashboard
     reset_password_token: Field::String,
     reset_password_sent_at: Field::DateTime,
     remember_created_at: Field::DateTime,
+    on_work: StatusField,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -37,7 +38,7 @@ class UserDashboard < Administrate::BaseDashboard
   family_name
   first_name
   admin_user
-  standby
+  on_work
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES

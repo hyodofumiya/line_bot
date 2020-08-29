@@ -17,6 +17,7 @@ class StandbyDashboard < Administrate::BaseDashboard
     start: Field::DateTime.with_options(format: "%H:%M"),
     break_start: Field::DateTime.with_options(format: "%H:%M"),
     break_sum: Field::Number,
+    on_break: StatusField,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -26,18 +27,17 @@ class StandbyDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
   user
-  id
   date
   start
   break_start
   break_sum
+  on_break
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
   user
-  id
   date
   start
   break_start
@@ -51,6 +51,7 @@ class StandbyDashboard < Administrate::BaseDashboard
   user
   date
   start
+  on_break
   break_start
   break_sum
   ].freeze
@@ -71,7 +72,7 @@ class StandbyDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how standbies are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(standby)
-  #   "Standby ##{standby.id}"
-  # end
+  def display_resource(standby)
+    "勤務状況( #{standby.user.employee_number})"
+  end
 end
