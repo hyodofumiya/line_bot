@@ -49,8 +49,9 @@ ja:
         user_id: 社員番号
         date: 日付
         start: 出勤時刻
-        break_start: 現在の休憩開始時刻
-        break_sum: 現在までの休憩時間合計
+        break_start: 休憩開始時刻
+        break_sum: 休憩時間合計
+        on_break: 休憩中
   administrate:
     actions:
       confirm: 本当によろしいですか？
