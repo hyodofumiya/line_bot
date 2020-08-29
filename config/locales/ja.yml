@@ -61,7 +61,6 @@ ja:
       TimeCard: 勤怠履歴
       Richmenu: LINEリッチメニュー
       Group: グループ
-
     actions:
       confirm: 本当によろしいですか？
       destroy: 削除
@@ -144,6 +143,7 @@ ja:
         line_id: Line ID
         created_at: 作成日
         updated_at: 更新日
+        on_work: 勤務状況
       time_card:
         user: 社員番号
         user_id: 社員番号
