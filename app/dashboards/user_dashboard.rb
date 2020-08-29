@@ -44,11 +44,9 @@ class UserDashboard < Administrate::BaseDashboard
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
-  id
+  employee_number
   family_name
   first_name
-  employee_number
-  line_id
   admin_user
   created_at
   updated_at
