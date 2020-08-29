@@ -60,7 +60,7 @@ function check_break_start_status(){
 function change_break_sum_label(status){
   var break_sum_label = document.getElementById("field-unit--break_sum").firstElementChild.firstElementChild;
   if ( status == true ){
-    break_sum_label.innerHTML = "今回以外の休憩時間合計"
+    break_sum_label.innerHTML = "今回以外の休憩時間"
   }else if (status == false){
     break_sum_label.innerHTML = "休憩時間合計"
   }

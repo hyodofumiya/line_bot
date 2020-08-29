@@ -160,7 +160,7 @@ ja:
         date: 日付
         start: 出勤時刻
         break_start: 休憩開始時刻
-        break_sum: 今回以外の休憩時間合計
+        break_sum: 今回以外の休憩時間
         created_at: 作成日
         updated_at: 更新日
         work_status: 作業状況
