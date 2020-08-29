@@ -40,6 +40,7 @@ class StandbyDashboard < Administrate::BaseDashboard
   user
   date
   start
+  on_break
   break_start
   break_sum
   ].freeze
