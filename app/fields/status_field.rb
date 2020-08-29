@@ -4,8 +4,8 @@ class StatusField < Administrate::Field::Base
 
   def on_status
     case @attribute
-    when :on_break
-      on_break
+    when :work_status
+      work_status
     when :on_work
       on_work
     end
@@ -19,10 +19,10 @@ class StatusField < Administrate::Field::Base
     end
   end
 
-  def on_break
-    if @data
+  def work_status
+    if @data == :break
       "休憩中"
-    else
+    elsif @data == :work
       "作業中"
     end
   end

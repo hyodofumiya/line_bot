@@ -1,6 +1,9 @@
-<div class="field-unit__label">
+<div class="field-unit__label ">
   <%= f.label field.attribute %>
 </div>
-<div class="field-unit__field">
-  <%= f.check_box field.attribute %>
+<div class="field-unit__field field-unit__radio_buttons">
+  <%= f.radio_button field.attribute, :work %>
+  <%= f.label field.attribute, "作業中", value: :work, class: "field-unit__radio_button--label" %>
+  <%= f.radio_button field.attribute, :break %>
+  <%= f.label field.attribute, "休憩中", value: :break, class: "field-unit__radio_button--label" %>
 </div>

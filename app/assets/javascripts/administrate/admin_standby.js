@@ -10,40 +10,48 @@ window.addEventListener('load', function(){
   }
 })
 
-//画面読み込み時にon_breakフィールドとbreak_sumフィールドを切り替える。デフォルト状態は作業中仕様。
+//画面読み込み時にwork_statusフィールドとbreak_sumフィールドを切り替える。デフォルト状態は作業中仕様。
 function set_default_break_forms(){
-  var on_break_status = check_break_start_status();
-  change_break_sum_label(on_break_status);
-  change_break_start_status(on_break_status);
+  var work_status_status = check_break_start_status();
+  change_break_sum_label(work_status_status);
+  change_break_start_status(work_status_status);
 }
 
 //休憩中・作業中のチェックボックスが変更されるたび、状況に合わせてform群を切り替える
 function change_break_forms(){
-  $("#standby_on_break").change(function(){
-    var on_break_status = check_break_start_status();
-    change_break_start_status(on_break_status);
-    change_break_sum_label(on_break_status);
-    on_break_status == false ? change_null_break_start() : false ;
+  $('input[name="standby[work_status]"]').change(function(){
+    var work_status_status = check_break_start_status();
+    change_break_start_status(work_status_status);
+    change_break_sum_label(work_status_status);
   })
 }
 
 //submitが押下されたタイミングでbreak_timeのform群に矛盾がないか確認する
 function check_break_forms(){
   $('.form').on("submit", function(){
-    var status = document.getElementById("standby_on_break").checked;
-    if (status == true){
+    var break_status = check_break_start_status();
+    if (break_status == true){
       var break_start = document.getElementById("standby_break_start").value;
       if (break_start == ""){
         alert("現在の休憩開始時刻を入力してください。");
         return false;
       }
+    }else{
+      change_null_break_start();
     }
   })
 }
 
 //休憩中フォームの選択状況を返す。休憩中がtrue、作業中はfalse。
 function check_break_start_status(){
-   var status = document.getElementById("standby_on_break").checked;
+   var work_status = $('input[name="standby[work_status]"]:checked').val();
+   if (work_status == "work"){
+     var status = false;
+   }else if (work_status == "break"){
+     var status = true;
+   }else{
+     return false
+   }
    return status;
 }
 

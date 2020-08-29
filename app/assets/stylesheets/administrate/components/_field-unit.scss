@@ -11,7 +11,7 @@
   float: left;
   margin-left: 1rem;
   text-align: right;
-  width: calc(15% - 1rem);
+  width: calc(30% - 1rem);
 }
 
 .field-unit__field {
@@ -42,4 +42,16 @@
     color: $red;
     content: " *";
   }
+}
+
+.field-unit__radio_buttons {
+  display: flex;
+}
+
+input[type="radio"]{
+  margin: auto 10px;
+}
+
+.field-unit__radio_button--label{
+  margin-right: 1.5em;
 }

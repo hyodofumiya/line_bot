@@ -2,7 +2,7 @@ class Standby < ApplicationRecord
   require "date"
 
   belongs_to :user
-  attr_accessor :on_break
+  attr_accessor :work_status, :all_of_break_sum
 
   validates :user, presence: true
   validates :date, presence: true
@@ -17,12 +17,21 @@ class Standby < ApplicationRecord
   def date_is_today
     errors.add(:date, "は今日を入力してください") unless self.date == Date.today
   end
-  
-  def on_break
+
+  def work_status
     if self.break_start.present?
-      true
+      :break
     else
-      false
+      :work
+    end
+  end
+
+  def all_of_break_sum
+    if self.break_start.present?
+      this_break_time = Time.now - self.break_start
+      ((this_break_time + self.break_sum)/60).floor * 60
+    else
+      self.break_sum
     end
   end
 

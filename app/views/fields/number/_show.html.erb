@@ -17,8 +17,9 @@ using the formatting options given in the resource's dashboard.
 %>
 
 
-<% if field.attribute == :work_time or field.attribute == :break_time or field.attribute == :break_sum %>
+<% if [:work_time, :break_time, :break_sum, :all_of_break_sum].include?(field.attribute) %>
   <%= "#{field.data/60}分" if field.data.present? %>
 <% else%>
   <%= field.data %>
 <% end%>
+

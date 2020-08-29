@@ -17,7 +17,8 @@ class StandbyDashboard < Administrate::BaseDashboard
     start: Field::DateTime.with_options(format: "%H:%M"),
     break_start: Field::DateTime.with_options(format: "%H:%M"),
     break_sum: Field::Number,
-    on_break: StatusField,
+    work_status: StatusField,
+    all_of_break_sum: Field::Number,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -29,9 +30,8 @@ class StandbyDashboard < Administrate::BaseDashboard
   user
   date
   start
-  break_start
-  break_sum
-  on_break
+  work_status
+  all_of_break_sum
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -40,9 +40,9 @@ class StandbyDashboard < Administrate::BaseDashboard
   user
   date
   start
-  on_break
+  work_status
   break_start
-  break_sum
+  all_of_break_sum
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -52,7 +52,7 @@ class StandbyDashboard < Administrate::BaseDashboard
   user
   date
   start
-  on_break
+  work_status
   break_start
   break_sum
   ].freeze
