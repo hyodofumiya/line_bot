@@ -21,7 +21,7 @@ ja:
       user: 社員
       board: 掲示板
       time_card: 勤怠履歴
-      standby: 勤務状況
+      standby: 勤務情報
       richmenu: LINEリッチメニュー
       group: グループ
     # model毎に定義したいattributesを記述
@@ -54,6 +54,14 @@ ja:
         work_status: 作業状況
         all_of_break_sum: 休憩時間合計
   administrate:
+    resource:
+      User: 社員情報
+      Standby: 勤務情報
+      Board: 掲示板
+      TimeCard: 勤怠履歴
+      Richmenu: LINEリッチメニュー
+      Group: グループ
+
     actions:
       confirm: 本当によろしいですか？
       destroy: 削除

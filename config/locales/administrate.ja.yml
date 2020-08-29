@@ -9,6 +9,7 @@ ja:
       new_resource: 新規 %{name}
       back: 戻る
     controller:
+
       create:
         success: "%{resource}を作成しました。"
       destroy:
@@ -27,6 +28,7 @@ ja:
     search:
       clear: 検索をクリアする
       label: サーチ %{resource}
+
   page:
     resource_name:
       user: 社員

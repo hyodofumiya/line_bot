@@ -98,5 +98,14 @@ module Admin
         config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
       }
     end
+
+
+    def translate_with_resource(key)
+      t(
+        "administrate.controller.#{key}",
+        resource: t("administrate.resource.#{resource_resolver.resource_title}"),
+      )
+    end
+
   end
 end
