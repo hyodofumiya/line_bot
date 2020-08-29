@@ -8,7 +8,6 @@ window.addEventListener('load', function(){
 
 function check_submit(){
   $("#line_send_form_in_index").on('submit',function(){
-    debugger
     checked_line_send();
     var message = exist_line_message();
     var user = more_than_one_user_be_selected();
@@ -46,7 +45,6 @@ function lineSendMessage(){
 }
 
 function checked_line_send(){
-  debugger
   var line_send = document.getElementById("line_send").checked;
   if(line_send != true){
     alert("「メッセージを送信」にチェックを入れてください");
