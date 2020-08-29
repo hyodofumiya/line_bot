@@ -4,20 +4,70 @@ window.addEventListener('load', function(){
   var action = body.dataset.action;
   var actions = ["new", "edit"]
   if((controller == "standbies") && (actions.includes(action))){
-    check_break_start_status();
-    change_break_start_status();
+    set_default_break_forms();
+    change_break_forms();
+    check_break_forms();
   }
 })
 
-function check_break_start_status(){
-  debugger
-  var status = document.getElementById("standby_on_break").checked
-  if(status == false){
-    $("#field-unit--break_start").addClass("hidden_zone");
+//画面読み込み時にon_breakフィールドとbreak_sumフィールドを切り替える。デフォルト状態は作業中仕様。
+function set_default_break_forms(){
+  var on_break_status = check_break_start_status();
+  change_break_sum_label(on_break_status);
+  change_break_start_status(on_break_status);
+}
 
+//休憩中・作業中のチェックボックスが変更されるたび、状況に合わせてform群を切り替える
+function change_break_forms(){
+  $("#standby_on_break").change(function(){
+    var on_break_status = check_break_start_status();
+    change_break_start_status(on_break_status);
+    change_break_sum_label(on_break_status);
+    on_break_status == false ? change_null_break_start() : false ;
+  })
+}
+
+//submitが押下されたタイミングでbreak_timeのform群に矛盾がないか確認する
+function check_break_forms(){
+  $('.form').on("submit", function(){
+    var status = document.getElementById("standby_on_break").checked;
+    if (status == true){
+      var break_start = document.getElementById("standby_break_start").value;
+      if (break_start == ""){
+        alert("現在の休憩開始時刻を入力してください。");
+        return false;
+      }
+    }
+  })
+}
+
+//休憩中フォームの選択状況を返す。休憩中がtrue、作業中はfalse。
+function check_break_start_status(){
+   var status = document.getElementById("standby_on_break").checked;
+   return status;
+}
+
+
+//break_sumフィールドのラベルを切り替える。trueで休憩中仕様、falseで作業中仕様。
+function change_break_sum_label(status){
+  var break_sum_label = document.getElementById("field-unit--break_sum").firstElementChild.firstElementChild;
+  if ( status == true ){
+    break_sum_label.innerHTML = "今回以外の休憩時間合計"
+  }else if (status == false){
+    break_sum_label.innerHTML = "休憩時間合計"
   }
 }
 
-function change_break_start_status(){
+//break_startフィールドの表示・非表示を切り替える。trueで表示、falseで非表示。
+function change_break_start_status(status){
+  if (status == true){
+    $("#field-unit--break_start").removeClass("hidden_zone");
+  }else if (status == false){
+    $("#field-unit--break_start").addClass("hidden_zone");
+  }
+}
 
+//break_sumフィールドの入力値をnullにする
+function change_null_break_start(){
+  document.getElementById("standby_break_start").value = "";
 }
