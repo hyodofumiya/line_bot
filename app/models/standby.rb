@@ -2,11 +2,75 @@ class Standby < ApplicationRecord
   require "date"
 
   belongs_to :user
+  attr_accessor :work_status, :all_of_break_sum
 
   validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
-  validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 60*60*24}
+  validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 86400}
+  validate :date_is_today, if: Proc.new { |resource| resource.date.present?}
+  validate :start_is_before_now, if: Proc.new { |resource| resource.start.present?}
+  validate :break_start_is_today_and_after_start, if: Proc.new {|resource| resource.break_start.present?}
+  validate :break_time_sum_is_less_than_from_start, if: Proc.new { |resource| resource.break_sum.present? and resource.start.present?}
+  validate :no_record_same_user
+
+  def date_is_today
+    errors.add(:date, "は今日を入力してください") unless self.date == Date.today
+  end
+
+  def work_status
+    if self.break_start.present?
+      :break
+    else
+      :work
+    end
+  end
+
+  def all_of_break_sum
+    if self.break_start.present?
+      this_break_time = Time.now - self.break_start
+      ((this_break_time + self.break_sum)/60).floor * 60
+    else
+      self.break_sum
+    end
+  end
+
+
+  def start_is_before_now
+    errors.add(:start, "は現在以前の時刻を入力してください") unless self.start <= Time.now
+  end
+
+  def break_start_is_today_and_after_start
+    if self.break_start.to_date != Date.today
+      errors.add(:break_start, "は今日の時刻を入力してください")
+    elsif self.start.present?
+      if self.break_start < self.start
+        errors.add(:break_start, "を開始時刻より後にしてください")
+      end
+    end
+  end
+
+  #休憩時間の合計＜勤務時間合計となっていることを確認するメソッド
+  def break_time_sum_is_less_than_from_start
+    if self.start <= Time.now
+      from_start_to_now = Time.now - self.start.to_time
+      this_break_time = self.break_start.present? ? Time.now - self.break_start.to_time : 0
+      if self.break_sum + this_break_time > from_start_to_now and self.break_sum < 60*60*24
+        errors.add(:base, "休憩時間を勤務時間よりも短くしてください")
+      end
+    end
+  end
+
+  #同一userのレコードが存在していないことを確認するバリデーション
+  def no_record_same_user
+    if self.user_id.present?
+      standby_record = Standby.where(user_id: self.user_id)
+      another_standby_record = standby_record.select {|s| s.id != self.id }
+      if another_standby_record.present?
+        errors.add(:base, "すでに別の出勤情報が登録されています")
+      end
+    end
+  end
 
   #standbyレコードを作成するメソッド
   def self.add_new_record
@@ -114,7 +178,6 @@ class Standby < ApplicationRecord
       all_breaktime_sum = this_breaktime_sum
     end
     update_record = self.update(break_start: nil, break_sum: all_breaktime_sum.to_i)
-    binding.pry
     return update_record
   end
 

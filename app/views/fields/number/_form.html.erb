@@ -1,0 +1,29 @@
+<%#
+# Number Form Partial
+
+This partial renders an input element for number attributes.
+By default, the input is a text field.
+
+## Local variables:
+
+- `f`:
+  A Rails form generator, used to help create the appropriate input fields.
+- `field`:
+  An instance of [Administrate::Field::Number][1].
+  A wrapper around the number pulled from the database.
+
+[1]: http://www.rubydoc.info/gems/administrate/Administrate/Field/Number
+%>
+
+<div class="field-unit__label">
+  <%= f.label field.attribute %>
+</div>
+<div class="field-unit__field">
+  <% if field.attribute == :break_time or field.attribute == :break_sum %>
+    <%= f.number_field field.attribute, min: 0, max: 60*24, step: 1, maxlength: 4, required: true %>
+  <% elsif field.attribute == :employee_number %>
+    <%= f.number_field field.attribute, min: 10000, max: 99999, step: 1, maxlength: 5, required: true %>
+  <% else %>
+    <%= f.number_field field.attribute, min: 0, step: 1 %>
+  <% end %>
+</div>

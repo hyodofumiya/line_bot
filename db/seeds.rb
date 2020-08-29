@@ -17,15 +17,25 @@ end
 
 def create_dammy_data
   for num in 2..18 do
-    date = "2020/04/#{num}"
+    date = "2020/05/#{num}"
     date = date.to_date
-    start_time = Time.new(date.year, date.month, date.day, 2, 1, 0)
-    finish_time = Time.new(date.year, date.month, date.day, num+1, 2+num, 0)
+    start_time = Time.new(date.year, date.month, date.day, num, num, 0)
+    finish_time = Time.new(date.year, date.month, date.day, num+2, 2+num, 0)
     break_time = 1800
-    work_time = finish_time - start_time - break_time
-    new = TimeCard.new(user_id: 1, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
-    new.save
+    work_time = (finish_time - start_time - break_time).to_i
+    timecard = TimeCard.new(user_id: 2, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
+    timecard.save
+    p date
+    p start_time
+    p break_time
+    p work_time
+    p timecard.errors
   end
 end
 
+def create_admin_user
+  User.create( employee_number: 99999, family_name: "テスト", first_name: "テスト", line_id: "000", email: "sample@sample.com", password: "testtest", admin_user: true)
+end
+
 create_richmenu_data
+create_admin_user
