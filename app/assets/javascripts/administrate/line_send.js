@@ -8,22 +8,26 @@ window.addEventListener('load', function(){
 
 function check_submit(){
   $("#line_send_form_in_index").on('submit',function(){
-    checked_line_send();
-    var message = exist_line_message();
-    var user = more_than_one_user_be_selected();
-    if((message == false) && (user == false)){
-      alert ('送信先とLINEメッセージを入力してください。');
-      return false;
-    }else if((message == false) && (user == true)){
-      alert ('LINEメッセージを入力してください。');
-      return false;
-    }else if((message == true) && (user == false)){
-      alert ('送信先を1つ以上選択してください。');
-      return false;
-    }else if ((message == true) && (user == true)){
-      return true;
+    var checked_line_send_btn = checked_line_send();
+    if (checked_line_send_btn == true){
+      debugger
+      var message = exist_line_message();
+      var user = more_than_one_user_be_selected();
+      if((message == false) && (user == false)){
+        alert ('送信先とLINEメッセージを入力してください。');
+        return false;
+      }else if((message == false) && (user == true)){
+        alert ('LINEメッセージを入力してください。');
+        return false;
+      }else if((message == true) && (user == false)){
+        alert ('送信先を1つ以上選択してください。');
+        return false;
+      }else if ((message == true) && (user == true)){
+        return true;
+      }
+    }else{
+      return false
     }
-    return false
   })
 }
 
@@ -50,6 +54,8 @@ function checked_line_send(){
     alert("「メッセージを送信」にチェックを入れてください");
     event.preventDefault();
     return false;
+  }else{
+    return true;
   }
 }
 

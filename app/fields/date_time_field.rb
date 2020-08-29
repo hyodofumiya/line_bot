@@ -9,7 +9,6 @@ class DateTimeField < Administrate::Field::Base
   end
 
   def datetime
-    binding.pry
     if data.present?
       I18n.localize(
         data.in_time_zone(timezone),
