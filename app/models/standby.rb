@@ -16,6 +16,8 @@ class Standby < ApplicationRecord
 
   def date_is_today
     errors.add(:date, "は今日を入力してください") unless self.date == Date.today
+  end
+  
   def on_break
     if self.break_start.present?
       true
