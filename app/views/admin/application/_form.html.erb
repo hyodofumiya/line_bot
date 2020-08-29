@@ -36,7 +36,7 @@ and renders all form fields for a resource's editable attributes.
     <%= render "line_send" %>
   <% end%>
   <% page.attributes.each do |attribute| -%>
-    <div class="field-unit field-unit--<%= attribute.html_class %> field-unit--<%= requireness(attribute) %>" id="field-unit--<%=attribute.attribute%>">
+    <div class="field-unit field-unit--<%= attribute.html_class %> field-unit--<%= requireness(attribute) %> <%= "hidden_zone" if attribute.attribute == :break_start %>" id="field-unit--<%=attribute.attribute%>">
       <%= render_field attribute, f: f %>
     </div>
   <% end -%>
