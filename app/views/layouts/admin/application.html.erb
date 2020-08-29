@@ -24,7 +24,7 @@ By default, it renders:
   <%= render "stylesheet" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body data-controller="<%= controller_name %>" data-action="<%= action_name %>">
   <%= render "icons" %>
 
   <div class="app-container">
