@@ -133,6 +133,5 @@ module Admin
     def default_sorting_direction
       :desc
     end
-
   end
 end

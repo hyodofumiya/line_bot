@@ -15,7 +15,7 @@ class StandbyDashboard < Administrate::BaseDashboard
     id: Field::Number,
     date: Field::Date.with_options(searchable: true, format: "%Y-%m-%d"),
     start: Field::DateTime.with_options(format: "%H:%M"),
-    break_start: Field::DateTime.with_options(format: "%H:%M"),
+    break_start: DateTimeField.with_options(format: "%H:%M"),
     break_sum: Field::Number,
     work_status: StatusField,
     all_of_break_sum: Field::Number,
