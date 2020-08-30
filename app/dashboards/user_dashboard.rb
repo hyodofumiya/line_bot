@@ -21,8 +21,6 @@ class UserDashboard < Administrate::BaseDashboard
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     email: Field::String,
-    encrypted_password: Field::String,
-    reset_password_token: Field::String,
     reset_password_sent_at: Field::DateTime,
     remember_created_at: Field::DateTime,
     on_work: StatusField,
