@@ -108,7 +108,7 @@ function more_than_one_user_be_selected(){
   var controller_and_action = page_info();
   var expect_page_info = ["users#new", "users#edit", "standbies#new", "standbies#edit", "time_cards#new", "time_cards#edit"];
 
-  if(expect_page_info.includes(page_info)){
+  if(expect_page_info.includes(controller_and_action)){
     return true
   }else{
     var checked_lists = 0 //チェックが入っているレコードの数を入れる変数
