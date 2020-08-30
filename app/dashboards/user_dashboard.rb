@@ -20,7 +20,6 @@ class UserDashboard < Administrate::BaseDashboard
     admin_user: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-    email: Field::String,
     reset_password_sent_at: Field::DateTime,
     remember_created_at: Field::DateTime,
     on_work: StatusField,
