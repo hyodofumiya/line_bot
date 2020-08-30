@@ -10,7 +10,6 @@ function check_submit(){
   $("#line_send_form_in_index").on('submit',function(){
     var checked_line_send_btn = checked_line_send();
     if (checked_line_send_btn == true){
-      debugger
       var message = exist_line_message();
       var user = more_than_one_user_be_selected();
       if((message == false) && (user == false)){
@@ -106,11 +105,10 @@ function change_all_user_line_send_check(){
 
 //submitが押下された時に送信先userが１人以上選択されていることを確認するメソッド
 function more_than_one_user_be_selected(){
-  if(function(){
-    var url = document.URL
-    url.includes("admin/users/") || url.includes("admin/standbies/") || url.includes("admin/time_cards/")
-    })
-  {
+  var controller_and_action = page_info();
+  var expect_page_info = ["users#new", "users#edit", "standbies#new", "standbies#edit", "time_cards#new", "time_cards#edit"];
+
+  if(expect_page_info.includes(page_info)){
     return true
   }else{
     var checked_lists = 0 //チェックが入っているレコードの数を入れる変数
@@ -129,6 +127,15 @@ function more_than_one_user_be_selected(){
       return false;
     }  
   }
+}
+
+//表示しているページのコントローラーとアクションをcontroller#actionの文字列にして返すメソッド
+function page_info(){
+  var body = document.querySelector("body");
+  var controller = body.dataset.controller;
+  var action = body.dataset.action;
+  var page_info = `${controller}#${action}`;
+  return page_info
 }
 
 function exist_line_message(){
