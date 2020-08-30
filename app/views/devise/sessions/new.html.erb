@@ -10,7 +10,7 @@
       <% end %>
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "admin_login_form"}) do |f| %>
         <div class="field">
-          <%= f.label :email %><br />
+          <%= f.label :email %><br/>
           <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "E-mail"%>
         </div>
 
