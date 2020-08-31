@@ -10,7 +10,7 @@ class Richmenu < ApplicationRecord
 
   def self.get_user_richmenu_id
     Richmenu.client
-    response_user_richmenu_id = JSON.parse(client.get_user_rich_menu($user_line_id).body)["richMenuId"]
+    response_user_richmenu_id = JSON.parse(client.get_user_rich_menu($line_id).body)["richMenuId"]
     user_richmenu_obj = Richmenu.find_by(richmenu_id: response_user_richmenu_id)
     user_richmenu_id = user_richmenu_obj.id
     return user_richmenu_id
@@ -30,8 +30,13 @@ class Richmenu < ApplicationRecord
     if $user_richmenu_id != current_answer_richmenu_id
       richmenu_id = Richmenu.find(current_answer_richmenu_id).richmenu_id
       Richmenu.client
-      res = client.link_user_rich_menu($user_line_id, richmenu_id)
+      res = client.link_user_rich_menu($line_id, richmenu_id)
     end
+  end
+
+  #リッチメニューをデフォルトの状態に戻すメソッド
+  def self.reset_richmenu_id
+    client.link_user_rich_menu($line_id, Richmenu.find(1).richmenu_id) 
   end
   
   private
