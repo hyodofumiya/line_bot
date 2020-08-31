@@ -40,6 +40,7 @@ module Admin
     #ユーザーの権限に応じて指定されたページを表示して良いか判断するメソッド
     #許可する場合はtrue,ブロックする場合はfalseを返す。
     def valid_action?(name, resource = resource_class)
+      set_valid_array
       !!@valid_array.detect do |controller, action|
         controller == resource.to_s.underscore.pluralize && action == name.to_s
       end
