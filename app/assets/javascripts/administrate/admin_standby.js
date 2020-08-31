@@ -2,7 +2,7 @@ window.addEventListener('load', function(){
   var body = document.querySelector("body");
   var controller = body.dataset.controller;
   var action = body.dataset.action;
-  var actions = ["new", "edit"]
+  var actions = ["new", "edit", "update", "create"]
   if((controller == "standbies") && (actions.includes(action))){
     set_default_break_forms();
     change_break_forms();
