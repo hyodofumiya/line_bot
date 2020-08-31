@@ -9,7 +9,6 @@ ja:
       new_resource: 新規 %{name}
       back: 戻る
     controller:
-
       create:
         success: "%{resource}を作成しました。"
       destroy:
