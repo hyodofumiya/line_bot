@@ -4,7 +4,6 @@ class Standby < ApplicationRecord
   belongs_to :user
   attr_accessor :work_status, :all_of_break_sum
 
-  validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
   validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 86400}
