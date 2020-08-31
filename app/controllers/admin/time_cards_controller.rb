@@ -43,6 +43,7 @@ module Admin
     end
 
     private
+    
     #ストロングパラメータ
     def resource_params
       fix_resource_params
