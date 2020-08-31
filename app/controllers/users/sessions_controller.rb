@@ -1,19 +1,5 @@
-# frozen_string_literal: true
-
 class Users::SessionsController < Devise::SessionsController
-  # before_action :configure_sign_in_params, only: [:create]
 
-  # GET /resource/sign_in
-  # def new
-  #   super
-  # end
-
-  # POST /resource/sign_in
-  # def create
-  #   super
-  # end
-
-  # DELETE /resource/sign_out
   def destroy
     @admin = current_user.admin_user?
     signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))
@@ -22,6 +8,8 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   private
+  
+  #ユーザーが管理者が一般ユーザーなのかでログアウト後のリダイレクト先を変更
   def respond_to_on_destroy
     respond_to do |format|
       format.all { head :no_content }
