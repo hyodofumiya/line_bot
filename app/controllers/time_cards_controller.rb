@@ -18,29 +18,23 @@ class TimeCardsController < ApplicationController
         return_message = "修正できませんでした"
       end
       response = send_return_line_message(return_message)
-      render json: @result
     end
   end
 
+  #lineのリッチメニューから直接uriアクションでリクエストが送られてくる
   def edit
-    binding.pry
     @timecard = TimeCard.new
   end
 
   def update
-    if @user.present?
-      time_card = TimeCard.find(@id)
-      @result = time_card.update(time_card_params)
-      if @result == true
-        return_message = "#{@date.to_date.strftime("%m/%d")}の勤怠を修正しました"
-      else
-        return_message = "勤怠を修正できませんでした"
-      end
-      response = send_return_line_message(return_message)
+    time_card = TimeCard.find(@id)
+    @result = time_card.update(time_card_params)
+    if @result == true
+      return_message = "#{@date.to_date.strftime("%m/%d")}の勤怠を修正しました"
     else
-      send_no_user_message
+      return_message = "勤怠を修正できませんでした"
     end
-    render json: @result
+    response = send_return_line_message(return_message)
   end
 
   def destroy
@@ -52,7 +46,6 @@ class TimeCardsController < ApplicationController
       return_message ="勤怠の修正に失敗しました"
     end
     response = send_return_line_message(return_message)
-    render json: @result
   end
 
   #勤怠修正フォームの日付が変更された時にuserIdと日付に該当するTimeCardレコードをユーザーに返すアクション
@@ -116,8 +109,8 @@ class TimeCardsController < ApplicationController
   def user_present
     if @user.nil?
       send_no_user_message
-      @result = false
-      render json: @result
+      return_json ={"user": "nil"} 
+      render json: return_json
     end
   end
 
@@ -130,8 +123,8 @@ class TimeCardsController < ApplicationController
   def send_no_user_message
     return_message = "ユーザーが見つかりません"
     response = send_return_line_message(return_message)
-    @user = 
-    render json: @user
+    return_json ={"user": "nil"} 
+    render json: return_json
   end
 
   #lineのメッセージ形式に整形するメソッド
