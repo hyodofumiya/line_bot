@@ -17,10 +17,11 @@ class TimeCardsController < ApplicationController
       redirect_to action: 'update'
     else
       date = params[:time_card][:date]
-      work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
       start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
       finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
       break_time = params[:time_card][:break_time].to_i*60
+      work_time = (Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")).to_i - break_time
+
       time_card = TimeCard.new(user_id: user.id, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
       result = time_card.save
       if result == true
@@ -39,10 +40,12 @@ class TimeCardsController < ApplicationController
   def update
     #ユーザーに入力内容の確認メッセージを送信する
     time_card = TimeCard.find(params[:time_card][:timecard_id])
-    work_time = Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")
     start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}".to_time
     finish_time ="#{params[:time_card][:date]} #{params[:time_card][:finish_time]}".to_time
-    @result = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: params[:time_card][:break_time].to_i*60)
+    break_time = params[:time_card][:break_time].to_i*60
+    work_time = (Time.strptime(params[:time_card][:finish_time], "%H:%M") - Time.strptime(params[:time_card][:start_time], "%H:%M")).to_i - break_time
+    @result = time_card.update(date: params[:time_card][:date], work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
+    binding.pry
     user_id_token = params[:time_card][:user_token]
     user_line_id = get_user_id_from_token(user_id_token)
     if @result == true

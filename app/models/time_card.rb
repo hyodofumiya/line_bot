@@ -28,7 +28,7 @@ class TimeCard < ApplicationRecord
     if self.finish_time.present? && self.start_time.present? && self.break_time.present?
       break_time = self.break_time.to_i
       between_start_to_finish_time = self.finish_time.to_time - self.start_time.to_time
-      if work_time.present?
+      if self.work_time.present?
         work_time = self.work_time.to_i
         errors.add(:base, "勤務時間の内訳が異常です") if between_start_to_finish_time < work_time + break_time
       else
