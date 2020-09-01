@@ -76,25 +76,6 @@ class TimeCardsController < ApplicationController
     return user_line_id
   end
 
-  #フォームに付与したトークンを元にlineサーバーからuserのlineIDを取得するメソッド
-  def get_user_id_from_token(user_id_token)
-    uri = URI.parse('https://api.line.me/oauth2/v2.1/verify')
-    http = Net::HTTP.new(uri.host, uri.port)
-
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    req = Net::HTTP::Post.new(uri.path)
-
-    req.set_form_data({"id_token":user_id_token, "client_id":"1654154094"})
-    res = http.request(req)
-    
-    result = ActiveSupport::JSON.decode(res.body)
-    user_id = result["sub"]
-    
-    return user_id
-  end
-
   #paramsの情報を扱いやすい形に整形するメソッド
   def convert_calumn_from_params
     @id = params[:time_card][:timecard_id]
