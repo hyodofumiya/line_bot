@@ -50,33 +50,38 @@ function return_timecard(){
         dataType: 'json'
       })
       .done(function(data){
-        if (input_date == ""){
-          reset_form()
-        }else{
-          $(".timecard_day_off").removeAttr("disabled");
-          if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
-            document.getElementById('time_card_workday').setAttribute("checked", "true");
-            document.getElementById('time_card_holiday').removeAttribute("checked");
-            document.getElementById('timecard_start_time').value = data.start_time;
-            document.getElementById("timecard_finish_time").value = data.finish_time;
-            document.getElementById("timecard_break_time").value = data.break_time/60|0;
-            document.getElementById("timecardId").value = data.timecard_id;
-            $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
-            timecard_data = data;
-            return timecard_data;
-          }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
-            document.getElementById('time_card_workday').removeAttribute("checked");
-            document.getElementById('time_card_holiday').setAttribute("checked", "true");
-            document.getElementById('timecard_start_time').value = "";
-            document.getElementById("timecard_finish_time").value = "";
-            document.getElementById("timecard_break_time").value = "";
-            document.getElementById("timecardId").value = "";
-            $("#timecard_edit_form").attr({"action": '/time_cards/'});
-            timecard_data = undefined;
-            changeStatusOfDetailsInTimeCardEditForm("disabled");
-            changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
-            return timecard_data;
+        if(data.user_exist == "true"){
+          if (input_date == ""){
+            reset_form()
+          }else{
+            $(".timecard_day_off").removeAttr("disabled");
+            if (data.exist == true){ //jsonにTimeCardのレコードが存在していた時、各フォームに取得したデータを埋め込む
+              document.getElementById('time_card_workday').setAttribute("checked", "true");
+              document.getElementById('time_card_holiday').removeAttribute("checked");
+              document.getElementById('timecard_start_time').value = data.start_time;
+              document.getElementById("timecard_finish_time").value = data.finish_time;
+              document.getElementById("timecard_break_time").value = data.break_time/60|0;
+              document.getElementById("timecardId").value = data.timecard_id;
+              $("#timecard_edit_form").attr({"action": '/time_cards/' + data.timecard_id});
+              timecard_data = data;
+              return timecard_data;
+            }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
+              document.getElementById('time_card_workday').removeAttribute("checked");
+              document.getElementById('time_card_holiday').setAttribute("checked", "true");
+              document.getElementById('timecard_start_time').value = "";
+              document.getElementById("timecard_finish_time").value = "";
+              document.getElementById("timecard_break_time").value = "";
+              document.getElementById("timecardId").value = "";
+              $("#timecard_edit_form").attr({"action": '/time_cards/'});
+              timecard_data = undefined;
+              changeStatusOfDetailsInTimeCardEditForm("disabled");
+              changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+              return timecard_data;
+            }
           }
+        }else{
+          alert('データの取得中にエラーが起こりました。');
+          liff.closeWindow(); //LIFFを終了する
         }
       })
       .fail(function(){
@@ -166,10 +171,20 @@ function judgeWorktime(){
             contentType: false
           })
           .success(function(data){
-            reset_form();
-            timecard_data = undefined
-            changeStatusOfDetailsInTimeCardEditForm("disabled");
-            changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+            if(data.user_exist == "true"){
+              if(data.result == true){
+                alert('勤怠簿を修正しました。');
+                reset_form();
+                timecard_data = undefined;
+              }else{
+                alert('勤怠簿を修正できませんでした');
+              }
+              changeStatusOfDetailsInTimeCardEditForm("disabled");
+              changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
+            }else{
+              alert('勤怠簿の修正に失敗しました。');
+              liff.closeWindow(); //LIFFを終了する
+            }
           })
         }
         return false;
