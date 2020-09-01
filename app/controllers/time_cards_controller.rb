@@ -4,65 +4,55 @@ class TimeCardsController < ApplicationController
   require 'uri'
   require 'json'
 
-  before_action :convert_calumn_from_params, only: [:create, :update]
-  before_action :get_user_info, :user_present, only: [:create, :update, :destroy]
+  before_action :convert_calumn_from_params, :get_user_info, :user_present, only: [:create, :update, :destroy]
 
   def create
     if @id.present?
       redirect_to action: 'update'
     else
-      time_card = TimeCard.new(user_id: @user.id, date: @date, work_time: @work_time, start_time: @start_time, finish_time: @finish_time, break_time: @break_time)
-      result = time_card.save
-      if result == true
+      time_card = TimeCard.new(time_card_params)
+      @result = time_card.save
+      if @result == true
         return_message = "修正しました"
       else
         return_message = "修正できませんでした"
       end
       response = send_return_line_message(return_message)
+      render json: @result
     end
   end
 
   def edit
-      @timecard = TimeCard.new
+    binding.pry
+    @timecard = TimeCard.new
   end
 
   def update
     if @user.present?
       time_card = TimeCard.find(@id)
-      @result = time_card.update(date: @date, work_time: @work_time, start_time: @start_time, finish_time: @finish_time, break_time: @break_time)
+      @result = time_card.update(time_card_params)
       if @result == true
         return_message = "#{@date.to_date.strftime("%m/%d")}の勤怠を修正しました"
-        response = send_return_line_message(return_message) #LINEに修正成功のメッセージを送信する
       else
         return_message = "勤怠を修正できませんでした"
-        response = send_return_line_message(return_message)
       end
-      render :json => @result
+      response = send_return_line_message(return_message)
     else
       send_no_user_message
-      redirect_to action: 'edit'
     end
+    render json: @result
   end
 
   def destroy
-    get_user_info
-    if @user.present?
-      time_card = TimeCard.find(@id)
-      if time_card.destroy
-        return_message = "#{params[:time_card][:date].to_date.strftime("%m/%d")}の勤怠を修正しました"
-        response = send_return_line_message(return_message) #LINEに修正成功のメッセージを送信する
-      else
-        return_message ="勤怠の修正に失敗しました"
-        response = send_return_line_message(return_message)
-      end
-      respond_to do |format|
-        format.html { render "edit"}
-        format.json
-      end
+    time_card = TimeCard.find(@id)
+    @result = time_card.destroy
+    if @result
+      return_message = "#{params[:time_card][:date].to_date.strftime("%m/%d")}の勤怠を修正しました"
     else
-      send_no_user_message
-      redirect_to action: 'edit'
+      return_message ="勤怠の修正に失敗しました"
     end
+    response = send_return_line_message(return_message)
+    render json: @result
   end
 
   #勤怠修正フォームの日付が変更された時にuserIdと日付に該当するTimeCardレコードをユーザーに返すアクション
@@ -75,6 +65,11 @@ class TimeCardsController < ApplicationController
   end
 
   private
+
+  #ストロングパラメータ
+  def time_card_params
+    params.require(:time_card).permit(:id, :user_id, :date, :work_time, :start_time, :finish_time).merge!({user_id: @user.id, date: @date, work_time: @work_time, start_time: @start_time, finish_time: @finish_time, break_time: @break_time})
+  end
 
   #トークンを利用してフォームの送信者を取得するメソッド。返り値は、Userのインスタンス
   def get_user_info
@@ -121,6 +116,8 @@ class TimeCardsController < ApplicationController
   def user_present
     if @user.nil?
       send_no_user_message
+      @result = false
+      render json: @result
     end
   end
 
@@ -133,6 +130,8 @@ class TimeCardsController < ApplicationController
   def send_no_user_message
     return_message = "ユーザーが見つかりません"
     response = send_return_line_message(return_message)
+    @user = 
+    render json: @user
   end
 
   #lineのメッセージ形式に整形するメソッド
