@@ -39,10 +39,7 @@ class LinebotsController < ApplicationController
                 selected_date = event["postback"]["params"]["date"]
                 selected_timecard = TimeCard.show_selected_date(selected_date)
                 return_message = set_return_message(selected_timecard)
-  
-              when "timecard-fix" #勤怠簿修正ボタンを押した時
-                redirect_to timecard_edit_path
-              
+
               when "search_member" #報連相ボタンを押した時
                 return_message = "この機能は未実装です"
 
