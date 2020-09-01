@@ -49,9 +49,8 @@ class Richmenu
                 "height": 373
             },
             "action": {
-                "type": "uri",
+                "type": "postback",
                 "label": "修正",
-                "uri": "https://liff.line.me/1654154094-1nd8zDod",
                 "data": [{name: "timecard-fix"}].to_json
             }
           },
@@ -91,7 +90,7 @@ class Richmenu
     client = Line::Bot::Client.new{ |config|
       config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
-    }
+  }
     response = client.get_rich_menus
     body = JSON.parse(response.body)
   end
@@ -102,7 +101,7 @@ class Richmenu
       config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
     }
     file = File.open('public/others.jpg')
-    response = client.create_rich_menu_image('richmenu-d882125ecd5761d36fc8102049c0fb04', file)
+    response = client.create_rich_menu_image('richmenu-8806ccd7c079a67b70bd2c16a36646a8', file)
     body = JSON.parse(response.body)
     p body
   end
