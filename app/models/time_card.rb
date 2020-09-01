@@ -72,7 +72,7 @@ class TimeCard < ApplicationRecord
       case
       #正常の動作をする条件
       when standby.start >= timecard.finish_time && $timestamp > timecard.finish_time
-        work_time = work_time + timecard.work_time
+        work_time ＋= timecard.work_time
         break_time = $timestamp - timecard.start_time  - work_time
         result = timecard.update(work_time: work_time, finish_time: $timestamp, break_time: break_time)
         #DBに保存できたか確認
