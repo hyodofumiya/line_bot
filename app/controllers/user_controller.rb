@@ -11,6 +11,7 @@ class UserController < ApplicationController
   def create
   end
 
+  #LINEにユーザーフォーム入力情報の確認メッセージを送信する
   def user_check_bot
     user_id_token = params[:user_token]
     #LINEのIDトークンをLINEに送信し、LINEのIDを取得する

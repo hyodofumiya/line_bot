@@ -2,11 +2,11 @@ class LinebotsController < ApplicationController
   require 'line/bot'
   require 'time'
   protect_from_forgery :except => [:callback]
+  before_action: check_from_line
 
   def callback
     callback_body = request.body.read
     check_from_line(callback_body) #リクエストがlineからのものかを確認する
-
     events = client.parse_events_from(callback_body)#Lineから送られてきた内容をeventsとしてパース
     events.each { |event|
       @event = event
@@ -92,11 +92,14 @@ class LinebotsController < ApplicationController
   private
 #各メソッド------------------------------------------------------------------------------------------------
   
-  #リクエスト元がlineかどうかを確認する
+  #リクエスト元がlineかどうかを確認するメソッド
+  #リクエスト元がlineでない場合はステータスコード400、エラーを返す
   def check_from_line(body)
+    body = request.body.read
+
     signature = request.env['HTTP_X_LINE_SIGNATURE']
     unless client.validate_signature(body, signature)
-      head :bad_request
+      response_bad_request
     end
   end
 

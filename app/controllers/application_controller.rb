@@ -43,4 +43,11 @@ class ApplicationController < ActionController::Base
     
     return user_id
   end
+
+
+  #レスポンｽにエラーを返す
+  def response_bad_request
+    render status: 400, json: { status: 400, message: '無効な通信です' }
+  end
+  
 end
