@@ -1,6 +1,7 @@
 require "administrate/field/base"
 
 class DateTimeField < Administrate::Field::Base
+  #date型にして返すメソッド
   def date
     I18n.localize(
       data.in_time_zone(timezone).to_date,
@@ -8,6 +9,7 @@ class DateTimeField < Administrate::Field::Base
     )
   end
 
+  #datetime型にして返すメソッド
   def datetime
     if data.present?
       I18n.localize(
