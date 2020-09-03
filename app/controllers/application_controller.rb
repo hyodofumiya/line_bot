@@ -11,6 +11,15 @@ class ApplicationController < ActionController::Base
     }
   end
 
+  #リクエストの送信元がLINEアプリからか判別するメソッド
+  def check_from_line
+    body = request.body.read
+    signature = request.env['HTTP_X_LINE_SIGNATURE']
+    unless client.validate_signature(body, signature)
+      response_bad_request
+    end
+  end
+
   #ログイン後の画面を設定
   def after_sign_in_path_for(resource)
     admin_time_cards_path
