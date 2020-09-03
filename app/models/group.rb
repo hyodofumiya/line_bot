@@ -9,8 +9,8 @@ class Group < ApplicationRecord
 
   validates :line_id, uniqueness: true
 
+  #招待されたグループがDBに存在するかで条件分岐
   def self.add_new_group(group_line_id)
-    #招待されたグループがDBに存在するかで条件分岐
     if Group.find_by(line_id: group_line_id).nil?
       group_name = get_group_name(group_line_id)
       response = Group.create(line_id: group_line_id, name: group_name) 

@@ -200,11 +200,11 @@ class Standby < ApplicationRecord
           type: 'text',
           text: "#{now.month}月#{now.day}日の勤怠簿が退勤していません。修正ボタンから正しい内容に修正してください。"
         }
-        Standby.client.push_message(standby.user.line_id, message)
+        client.push_message(standby.user.line_id, message)
 
         #ユーザーのリッチメニューに修正ボタンを表示させる
         richmenu_id = Richmenu.find(4).richmenu_id
-        Standby.client.link_user_rich_menu(standby.user.line_id, richmenu_id)
+        client.link_user_rich_menu(standby.user.line_id, richmenu_id)
 
         #StandbyレコードをTimeCardレコードとして保存する
         standby.finish_work(standby.user)
@@ -212,14 +212,6 @@ class Standby < ApplicationRecord
         puts error
       end
     end
-  end
-
-  #LINEのメッセージAPIを使用するためのメソッド
-  def self.client
-    client ||= Line::Bot::Client.new { |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
-    }
   end
 
 end

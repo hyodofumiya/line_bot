@@ -26,4 +26,17 @@ class User < ApplicationRecord
     self.standby.present?
   end
 
+  #Lineアプリ軽油でUserを作成した時のメソッド。userの登録結果をstringで返す
+  def create_user(form_data)
+    new_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $line_id, admin_user:"false")
+    if new_user.save
+      "ユーザー登録が完了しました"
+    else
+      if User.find_by(employee_number: form_data["employee_number"]).present?
+        "すでに社員番号が使われています"
+      else
+        "登録できませんでした"
+      end
+    end
+  end
 end

@@ -2,11 +2,11 @@ class LinebotsController < ApplicationController
   require 'line/bot'
   require 'time'
   protect_from_forgery :except => [:callback]
-  before_action: check_from_line
+  before_action :check_from_line
 
   def callback
     callback_body = request.body.read
-    check_from_line(callback_body) #リクエストがlineからのものかを確認する
+    #check_from_line(callback_body) #リクエストがlineからのものかを確認する
     events = client.parse_events_from(callback_body)#Lineから送られてきた内容をeventsとしてパース
     events.each { |event|
       @event = event
@@ -38,7 +38,7 @@ class LinebotsController < ApplicationController
               when "timecard_show" #日付を指定した勤怠簿表示ボタンを押した時
                 selected_date = event["postback"]["params"]["date"]
                 selected_timecard = TimeCard.show_selected_date(selected_date)
-                return_message = set_return_message(selected_timecard)
+                return_message = set_text_message(selected_timecard)
 
               when "search_member" #報連相ボタンを押した時
                 return_message = "この機能は未実装です"
@@ -48,22 +48,22 @@ class LinebotsController < ApplicationController
               
               when "start_work" #勤務開始ボタンを押した時
                 create_standby_record = Standby.add_new_record
-                return_message = set_return_message(create_standby_record)
+                return_message = set_text_message(create_standby_record)
                 Richmenu.check_and_change_richmenu
 
               when "start_break" #休憩開始ボタンを押した時
                 update_standby_record = Standby.add_startbreak_to_record
-                return_message = set_return_message(update_standby_record)
+                return_message = set_text_message(update_standby_record)
                 Richmenu.check_and_change_richmenu
 
               when "finish_break" #休憩終了ボタンを押した時
                 update_standby_record = Standby.add_breaksum_to_record
-                return_message = set_return_message(update_standby_record)
+                return_message = set_text_message(update_standby_record)
                 Richmenu.check_and_change_richmenu
 
               when "finish_work" #退勤ボタンを押した時
                 finish_standby = Standby.finish_work_flow
-                return_message = set_return_message(finish_standby)
+                return_message = set_text_message(finish_standby)
                 Richmenu.check_and_change_richmenu
 
               when "others"
@@ -74,16 +74,16 @@ class LinebotsController < ApplicationController
             else
               return_message = "エラーが発生しました"
             end
-            response = client.reply_message(@event['replyToken'], return_message) if return_message.present? #必要に応じてメッセージをレスポンスする
+            response = reply_message(return_message) if return_message.present? #必要に応じてメッセージをレスポンスする
         else
           handle_no_user
         end
       when "group"
         return_message = "このグループはアプリでサポートされていません"
-        response = client.reply_message(@event['replyToken'], return_message) #メッセージをレスポンスする
+        response = reply_message(return_message) #メッセージをレスポンスする
       when "room"
         return_message = "このトークルームはアプリでサポートされていません"
-        response = client.reply_message(@event['replyToken'], return_message) #メッセージをレスポンスする
+        response = reply_message(return_message) #メッセージをレスポンスする
       end
     }
     head :ok
@@ -94,7 +94,7 @@ class LinebotsController < ApplicationController
   
   #リクエスト元がlineかどうかを確認するメソッド
   #リクエスト元がlineでない場合はステータスコード400、エラーを返す
-  def check_from_line(body)
+  def check_from_line
     body = request.body.read
 
     signature = request.env['HTTP_X_LINE_SIGNATURE']
@@ -138,38 +138,33 @@ class LinebotsController < ApplicationController
       when "user_form"
         create_user
       when "fix_user_form"
-        client.reply_message(@event['replyToken'], create_user_message)
+        reply_message(create_user_message)
       else
-        not_exist_user_message
+        reply_message([set_text_message("ユーザー登録をしてください") ,create_user_message])
       end
     else
-      not_exist_user_message
+      reply_message([set_text_message("ユーザー登録をしてください") ,create_user_message])
     end
-  end
-
-  #user登録されていない旨とユーザー登録用のメッセージを送信するメソッド
-  def not_exist_user_message
-    client.reply_message(@event['replyToken'], [no_user_message ,create_user_message])
     Richmenu.reset_richmenu_id
   end
 
+  #ユーザー登録メソッド
   def create_user
-    form_data = @postback_data[1]
-    create_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $line_id, admin_user:"false")
-    if create_user.save
-      client.reply_message(@event['replyToken'], success_create_user_message)
-    else
-      if User.find_by(employee_number: form_data["employee_number"]).present?
-        client.reply_message(@event['replyToken'], [already_exist_emmplyee_number_message, create_user_message])
-      else
-        client.reply_message(@event['replyToken'], [fails_create_user_message, create_user_message])
-      end
+    new_user = User.create_user(@postback_data[1])
+    case new_user
+    when "登録が完了しました"
+      reply_message(set_text_message(new_user))
+    when "すでに社員番号が使われています" or "登録できませんでした"
+      reply_message([set_text_message(new_user), create_user_message])
     end
   end
 
+  def reply_message(message)
+    client.reply_message(@event['replyToken'], message)
+  end
 
 #応答メッセージの内容---------------------------------------------------------------------------------------------------
-
+  #ユーザー登録確認メッセージ
   def create_user_message
     {
       "type": "template",
@@ -194,35 +189,10 @@ class LinebotsController < ApplicationController
     }
   end
 
-  def no_user_message
-    {"type": "text",
-      "text": "ユーザー登録をしてください"}
-  end
-
-  def success_create_user_message
-    {type:"text",
-    text:"登録が完了しました"}
-  end
-
-  def fails_create_user_message
-    {type:"text",
-    text:"登録できませんでした。"}
-  end
-
-  def already_exist_emmplyee_number_message
-    {type:"text",
-    text:"すでに社員番号が使われています。"}
-  end
-
-  def already_exist_user
-    {type:"text",
-      text:"すでに登録されています"}
-  end
-
-  def set_return_message(message)
+  #lineに送信する形式にテキストを加工するメソッド
+  def set_text_message(message)
     {type: "text",
     text: message}
   end
-
 
 end
