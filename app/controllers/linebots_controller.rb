@@ -154,7 +154,7 @@ class LinebotsController < ApplicationController
     case new_user
     when "登録が完了しました"
       reply_message(set_text_message(new_user))
-    when "すでに社員番号が使われています" or "登録できませんでした"
+    when ("すでに社員番号が使われています" || "登録できませんでした")
       reply_message([set_text_message(new_user), create_user_message])
     end
   end
