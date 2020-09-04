@@ -72,8 +72,8 @@ class TimeCard < ApplicationRecord
       case
       #正常の動作をする条件
       when standby.start >= timecard.finish_time && $timestamp > timecard.finish_time
-        work_time ＋= timecard.work_time
-        break_time = $timestamp - timecard.start_time  - work_time
+        work_time += timecard.work_time
+        break_time = ($timestamp - timecard.start_time  - work_time).to_i
         result = timecard.update(work_time: work_time, finish_time: $timestamp, break_time: break_time)
         #DBに保存できたか確認
         if result == true
@@ -103,7 +103,6 @@ class TimeCard < ApplicationRecord
       finish_time = timecard.finish_time.in_time_zone('Tokyo')
       break_time = timecard.return_break_time 
       message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time%(60*60)/60}分\n休憩：#{break_time/(60*60)}時間#{break_time%(60*60)/60}分"
-
     elsif selected_date >= Time.now
       message = "勤務履歴\n\n未登録"
     else

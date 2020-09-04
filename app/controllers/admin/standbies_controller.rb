@@ -8,7 +8,6 @@ module Admin
         redirect_to([namespace, resource], notice: translate_with_resource("create.success"))
       else
         resource[:break_sum] /= 60 if resource[:break_sum].present?
-        binding.pry
         render action: :new, locals: {page: Administrate::Page::Form.new(dashboard, resource)}
       end
     end
