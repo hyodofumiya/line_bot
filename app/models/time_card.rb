@@ -54,6 +54,7 @@ class TimeCard < ApplicationRecord
     errors.add(:finish_time, "の日付が勤務日と違います") if self.date != finish_time_date
   end
 
+  #StandbyレコードからTimeCardレコードを作成するのをコントロールするメソッド
   def self.create_new_record_flow(work_time, standby, user)
     timecard = TimeCard.find_by(user_id: user.id, date: standby.date)
     #ユーザーのレコードが同日に被っていないか確認する
@@ -69,7 +70,44 @@ class TimeCard < ApplicationRecord
         return "退勤に失敗しました"
       end
     else
-      case
+      create_timecard_from_standby(timecard, standby, user, work_time)
+    end
+  end
+
+  #選択日のTimeCardレコードをlineに送信するmessage形式にして返すメソッド
+  def self.show_selected_date(selected_date)
+    timecard = TimeCard.find_by(user_id: $user.id, date: selected_date)
+    selected_date = Date.parse(selected_date)
+    if timecard.present?
+      start_time = timecard.start_time.in_time_zone('Tokyo')
+      finish_time = timecard.finish_time.in_time_zone('Tokyo')
+      break_time = timecard.fixed_break_time
+      message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time%(60*60)/60}分\n休憩：#{break_time/(60*60)}時間#{break_time%(60*60)/60}分"
+    elsif selected_date >= Time.now
+      message = "勤務履歴\n\n未登録"
+    else
+      message = "勤務履歴\n\n日付：#{selected_date.strftime("%Y")}年 #{selected_date.strftime("%m")}月#{selected_date.strftime("%d")}日 \n\n休日"
+    end
+    return message
+  end
+
+  #今月と先月のTimeCardレコードをlineに送信するメッセージ形式にして返すメソッド
+  def self.index_selected_date
+    this_month = Time.now.to_date.all_month
+    last_month = Time.now.last_month.to_date.all_month
+    this_month_timecards = TimeCard.where(user_id: $user.id, date: this_month).order(date: :asc)
+    last_month_timecards = TimeCard.where(user_id: $user.id, date: last_month).order(date: :asc)
+    this_month_timecards_message = TimeCard.create_timecards_index_message(this_month_timecards, this_month, Time.now.to_date)
+    last_month_timecards_message = TimeCard.create_timecards_index_message(last_month_timecards, last_month, Time.now.last_month.to_date)
+    this_and_last_month_timecards_message = TimeCard.compile_this_and_last_month_timecards_message(this_month_timecards_message, last_month_timecards_message)
+    return this_and_last_month_timecards_message
+  end
+
+  private
+
+  #Standbyレコードから既存のTimeCardレコードに情報を統合するメソッド。引数に既存のTimeCard、Standbyレコード、User、Standbyの作業時間合計をとる
+  def create_timecard_from_standby(timecard, standby, user, work_time)
+    case
       #正常の動作をする条件
       when standby.start >= timecard.finish_time && $timestamp > timecard.finish_time
         work_time += timecard.work_time
@@ -92,49 +130,10 @@ class TimeCard < ApplicationRecord
         standby.delete
         return "出勤時間、退勤時間が異常です。修正画面より正しい時間に修正してください。"
       end
-    end
   end
 
-  def self.show_selected_date(selected_date)
-    timecard = TimeCard.find_by(user_id: $user.id, date: selected_date)
-    selected_date = Date.parse(selected_date)
-    if timecard.present?
-      start_time = timecard.start_time.in_time_zone('Tokyo')
-      finish_time = timecard.finish_time.in_time_zone('Tokyo')
-      break_time = timecard.return_break_time 
-      message = "勤務履歴\n\n日付：#{start_time.strftime("%Y")}年 #{start_time.strftime("%m")}月#{start_time.strftime("%d")}日\n勤務開始：#{start_time.strftime("%H:%M")}\n勤務終了：#{finish_time.strftime("%H:%M")}\n\n合計\n作業：#{timecard.work_time/(60*60)}時間#{timecard.work_time%(60*60)/60}分\n休憩：#{break_time/(60*60)}時間#{break_time%(60*60)/60}分"
-    elsif selected_date >= Time.now
-      message = "勤務履歴\n\n未登録"
-    else
-      message = "勤務履歴\n\n日付：#{selected_date.strftime("%Y")}年 #{selected_date.strftime("%m")}月#{selected_date.strftime("%d")}日 \n\n休日"
-    end
-    return message
-  end
-
-  def self.index_selected_date
-    this_month = Time.now.to_date.all_month
-    last_month = Time.now.last_month.to_date.all_month
-    this_month_timecards = TimeCard.where(user_id: $user.id, date: this_month).order(date: :asc)
-    last_month_timecards = TimeCard.where(user_id: $user.id, date: last_month).order(date: :asc)
-    this_month_timecards_message = TimeCard.create_timecards_index_message(this_month_timecards, this_month, Time.now.to_date)
-    last_month_timecards_message = TimeCard.create_timecards_index_message(last_month_timecards, last_month, Time.now.last_month.to_date)
-    this_and_last_month_timecards_message = TimeCard.compile_this_and_last_month_timecards_message(this_month_timecards_message, last_month_timecards_message)
-    return this_and_last_month_timecards_message
-  end
-
-  def return_break_time
-    if self.break_time != nil
-      break_time = self.break_time                   
-    else
-      break_time = 0
-    end
-    return break_time
-  end
-
-  private
-
+  #月単位の勤怠一覧をlineに送信する形式にして返すメソッド
   def self.create_timecards_index_message(timecards,all_month, year_and_month)
-    #休日も含めた勤怠の記録がまとまった配列を作成
     message_parts = []
     for date in all_month do
       timecard = timecards.find_by(date: date)
@@ -146,11 +145,21 @@ class TimeCard < ApplicationRecord
       message_parts << message_part
     end
     return self.compile_a_month_timecards_message(message_parts, year_and_month)
-    puts @num
   end
 
+  #break_timeがnilの場合にも登録できるようにするメソッド  
+  def fixed_break_time
+    if self.break_time != nil
+      break_time = self.break_time                   
+    else
+      break_time = 0
+    end
+    return break_time
+  end
+
+  #出勤日の詳細をlineに送信するメッセージ形式にして返すメソッド。引数に日付とTimeCardレコードをとる。
   def self.record_into_message(date,timecard)
-    break_time = timecard.return_break_time
+    break_time = timecard.fixed_break_time
     message =  {
       "type": "box",
       "layout": "horizontal",
@@ -234,6 +243,7 @@ class TimeCard < ApplicationRecord
     return message
   end
 
+  #休日の内容をlineに送信するメッセージ形式にして返すメソッド。引数に日付をとる。
   def self.not_record_into_message(date)
     {
       "type": "box",
@@ -274,6 +284,7 @@ class TimeCard < ApplicationRecord
     }
   end
 
+  #月単位のTimeCardレコード一覧を、lineに送信するためのバブル形式にするメソッド
   def self.compile_a_month_timecards_message(message_parts, year_and_month)
     compiled_a_month_message = {
       "type": "bubble",
@@ -368,6 +379,7 @@ class TimeCard < ApplicationRecord
     }
   end
 
+  #今月と先月のTimeCardレコード一覧を、lineに送信する形に統合するメソッド
   def self.compile_this_and_last_month_timecards_message(this_month_timecards_message, last_month_timecards_message)
     compiled_this_and_last_month_message = 
     {
