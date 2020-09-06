@@ -1,41 +1,62 @@
-<body class="timecard_edit_body">
-    <%= render partial: 'layouts/flash'%>
-    <div class="timecard_edit_body__form-structor">
-        <%= form_with model:@timecard,class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
-            <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
-            <div class="timecard_edit_form__form-holder">
-              <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_date">日付</label>
-                <%= f.date_field :date, id:'timecard_date' , class: 'timecard_edit_form_input', use_month_numbers: "true", required: "required" %>
-              </div>
-              <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_date">勤怠</label>
-                <%= f.radio_button :day_off, :"1", {disabled: "disabled", id: "time_card_workday", class: "timecard_day_off"} %>
-                <%= f.label :workday, "出勤日", {class: "timecard_day_off_label"} %>
-                <%= f.radio_button :day_off, :"2", {disabled: "disabled", id: "time_card_holiday", class: "timecard_day_off"} %>
-                <%= f.label :holiday, "休日", {class: "timecard_day_off_label"} %>
-              </div>
-              <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_start_time">出勤時刻</label>
-                <%= f.time_field :start_time, id: "timecard_start_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
-              </div>
-              <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_finish_time">退勤時刻</label>
-                <%= f.time_field :finish_time, id: "timecard_finish_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
-              </div>
-              <div class="timecard_edit_form__form-holder__a_form">
-                <label class="control-label timecard_edit_form_label" for="timecard_break_time">休憩時間</label>
-                <div>
-                  <%= f.number_field :break_time, id: "timecard_break_time", class: "timecard_edit_form_input", required: "required", max: 1440, min:0, disabled: "disabled" %>
-                  <a class="form_scale">分</a>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>勤怠修正画面</title>
+    </head>
+  <body class="timecard_edit_body">
+      <%= render partial: 'layouts/flash'%>
+      <div class="background">
+      </div>
+      <div class="timecard_edit_body__form-structor">
+          <%= form_with model:@timecard,class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
+              <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
+              <div class="timecard_edit_form__form-holder">
+                <div class="timecard_edit_form__form-holder__a_form">
+                  <label class="control-label timecard_edit_form_label" for="timecard_date">日付</label>
+                  <%= f.date_field :date, id:'timecard_date' , class: 'timecard_edit_form_input', use_month_numbers: "true", required: "required" %>
+                </div>
+                <div class="timecard_edit_form__form-holder__a_form">
+                  <label class="control-label timecard_edit_form_label" for="timecard_date">勤怠</label>
+                  <div class="form_radios">
+                    <div class="radio">
+                      <%= f.radio_button :day_off, :"1", {disabled: "disabled", id: "time_card_workday", class: "timecard_day_off"} %>
+                      <%= f.label :workday, "出勤日", {class: "timecard_day_off_label"} %>
+                    </div>
+                    <div class="radio">
+                      <%= f.radio_button :day_off, :"2", {disabled: "disabled", id: "time_card_holiday", class: "timecard_day_off"} %>
+                      <%= f.label :holiday, "休日", {class: "timecard_day_off_label"} %>
+                    </div>
                   </div>
+                </div>
+                <fieldset>
+                <legend>詳細(出勤日の場合は入力)</legend>
+                  <div class="timecard_edit_form__form-holder__a_form">
+                    <label class="control-label timecard_edit_form_label" for="timecard_start_time">出勤時刻</label>
+                    <%= f.time_field :start_time, id: "timecard_start_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
+                  </div>
+                  <div class="timecard_edit_form__form-holder__a_form">
+                    <label class="control-label timecard_edit_form_label" for="timecard_finish_time">退勤時刻</label>
+                    <%= f.time_field :finish_time, id: "timecard_finish_time", class: "timecard_edit_form_input", required: "required", disabled: "disabled" %>
+                  </div>
+                  <div class="timecard_edit_form__form-holder__a_form">
+                    <label class="control-label timecard_edit_form_label" for="timecard_break_time">休憩時間</label>
+                    <div>
+                      <%= f.number_field :break_time, id: "timecard_break_time", class: "timecard_edit_form_input", required: "required", max: 1440, min:0, disabled: "disabled" %>
+                      <div class="input_unit">
+                        分
+                      </div>
+                      </div>
+                  </div>
+                </fieldset>
+                <div>
+                  <%= f.hidden_field :user_token, id:"userIdToken"%>
+                  <%= f.hidden_field :timecard_id, id:"timecardId"%>
               </div>
-              <div>
-                <%= f.hidden_field :user_token, id:"userIdToken"%>
-                <%= f.hidden_field :timecard_id, id:"timecardId"%>
-            </div>
-            <%= f.submit id:"sendMessageButton", class:"timecard_edit_form__submit-btn", value:"完了", data: { "disable-with": "保存しています..." }, disabled: "disabled" %>
-        <% end %>
-    </div>
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
-</body>
+              <%= f.submit id:"sendMessageButton", class:"submit-btn", value:"完了", data: { "disable-with": "保存しています..." }, disabled: "disabled" %>
+          <% end %>
+      </div>
+      <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+  </body>
+</html>

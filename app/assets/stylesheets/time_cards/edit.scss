@@ -1,69 +1,98 @@
 .timecard_edit_body{
-  font-size: 16px;
   background-color: #E1E8EE;
   font-family: "Fira Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  -webkit-appearance: none;
   //height: 100vh;
-  &__form-structor{
-    text-align: center;
-    background-color: #fff;
-    margin: auto;
-    width: 90%;
-    border-radius: 15px;
+  .background{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    opacity: .5;
+    background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
     background: round;
-  
+    background-image: url("https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100");  
+  }
+  &__form-structor{
+    background-color: rgba(47, 120, 255, 0.65);
+    font-size: 1.2em;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    text-align: center;
     .timecard_edit_form{
+      width: 65%;
+      z-index: 1;
+      margin: auto;
       &__form-title{
-        font-size: 4em;
-        margin-top: 1em;
-        padding: 1em  0;
+        color: #fff;
+        font-size: 1.7em;
+        text-align: center;
       }
       &__form-holder{
+        padding-bottom: 1em;
         margin-bottom: 1em;
         &__a_form{
-          font-size: 25px;
-          margin: auto;
-          margin-bottom: 2em;
-          text-align: left;
-          display: flex;
-          justify-content: space-between;
-          padding: 0 10%;
+          text-align: initial;
+          margin-top: 1em;
           .timecard_edit_form_label{
-            width: 50%;
-            display: inline-block;
-            font-size: 2em;
-            text-align: left;
-            margin: auto 0;
+            //padding-left: 15px;
+            color: #fff;
+            display: block;
           }
           .timecard_edit_form_input{
-            font-size: 3em;
-            min-width: 25%;
-            padding-left: 5px;
-            text-align: center;
+            border-radius: 5px;
+            background-color: #fff;
+            overflow: hidden;
           }
-          .form_scale{
-            font-size: 2em;
+          .form_radios{
+            .timecard_day_off{
+              -webkit-transform: scale(1.5);
+              margin: 4px 4px 0 0;
+            }
+            .timecard_day_off_label{
+              margin: 0;
+              margin-left: 5px;
+              font-weight: bold;
+            }
           }
-          .timecard_day_off{
-            -webkit-transform: scale(2);
-            margin: auto;
-          }
-          .timecard_day_off_label{
-            font-size: 2em;
+          .input_unit{
+            color: #fff;
+            display: inline;
           }
         }
       }
-      &__submit-btn{
-        width: 30%;
-        margin-bottom: 1em;
-        border: solid 2.5px #00000052;
-        border-radius: 3px;
-        font-size: 4em;
-        display: inline-block;
-        }
+      .submit-btn{
+        color: rgba(255, 255, 255, 0.733);
+        border: 0;
+        border-radius: 15px;
+        display: block;
+        margin: 15px auto;
+        padding: 15px 45px;
+        font-size: 13px;
+        font-weight: bold;
+        opacity: 1;
+        cursor:pointer;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
     }
   }
+}
+
+fieldset{
+  border: 1px solid #fff;
+  margin: 5px 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+legend{
+  color: #fff;
+  border: 0;
+  padding: 0;
+  font-size: 1em;
+  margin: 0;
 }
