@@ -5,13 +5,13 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>勤怠修正画面</title>
     </head>
-  <body class="timecard_edit_body">
+  <body class="line_page_body">
       <%= render partial: 'layouts/flash'%>
       <div class="background">
       </div>
-      <div class="timecard_edit_body__form-structor">
-          <%= form_with model:@timecard,class:"timecard_edit_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
-              <h2 class="timecard_edit_form__form-title" id="timecard_edit">勤怠修正</h2>
+      <div class="line_page_body__form-structor form-structor">
+          <%= form_with model:@timecard,class:"timecard_edit_form line_page_form", id:"timecard_edit_form", data:{remote: true} do |f| %>
+              <h2 class="form-title" id="timecard_edit">勤怠修正</h2>
               <div class="timecard_edit_form__form-holder">
                 <div class="timecard_edit_form__form-holder__a_form">
                   <label class="control-label timecard_edit_form_label" for="timecard_date">日付</label>
@@ -47,7 +47,7 @@
                       <div class="input_unit">
                         分
                       </div>
-                      </div>
+                    </div>
                   </div>
                 </fieldset>
                 <div>

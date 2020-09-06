@@ -1,39 +1,3 @@
-
-.user_new_body {
-  background-color: #E1E8EE;
-  font-family: "Fira Sans", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-  -webkit-appearance: none;
-}
-
-.form-structor {
-  height: 100%;
-  display: flex;
-  text-align: center;
-  border-radius: 15px;
-  overflow: hidden;
-  opacity: .8;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-  background: round;
-  background-image: url("https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100");
-}
-
-.form-structor .signup {
-  width: 65%;
-  z-index: 1;
-  margin: auto;
-}
-
-.form-structor .signup .form-title {
-  color: #fff;
-  font-size: 1.7em;
-  text-align: center;
-}
-
 .form-structor .signup .form-holder {
   padding-bottom: 1em;
 }
@@ -44,7 +8,7 @@
 }
 
 .signup_input_zone{
-  border-radius: 15px;
+  border-radius: 5px;
   background-color: #fff;
   overflow: hidden;
 }

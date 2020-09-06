@@ -6,9 +6,11 @@
         <title>ユーザー登録</title>
 
     </head>
-    <body class="user_new_body">
+    <body class="line_page_body">
+        <div class="background">
+        </div>
         <div class="form-structor">
-            <%= form_with class:"signup form", id:"signup_form", url:user_user_check_bot_path do |f| %>
+            <%= form_with class:"signup line_page_form", id:"signup_form", url:user_user_check_bot_path do |f| %>
                 <h2 class="form-title" id="signup">入力フォーム</h2>
                 <div class="form-holder">
                     <div id="familyName_zone" class="signup_input_list input_list">
