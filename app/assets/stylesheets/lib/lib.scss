@@ -1,0 +1,46 @@
+.line_page_body{
+  background-color: #E1E8EE;
+  font-family: "Fira Sans", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  -webkit-appearance: none;
+}
+
+.background{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  opacity: .5;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  background: round;
+  background-image: url("https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100");  
+}
+
+.form-structor{
+  background-color: rgba(122, 184, 225, 0.637);
+  font-size: 1.2em;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  text-align: center;
+}
+
+.form-title {
+  color: #fff;
+  font-size: 1.7em;
+  text-align: center;
+}
+
+.form_body{
+  width: 65%;
+  z-index: 1;
+  margin: auto;
+}
+
+.form-holder{
+  padding-bottom: 1em;
+}
