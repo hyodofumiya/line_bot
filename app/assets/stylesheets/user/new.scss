@@ -1,56 +1,51 @@
-.form-structor .signup .form-holder {
-  padding-bottom: 1em;
-}
-
-.signup_input_list{
-  text-align: initial;
-  margin-top: 1em;
-}
-
-.signup_input_zone{
-  border-radius: 5px;
-  background-color: #fff;
-  overflow: hidden;
-}
-
-.signup_error_message{
-  color: orangered;
-  padding: 0 0 8px 15px;
-  font-size: 0.8em;
-}
-
-.form-structor .signup .form-holder .input {
-  border: 0;
-  outline: none;
-  box-shadow: none;
-  display: block;
-  height: 30px;
-  line-height: 30px;
-  padding: 8px 15px 0;
-  width: 100%;
-  font-size: 16px;
-}
-
-.form-structor .signup .form-holder .input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.4);
-}
-
-.signup_form_label{
-  padding-left: 15px;
-  color: floralwhite;
-}
-
-.form-structor .signup .submit-btn {
-  background-color: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.7);
-  border: 0;
-  border-radius: 15px;
-  display: block;
-  margin: 15px auto;
-  padding: 15px 45px;
-  width: 70%;
-  font-size: 13px;
-  font-weight: bold;
-  opacity: 1;
-  cursor:pointer;
+.signup{
+  .form-holder{
+    padding-bottom: 1em;
+    .signup_input_list{
+      text-align: initial;
+      margin-top: 1em;
+      .signup_form_label{
+        padding-left: 15px;
+        color: floralwhite;
+      }
+      .signup_input_zone{
+        border-radius: 5px;
+        background-color: #fff;
+        overflow: hidden;
+        .input{
+          border: 0;
+          outline: none;
+          box-shadow: none;
+          display: block;
+          height: 30px;
+          line-height: 30px;
+          padding: 8px 15px 0;
+          width: 100%;
+          font-size: 16px;
+        }
+        .input::-webkit-input-placeholder {
+          color: rgba(0, 0, 0, 0.4);
+        }
+        .signup_error_message{
+          color: orangered;
+          padding: 0 0 8px 15px;
+          font-size: 0.8em;
+        }
+      }
+    }
+  }
+  .submit-btn{
+    background-color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    border: 0;
+    border-radius: 15px;
+    display: block;
+    margin: 15px auto;
+    padding: 15px 45px;
+    width: 70%;
+    font-size: 13px;
+    font-weight: bold;
+    opacity: 1;
+    cursor:pointer;
+  }
 }
