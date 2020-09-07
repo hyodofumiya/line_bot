@@ -68,6 +68,10 @@ class LinebotsController < ApplicationController
 
               when "others"
                 client.link_user_rich_menu($line_id, Richmenu.find(4).richmenu_id) #その他のリッチメニューを表示させる
+              when "user_form"
+                return_message = set_text_message("すでにユーザーが登録されています")
+              when "fix_user_form"
+                return_message = set_text_message("すでにユーザーが登録されています")
               else
                 return_message = "エラーが発生しました"
               end
@@ -154,8 +158,10 @@ class LinebotsController < ApplicationController
     case new_user
     when "登録が完了しました"
       reply_message(set_text_message(new_user))
-    when ("すでに社員番号が使われています" || "登録できませんでした")
-      reply_message([set_text_message(new_user), create_user_message])
+    when ("すでに社員番号が使われています")
+      reply_message([set_text_message("すでに社員番号が使われています"), create_user_message])
+    when ("登録できませんでした")
+      reply_message([set_text_message("登録できませんでした"), create_user_message])
     end
   end
 

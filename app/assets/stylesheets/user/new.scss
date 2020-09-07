@@ -28,7 +28,7 @@
         }
         .signup_error_message{
           color: orangered;
-          padding: 0 0 8px 15px;
+          padding-left: 15px;
           font-size: 0.8em;
         }
       }
@@ -47,5 +47,6 @@
     font-weight: bold;
     opacity: 1;
     cursor:pointer;
+
   }
 }
