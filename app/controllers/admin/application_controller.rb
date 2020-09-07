@@ -1,9 +1,3 @@
-# All Administrate controllers inherit from this
-# `Administrate::ApplicationController`, making it the ideal place to put
-# authentication logic or other before_actions.
-#
-# If you want to add pagination or other controller-level concerns,
-# you're free to overwrite the RESTful controller actions.
 module Admin
   class ApplicationController < Administrate::ApplicationController
     before_action :authenticate_admin, :request_path, :user_category, :set_default_line_message
@@ -19,6 +13,13 @@ module Admin
       end
     end
 
+    #ログイン中のユーザーが管理者権限を有しているか判断するメソッド。
+    #@adminに管理者の場合はtrue,それ以外の場合はfalseが入る
+    def user_category
+      @admin = current_user.admin_user?
+    end
+
+    #lineメッセージの入力フィールドにデフォルトで表示するメッセージを,@line_default_messageとして返すメソッド。
     def set_default_line_message
       case
       when (controller_path == "admin/time_cards" and action_name == ("new" or "edit"))
@@ -36,26 +37,37 @@ module Admin
       end
     end
 
-    def user_category
-      @admin = current_user.admin_user?
+    #ユーザーの権限に応じて指定されたページを表示して良いか判断するメソッド
+    #許可する場合はtrue,ブロックする場合はfalseを返す。
+    def valid_action?(name, resource = resource_class)
+      set_valid_array
+      !!@valid_array.detect do |controller, action|
+        controller == resource.to_s.underscore.pluralize && action == name.to_s
+      end
     end
 
-    def valid_action?(name, resource = resource_class)
+    #ユーザーの権限に応じてアクセスできるページ一覧を@valid_arrayとして返すメソッド
+    def set_valid_array
       if @admin
-        valid_array = [["users", "index"], ["users", "new"], ["users", "show"], ["users", "edit"], ["users", "create"], ["users", "update"], ["users", "destroy"], ["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
+        @valid_array = [["users", "index"], ["users", "new"], ["users", "show"], ["users", "edit"], ["users", "create"], ["users", "update"], ["users", "destroy"], ["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
       else
-        valid_array = [["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
+        @valid_array = [["standbies", "index"], ["standbies", "create"], ["standbies", "new"], ["standbies", "edit"], ["standbies", "show"], ["standbies", "update"], ["standbies", "destroy"], ["time_cards", "index"], ["time_cards", "create"], ["time_cards", "new"], ["time_cards", "edit"], ["time_cards", "show"], ["time_cards", "update"], ["time_cards", "destroy"]]
       end
+    end
 
-      !!valid_array.detect do |controller, action|
-        controller == resource.to_s.underscore.pluralize && action == name.to_s
+    #操作するユーザーの権限に応じてresourceの情報公開範囲をコントロールするメソッド
+    def scoped_resource
+      if @admin
+        resource_class
+      else
+        super.where(user_id: current_user.id)
       end
     end
 
     #lineにプッシュメッセージを送信するメソッド
     #第一引数 送信先のline_id
     #第二引数 送信するメッセージ
-    #第三引数 タイトルに表示するメッセージ　例：出勤簿にアクションが付きました
+    #第三引数 タイトルに表示するメッセージ。 例：出勤簿にアクションが付きました
     def send_line(user_line_id, return_message, title_message)
       line_send = params[:line_send]
       if line_send == "true"
@@ -63,6 +75,7 @@ module Admin
       end
     end
 
+    #lineに送信するメッセージを返す。引数にメッセージの内容とタイトルをとる。
     def change_timecard_message(return_message, title_message)
       {
         "type": "flex",
@@ -92,6 +105,7 @@ module Admin
       }
     end
 
+    #公式アカウントから送信するためのクライアント情報を格納
     def client
       client ||= Line::Bot::Client.new { |config|
         config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
@@ -99,7 +113,7 @@ module Admin
       }
     end
 
-
+    #administrateの各ページにアクセスするボタンを日本語化するメソッド
     def translate_with_resource(key)
       t(
         "administrate.controller.#{key}",

@@ -4,20 +4,16 @@ class Standby < ApplicationRecord
   belongs_to :user
   attr_accessor :work_status, :all_of_break_sum
 
-  validates :user, presence: true
   validates :date, presence: true
   validates :start, presence:true
-  validates :break_sum, allow_blank: true, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 86400}
+  validates :break_sum, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than: 86400}
   validate :date_is_today, if: Proc.new { |resource| resource.date.present?}
   validate :start_is_before_now, if: Proc.new { |resource| resource.start.present?}
   validate :break_start_is_today_and_after_start, if: Proc.new {|resource| resource.break_start.present?}
   validate :break_time_sum_is_less_than_from_start, if: Proc.new { |resource| resource.break_sum.present? and resource.start.present?}
   validate :no_record_same_user
 
-  def date_is_today
-    errors.add(:date, "は今日を入力してください") unless self.date == Date.today
-  end
-
+  #現在作業中かどうかを判断するvartual attributes
   def work_status
     if self.break_start.present?
       :break
@@ -26,6 +22,7 @@ class Standby < ApplicationRecord
     end
   end
 
+  #現在までの総合計休憩時間を扱うvartual attributes
   def all_of_break_sum
     if self.break_start.present?
       this_break_time = Time.now - self.break_start
@@ -35,11 +32,17 @@ class Standby < ApplicationRecord
     end
   end
 
+  #出勤情報の日付が当日であることを確認するバリデーション用メソッド
+  def date_is_today
+    errors.add(:date, "は今日を入力してください") unless self.date == Date.today
+  end
 
+  #出勤時刻が現在以前であることを確認するバリデーション用メソッド
   def start_is_before_now
     errors.add(:start, "は現在以前の時刻を入力してください") unless self.start <= Time.now
   end
 
+  #休憩開始時間が異常でないか確認するバリデーション用メソッド
   def break_start_is_today_and_after_start
     if self.break_start.to_date != Date.today
       errors.add(:break_start, "は今日の時刻を入力してください")
@@ -50,7 +53,7 @@ class Standby < ApplicationRecord
     end
   end
 
-  #休憩時間の合計＜勤務時間合計となっていることを確認するメソッド
+  #休憩時間の合計＜勤務時間合計となっていることを確認するバリデーション用メソッド
   def break_time_sum_is_less_than_from_start
     if self.start <= Time.now
       from_start_to_now = Time.now - self.start.to_time
@@ -61,7 +64,7 @@ class Standby < ApplicationRecord
     end
   end
 
-  #同一userのレコードが存在していないことを確認するバリデーション
+  #同一userのレコードが存在していないことを確認するバリデーション用メソッド
   def no_record_same_user
     if self.user_id.present?
       standby_record = Standby.where(user_id: self.user_id)
@@ -72,13 +75,11 @@ class Standby < ApplicationRecord
     end
   end
 
-  #standbyレコードを作成するメソッド
+  #standbyレコードを作成した結果をstringで返すメソッド
   def self.add_new_record
-    #standbyレコードを新たに作成してもいいか確認するメソッド
-    @standby_record = Standby.find_by(user_id: $user.id) if present?
-    if @standby_record.nil? #新規作成
-      user_id = $user.id
-      record = Standby.new(user_id: user_id, date: $timestamp, start:$timestamp )
+    @standby_record = Standby.find_by(user_id: $user.id)
+    if @standby_record.nil?
+      record = Standby.new(user_id: $user.id, date: $timestamp, start:$timestamp, break_sum: 0 )
       create_record = record.save
       if create_record == true
         return "出勤しました"
@@ -146,20 +147,16 @@ class Standby < ApplicationRecord
 
   #StandbyレコードからTimeCardレコードを作成するメソッド
   def finish_work(user)
-    #休憩中か判断し、休憩中の場合は休憩を終了する。
-    if self.break_start.present?
-      update_break_sum = self.update_break_sum
-      return "退勤に失敗しました。休憩を終了できませんでした。" if update_break_sum == false
+    if self.break_start.present? #休憩中か判断し、休憩中の場合は休憩を終了する。
+      return "休憩を終了できませんでした。" if self.update_break_sum == false
     end
-
-    work_start = self.start
-    time_from_start_to_finish = $timestamp - work_start
+    time_from_start_to_finish = $timestamp - self.start
     #前日の入力忘れの場合とで条件分け
     if time_from_start_to_finish <= 60*60*24
-      if break_sum.present?
-        work_time = time_from_start_to_finish - self.break_sum 
+      if self.break_sum.present?
+        work_time = (time_from_start_to_finish - self.break_sum).to_i
       else
-        work_time = time_from_start_to_finish
+        work_time = (time_from_start_to_finish).to_i
       end
       TimeCard.create_new_record_flow(work_time, self, user)
     else
@@ -170,14 +167,7 @@ class Standby < ApplicationRecord
 
   #２回目以降の休憩終了処理で休憩時間を更新するメソッド
   def update_break_sum
-    this_breaktime_sum = $timestamp - self.break_start
-    #休憩の合計時間を算出する
-    if self.break_sum.present?
-      all_breaktime_sum = this_breaktime_sum + self.break_sum
-    else
-      all_breaktime_sum = this_breaktime_sum
-    end
-    update_record = self.update(break_start: nil, break_sum: all_breaktime_sum.to_i)
+    update_record = self.update(break_start: nil, break_sum: self.all_of_break_sum)
     return update_record
   end
 
@@ -201,11 +191,11 @@ class Standby < ApplicationRecord
           type: 'text',
           text: "#{now.month}月#{now.day}日の勤怠簿が退勤していません。修正ボタンから正しい内容に修正してください。"
         }
-        Standby.client.push_message(standby.user.line_id, message)
+        client.push_message(standby.user.line_id, message)
 
         #ユーザーのリッチメニューに修正ボタンを表示させる
         richmenu_id = Richmenu.find(4).richmenu_id
-        Standby.client.link_user_rich_menu(standby.user.line_id, richmenu_id)
+        client.link_user_rich_menu(standby.user.line_id, richmenu_id)
 
         #StandbyレコードをTimeCardレコードとして保存する
         standby.finish_work(standby.user)
@@ -213,14 +203,6 @@ class Standby < ApplicationRecord
         puts error
       end
     end
-  end
-
-  #LINEのメッセージAPIを使用するためのメソッド
-  def self.client
-    client ||= Line::Bot::Client.new { |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
-    }
   end
 
 end

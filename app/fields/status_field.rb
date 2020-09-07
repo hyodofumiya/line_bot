@@ -2,6 +2,7 @@ require "administrate/field/base"
 
 class StatusField < Administrate::Field::Base
 
+  #on_status型を使用するカラムによってレスポンスする内容を決めるメソッド
   def on_status
     case @attribute
     when :work_status
@@ -11,6 +12,7 @@ class StatusField < Administrate::Field::Base
     end
   end
 
+  #on_workカラムの場合のレスポンスを定義
   def on_work
     if @data
       "出勤中"
@@ -19,6 +21,7 @@ class StatusField < Administrate::Field::Base
     end
   end
 
+  #work_statusカラムの場合のレスポンスを定義
   def work_status
     if @data == :break
       "休憩中"

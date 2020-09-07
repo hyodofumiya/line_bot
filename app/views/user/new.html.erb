@@ -6,26 +6,28 @@
         <title>ユーザー登録</title>
 
     </head>
-    <body class="user_new_body">
+    <body class="line_page_body">
+        <div class="background">
+        </div>
         <div class="form-structor">
-            <%= form_with class:"signup", id:"signup_form", url:user_user_check_bot_path do |f| %>
+            <%= form_with class:"signup line_page_form", id:"signup_form", url:user_user_check_bot_path do |f| %>
                 <h2 class="form-title" id="signup">入力フォーム</h2>
                 <div class="form-holder">
-                    <div id="familyName_zone" class="signup_input_list">
+                    <div id="familyName_zone" class="signup_input_list input_list">
                         <%= f.label :familyName, "名前（セイ）", {class: "signup_form_label"} %>
                         <div class="signup_input_zone" id="familyName_input_zone">
                             <%= f.text_field :family_name, id:"familyName", class:"input", placeholder:"全角カタカナ", maxlength:15%>
                             <p id="familyName_error" class="signup_error_message"></p>
                         </div>
                     </div>
-                    <div id="firstName_zone" class="signup_input_list">
+                    <div id="firstName_zone" class="signup_input_list input_list">
                         <%= f.label :firstName, "名前（メイ）", {class: "signup_form_label"} %>
                         <div class="signup_input_zone" id="firstName_input_zone">
                             <%= f.text_field :first_name, id:"firstName", class:"input", placeholder:"全角カタカナ", maxlength:15 %>
                             <p id="firstName_error" class="signup_error_message"></p>
                         </div>
                     </div>
-                    <div id="emplyeeNumber_zone" class="signup_input_list">
+                    <div id="emplyeeNumber_zone" class="signup_input_list input_list">
                         <%= f.label :employeeNumber, "社員番号（5ケタの半角数字）", {class: "signup_form_label"} %>
                         <div class="signup_input_zone" id="employeeNumber_input_zone">
                             <%= f.text_field :employee_number, id:"employeeNumber", class:"input", placeholder:"社員番号（半角数字）",  maxlength:5, inputmode:"numeric"%>

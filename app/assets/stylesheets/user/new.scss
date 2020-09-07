@@ -1,92 +1,51 @@
-
-.user_new_body {
-  background-color: #E1E8EE;
-  font-family: "Fira Sans", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-  -webkit-appearance: none;
-}
-
-.form-structor {
-  height: 100%;
-  display: flex;
-  text-align: center;
-  border-radius: 15px;
-  overflow: hidden;
-  opacity: .8;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-  background: round;
-  background-image: url("https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100");
-}
-
-.form-structor .signup {
-  width: 80%;
-  z-index: 1;
-  margin: auto;
-}
-
-.form-structor .signup .form-title {
-  color: #fff;
-  font-size: 1.7em;
-  text-align: center;
-}
-
-.form-structor .signup .form-holder {
-  padding-bottom: 1em;
-}
-
-.signup_input_list{
-  text-align: initial;
-  margin-top: 1em;
-}
-
-.signup_input_zone{
-  border-radius: 15px;
-  background-color: #fff;
-  overflow: hidden;
-}
-
-.signup_error_message{
-  color: orangered;
-  padding: 0 0 8px 15px;
-  font-size: 0.8em;
-}
-
-.form-structor .signup .form-holder .input {
-  border: 0;
-  outline: none;
-  box-shadow: none;
-  display: block;
-  height: 30px;
-  line-height: 30px;
-  padding: 8px 15px 0;
-  width: 100%;
-  font-size: 16px;
-}
-
-.form-structor .signup .form-holder .input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.4);
-}
-
-.signup_form_label{
-  padding-left: 15px;
-  color: floralwhite;
-}
-
-.form-structor .signup .submit-btn {
-  background-color: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.7);
-  border: 0;
-  border-radius: 15px;
-  display: block;
-  margin: 15px auto;
-  padding: 15px 45px;
-  width: 70%;
-  font-size: 13px;
-  font-weight: bold;
-  opacity: 1;
-  cursor:pointer;
+.signup{
+  .form-holder{
+    padding-bottom: 1em;
+    .signup_input_list{
+      text-align: initial;
+      margin-top: 1em;
+      .signup_form_label{
+        padding-left: 15px;
+        color: floralwhite;
+      }
+      .signup_input_zone{
+        border-radius: 5px;
+        background-color: #fff;
+        overflow: hidden;
+        .input{
+          border: 0;
+          outline: none;
+          box-shadow: none;
+          display: block;
+          height: 30px;
+          line-height: 30px;
+          padding: 8px 15px 0;
+          width: 100%;
+          font-size: 16px;
+        }
+        .input::-webkit-input-placeholder {
+          color: rgba(0, 0, 0, 0.4);
+        }
+        .signup_error_message{
+          color: orangered;
+          padding: 0 0 8px 15px;
+          font-size: 0.8em;
+        }
+      }
+    }
+  }
+  .submit-btn{
+    background-color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.7);
+    border: 0;
+    border-radius: 15px;
+    display: block;
+    margin: 15px auto;
+    padding: 15px 45px;
+    width: 70%;
+    font-size: 13px;
+    font-weight: bold;
+    opacity: 1;
+    cursor:pointer;
+  }
 }
