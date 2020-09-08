@@ -66,6 +66,9 @@ function return_timecard(){
               timecard_data = data;
               return timecard_data;
             }else{  //jsonにTimeCardレコードが存在しなかった時、勤怠を休日に変更し、その他のフォームの値を空にする
+              timecard_data = undefined;
+              changeStatusOfDetailsInTimeCardEditForm("disabled");
+              changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
               document.getElementById('time_card_workday').removeAttribute("checked");
               document.getElementById('time_card_holiday').setAttribute("checked", "true");
               document.getElementById('timecard_start_time').value = "";
@@ -73,9 +76,6 @@ function return_timecard(){
               document.getElementById("timecard_break_time").value = "";
               document.getElementById("timecardId").value = "";
               $("#timecard_edit_form").attr({"action": '/time_cards/'});
-              timecard_data = undefined;
-              changeStatusOfDetailsInTimeCardEditForm("disabled");
-              changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
               return timecard_data;
             }
           }
@@ -172,13 +172,9 @@ function judgeWorktime(){
           })
           .success(function(data){
             if(data.user_exist == "true"){
-              if(data.result == true){
-                alert('勤怠簿を修正しました。');
-                reset_form();
-                timecard_data = undefined;
-              }else{
-                alert('勤怠簿を修正できませんでした');
-              }
+              alert('勤怠簿を修正しました。');
+              reset_form();
+              timecard_data = undefined;
               changeStatusOfDetailsInTimeCardEditForm("disabled");
               changeStatusOfSubmitbtnInTimeCardEditForm("disabled");
             }else{
