@@ -1,6 +1,8 @@
 class TimeCard < ApplicationRecord
   belongs_to :user
 
+  attr_accessor :fixed_break_time
+
   validates :date, presence: true
   validates :start_time, presence: true
   validates :finish_time, presence: true
@@ -13,6 +15,16 @@ class TimeCard < ApplicationRecord
   validate :check_start_time_date, if: Proc.new {|resource| resource.date.present? and resource.start_time.present?}
   validate :check_finish_time_date, if: Proc.new {|resource| resource.date.present? and resource.finish_time.present?}
   validate :break_time_and_work_time_sum_is_true
+
+  #break_timeがnilの場合にも登録できるようにするメソッド  
+  def fixed_break_time
+    if self.break_time != nil
+      break_time = self.break_time                   
+    else
+      break_time = 0
+    end
+  end
+  
 
   #ユーザーの同日レコードが存在しないことを確認するメソッド
   def no_same_date_record_of_user
@@ -147,15 +159,6 @@ class TimeCard < ApplicationRecord
     return self.compile_a_month_timecards_message(message_parts, year_and_month)
   end
 
-  #break_timeがnilの場合にも登録できるようにするメソッド  
-  def fixed_break_time
-    if self.break_time != nil
-      break_time = self.break_time                   
-    else
-      break_time = 0
-    end
-    return break_time
-  end
 
   #出勤日の詳細をlineに送信するメッセージ形式にして返すメソッド。引数に日付とTimeCardレコードをとる。
   def self.record_into_message(date,timecard)

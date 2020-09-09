@@ -56,7 +56,7 @@ module Admin
       @fixed_start_time = "#{params[:time_card][:date]} #{params[:time_card][:start_time]}"
       @fixed_finish_time = "#{params[:time_card][:date]} #{params[:time_card][:finish_time]}"
       @fixed_break_time = params[:time_card][:break_time].present? ? params[:time_card][:break_time].to_i*60 : 0 
-      @work_time = fixed_start_time.present? && fixed_finish_time.present? ? ((fixed_finish_time.to_time - fixed_start_time.to_time) - fixed_break_time).to_i : 0
+      @work_time = fixed_start_time.present? && fixed_finish_time.present? ? ((@fixed_finish_time.to_time - @fixed_start_time.to_time) - @fixed_break_time).to_i : 0
     end
 
     #勤怠履歴のindexページのレコードの並び順を反映させるカラムを定義
