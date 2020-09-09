@@ -27,7 +27,7 @@ class User < ApplicationRecord
   end
 
   #Lineアプリ軽油でUserを作成した時のメソッド。userの登録結果をstringで返す
-  def create_user(form_data)
+  def self.create_user(form_data)
     new_user = User.new(family_name:form_data["family_name"], first_name:form_data["first_name"], employee_number:form_data["employee_number"], line_id: $line_id, admin_user:"false")
     if new_user.save
       "ユーザー登録が完了しました"
