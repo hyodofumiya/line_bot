@@ -6,7 +6,6 @@ class LinebotsController < ApplicationController
 
   def callback
     callback_body = request.body.read
-    #check_from_line(callback_body) #リクエストがlineからのものかを確認する
     events = client.parse_events_from(callback_body)#Lineから送られてきた内容をeventsとしてパース
     events.each { |event|
       @event = event
@@ -137,8 +136,8 @@ class LinebotsController < ApplicationController
   #ユーザー登録前のuserからのリクエストを処理するメソッド
   def handle_no_user
     if @event["type"] == "postback"
-      postback_data = JSON.parse(@event["postback"]["data"])
-      case postback_data[0]["name"]
+      @postback_data = JSON.parse(@event["postback"]["data"])
+      case @postback_data[0]["name"]
       when "user_form"
         create_user
       when "fix_user_form"
@@ -156,11 +155,11 @@ class LinebotsController < ApplicationController
   def create_user
     new_user = User.create_user(@postback_data[1])
     case new_user
-    when "登録が完了しました"
+    when "ユーザー登録が完了しました"
       reply_message(set_text_message(new_user))
-    when ("すでに社員番号が使われています")
+    when "すでに社員番号が使われています"
       reply_message([set_text_message("すでに社員番号が使われています"), create_user_message])
-    when ("登録できませんでした")
+    when "登録できませんでした"
       reply_message([set_text_message("登録できませんでした"), create_user_message])
     end
   end
