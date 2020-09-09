@@ -106,7 +106,7 @@ class TimeCard < ApplicationRecord
   private
 
   #Standbyレコードから既存のTimeCardレコードに情報を統合するメソッド。引数に既存のTimeCard、Standbyレコード、User、Standbyの作業時間合計をとる
-  def create_timecard_from_standby(timecard, standby, user, work_time)
+  def self.create_timecard_from_standby(timecard, standby, user, work_time)
     case
       #正常の動作をする条件
       when standby.start >= timecard.finish_time && $timestamp > timecard.finish_time
