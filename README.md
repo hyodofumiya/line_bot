@@ -29,7 +29,7 @@ LINE上で簡単に勤怠管理ができるアプリケーションです。
 * * * 
 
 # デモ
-![LINE上の操作画面](/Users/fumiya.h/projects/line_bot/public/line勤怠デモ.gif "勤怠操作画面")
+![LINE上の操作画面](public/line勤怠デモ.gif "勤怠操作画面")
 
 # 概要
 ポートフォリオとして作成したアプリケーションです。このアプリは、LINE上で勤怠管理ができるアプリケーションです。
