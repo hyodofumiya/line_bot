@@ -35,8 +35,13 @@ module Admin
 
     #ストロングパラメーター
     def resource_params
-      params.require(resource_class.model_name.param_key).
+      if @admin
+        params.require(resource_class.model_name.param_key).
+          permit(dashboard.permitted_attributes)
+      else
+        params.require(resource_class.model_name.param_key).
         permit(dashboard.permitted_attributes).merge!({"email"=>"", "admin_user"=>false})
+      end
     end
 
     #管理者以外が閲覧しようとした際に弾くメソッド
