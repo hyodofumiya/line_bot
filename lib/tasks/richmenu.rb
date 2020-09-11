@@ -1,8 +1,8 @@
 class Richmenu
   def self.start
     client = Line::Bot::Client.new{ |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_secret = Rails.application.credentials.line_channel[:secret]
+      Rails.application.credentials.line_channel[:token]
     }
     
     rich_menu = {
@@ -89,8 +89,8 @@ class Richmenu
 
   def self.show
     client = Line::Bot::Client.new{ |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_secret = Rails.application.credentials.line_channel[:secret]
+      Rails.application.credentials.line_channel[:token]
     }
     response = client.get_rich_menus
     body = JSON.parse(response.body)
@@ -98,8 +98,8 @@ class Richmenu
 
   def self.image_uproad
     client = Line::Bot::Client.new{ |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_secret = Rails.application.credentials.line_channel[:secret]
+      Rails.application.credentials.line_channel[:token]
     }
     file = File.open('public/others.jpg')
     response = client.create_rich_menu_image('richmenu-d882125ecd5761d36fc8102049c0fb04', file)
@@ -109,8 +109,8 @@ class Richmenu
 
   def self.set_default
     client = Line::Bot::Client.new{ |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_secret = Rails.application.credentials.line_channel[:secret]
+      Rails.application.credentials.line_channel[:token]
     }
     res = client.set_default_rich_menu('richmenu-4357e5ee1155e1a187c752f69b27ecb1')
     p res
@@ -118,8 +118,8 @@ class Richmenu
 
   def self.delete
     client = Line::Bot::Client.new{ |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_secret = Rails.application.credentials.line_channel[:secret]
+      Rails.application.credentials.line_channel[:token]
     }
     response = client.delete_rich_menu("richmenu-07792a76bd76607a22553bbf2e052b30")
     p response
@@ -127,8 +127,8 @@ class Richmenu
 
   def self.check_image
     client = Line::Bot::Client.new{ |config|
-      config.channel_secret = "d8b577ffcb6bb3447f437c2a6285b27f" #ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = "S5fTELJVb90Nr4PW9YQcQettd2e7ox4eVHOKpdNXqOs8akh5BVjVLLzfr4EPFVaQsxNqXNZFEhu22kk9/nTI7PrttXwfaQ0PdiXY15W8mJMgjxLBuMAE8fGgu32MdhFjH2jBhad/Ro7T4Y7e5Yx31AdB04t89/1O/w1cDnyilFU="#ENV["LINE_CHANNEL_TOKEN"]
+      config.channel_secret = Rails.application.credentials.line_channel[:secret]
+      Rails.application.credentials.line_channel[:token]
     }
     response = client.get_rich_menu_image("richmenu-c483410ed627718cbda57d6ce91ac7f1")
     p response
