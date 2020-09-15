@@ -94,17 +94,6 @@ class LinebotsController < ApplicationController
 
   private
 #各メソッド------------------------------------------------------------------------------------------------
-  
-  #リクエスト元がlineかどうかを確認するメソッド
-  #リクエスト元がlineでない場合はステータスコード400、エラーを返す
-  def check_from_line
-    body = request.body.read
-
-    signature = request.env['HTTP_X_LINE_SIGNATURE']
-    unless client.validate_signature(body, signature)
-      response_bad_request
-    end
-  end
 
   #リクエストの送信元を判断するメソッド
   #@senderに送信元, $line_idに送信元のlineIdを定義する

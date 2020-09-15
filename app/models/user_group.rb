@@ -8,7 +8,7 @@ class UserGroup < ApplicationRecord
     #グループメンバーのuserIDを取得する
     client ||= Line::Bot::Client.new { |config|
       config.channel_secret = Rails.application.credentials.line_channel[:secret]
-      Rails.application.credentials.line_channel[:token]
+      config.channel_token = Rails.application.credentials.line_channel[:token]
     }
     response = client.get_group_member_ids(group_line_id)
     #メンバーのlineIDの入った配列をmembers_line_idとして定義する

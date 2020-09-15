@@ -5,7 +5,7 @@ class ApplicationRecord < ActiveRecord::Base
   def self.client
     client ||= Line::Bot::Client.new { |config|
       config.channel_secret = Rails.application.credentials.line_channel[:secret]
-      Rails.application.credentials.line_channel[:token]
+      config.channel_token = Rails.application.credentials.line_channel[:token]
     } 
   end
 

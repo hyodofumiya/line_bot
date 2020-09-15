@@ -7,18 +7,22 @@ class ApplicationController < ActionController::Base
   def client
     client ||= Line::Bot::Client.new { |config|
       config.channel_secret = Rails.application.credentials.line_channel[:secret]
-      Rails.application.credentials.line_channel[:token]
+      config.channel_token = Rails.application.credentials.line_channel[:token]
     }
   end
 
-  #リクエストの送信元がLINEアプリからか判別するメソッド
+  #リクエスト元がlineかどうかを確認するメソッド
+  #リクエスト元がlineでない場合はステータスコード400、エラーを返す
   def check_from_line
-    body = request.body.read
-    signature = request.env['HTTP_X_LINE_SIGNATURE']
-    unless client.validate_signature(body, signature)
+    http_request_body = request.raw_post
+    hash = OpenSSL::HMAC::digest(OpenSSL::Digest::SHA256.new, Rails.application.credentials.line_channel[:secret], http_request_body)
+    signature = Base64.strict_encode64(hash)
+    x_line_signature = request.env['HTTP_X_LINE_SIGNATURE']
+    unless signature == x_line_signature
       response_bad_request
     end
   end
+
 
   #ログイン後の画面を設定
   def after_sign_in_path_for(resource)
