@@ -1,13 +1,16 @@
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <header></header>
+  <header>
+    <h1>勤怠管理アプリケーション</h1>
+  </header>
   <main>
     <section id="app_detail">
       <div class="section_title">
-        <h3>内容</h3>
+        <h2>内容</h2>
       </div>
       <div class="section_body">
         <div id="detail_des">
@@ -18,23 +21,24 @@
     </section>
     <section id="featuer">
       <div class="section_title">
-        <h3>特徴</h3>
+        <h2>特徴</h2>
       </div>
       <div class="section_body">
         <div id="feature_des">
-          <ul id="feature_lists">
+          <ol id="feature_lists">
             <li>
-              <p>スムーズなUXを提供</p>
+              <h4>スムーズなUXを提供</h4>
               <ul>
                 <li>LINEアプリ上で、ほぼ全ての機能を利用可能</li>
                 <li>使用頻度の高い処理は１タップで実行</li>
                 <li>ログイン不要（LINEアプリ版）</li>
                 <li>アカウント連携でログイン時の手間を削減（ブラウザ版）</li>
+                <br>
               </ul>
             </li>
             <li>
-              <p>リモートワーク×フレックスタイム制を想定した仕様</p>
-              出退状況に加え、作業中か休憩中か確認できる。
+              <h4>リモートワーク×フレックスタイム制を想定した仕様</h4>
+              勤務時間中に連絡できるよう、ステータスを設定（作業中・休憩中・退勤中）
             </li>
           </ul>
         </div>
@@ -42,7 +46,7 @@
     </section>
     <section id="area_of_responsibility">
       <div class="section_title">
-        <h3>担当領域</h3>
+        <h2>担当領域</h2>
       </div>
       <div class="section_body">
         <div id="responsibility_des">
@@ -52,88 +56,61 @@
     </section>
     <section id="enviroment">
       <div class="section_title">
-        <h3>開発環境</h3>
+        <h2>開発環境</h2>
       </div>
       <div class="section_body">
         <div id="environment_des">
-          <table>
-            <tbody>
-              <tr>
-                <th>OS</th>
-                <th>MacOS</th>
-              </tr>
-              <tr>
-                <th>言語</th>
-                <th>Ruby version 2.5.1</th>
-              </tr>
-              <tr>
-                <th>FW</th>
-                <th>Ruby on Rails version 5.2.4</th>
-              </tr>
-              <tr>
-                <th>DB</th>
-                <th>PostgreSQL</th>
-              </tr>
-              <tr>
-                <th>サーバー</th>
-                <th>Heroku</th>
-              </tr>
-            </tbody>
-          </table>
+          <ul>
+            <li>OS : MacOS</li>
+            <li>言語 : Ruby version 2.5.1</li>
+            <li>FW : Ruby on Rails version 5.2.4</li>
+            <li>DB : PostgreSQL</li>
+          </ul>
         </div>
       </div>
     </section>
     <section id="functions">
       <div class="section_title">
-        <h3>機能一覧</h3>
+        <h2>機能一覧</h2>
       </div>
       <div class="section_body">
         <div class="function">
-          <h3 class="function_name">社員情報</h3>
-          <ul class="actions">
-            <li class="function_action">新規登録</li>
-            <li class="function_action">編集・削除</li>
-            <li class="function_action">一覧表示</li>
-            <li class="function_action">詳細表示</li>
-            <li class="function_action">検索</li>
-            <li class="function_action">並び替え</li>
+          <h4 class="function_name">社員情報テーブル</h4>
+          <ul>
+            <li>新規登録・一覧表示・詳細表示・編集・削除機能</li>
+            <li>検索機能</li>
+            <li>並び替え機能</li>
           </ul>
         </div>
         <div class="function">
-          <h3 class="function_name">作業状況</h3>
-          <ul class="actions">
-            <li class="function_action">新規登録</li>
-            <li class="function_action">編集・削除</li>
-            <li class="function_action">一覧表示</li>
-            <li class="function_action">詳細表示</li>
+          <h4 class="function_name">作業状況テーブル</h4>
+          <ul>
+            <li>新規登録・一覧表示・詳細表示・編集・削除機能</li>
           </ul>
         </div>
         <div class="function">
-          <h3 class="function_name">勤怠情報</h3>
-          <ul class="actions">
-            <li class="function_action">新規登録</li>
-            <li class="function_action">編集・削除</li>
-            <li class="function_action">一覧表示</li>
-            <li class="function_action">詳細表示</li>
-            <li class="function_action">検索</li>
-            <li class="function_action">並び替え</li>
+          <h4 class="function_name">勤怠情報テーブル</h4>
+          <ul>
+            <li>新規登録・一覧表示・詳細表示・編集・削除機能</li>
+            <li>検索機能</li>
+            <li>並び替え機能</li>
           </ul>
         </div>
         <div class="function">
-          <h3 class="function_name">その他</h3>
-          <ul class="actions">
-            <li class="function_action">ログイン機能（mail＋password)</li>
-            <li class="function_action">LINEアカウント連携機能</li>
-            <li class="function_action">管理者権限機能</li>
-            <li class="function_action">LINEメッセージ送信機能</li>
-            <li class="function_action">LINEリッチメニュー</li>
+          <h4 class="function_name">その他</h4>
+          <ul>
+            <li>ログイン機能（mail＋password)</li>
+            <li>LINEアカウント連携機能</li>
+            <li>管理者権限機能</li>
+            <li>LINEメッセージ送信機能</li>
+            <li>LINEリッチメニュー</li>
           </ul>
         </div>
       </div>
     </section>
     <section id="technicals">
       <div class="section_title">
-        <h3>使用技術</h3>
+        <h2>使用技術</h2>
       </div>
       <div class="section_body">
         <div id="technicals_des">
@@ -148,30 +125,118 @@
             <li class="technical">LINE Social API</li>
             <li class="technical">LINE Messaging API</li>
             <li class="technical">LINE Front-end Framework</li>
-
-            <li class="technical"></li>
-
           </ul>
         </div>
       </div>
     </section>
     <section id="ingrediences">
       <div class="section_title">
-        <h3>工夫・こだわり</h3>
+        <h2>工夫・こだわり</h2>
       </div>
-      <div class="section_body"></div>
+      <div class="section_body">
+        <ul>
+          <li>
+            <h3>UX</h3>
+            <div>①アクション数、②ツール、③ユーザー教育の削減
+            </div>
+            <p>→使用頻度の多い処理は１タップで実行</p>
+            <p>→UIは、普段から使い慣れているLINEを選択</p>
+            <p>→誰でも使いこなせるように、多機能ではなく必要十分となるように設計</p>
+          </li>
+          <li>
+            <h3>今後のニーズを重視した仕様</h3>
+            <div>リモート×フレックスタイム制の勤務形態を想定して設計。</div>
+            <p>→作業中・休憩中・退勤中のステータスを管理者が確認できるようにし、プライベートタイムに干渉しないようにした。
+            </p>
+          </li>
+        </ul>
+      </div>
     </section>
     <section id="demo">
       <div class="section_title">
-        <h3>デモ</h3>
+        <h2>デモ</h2>
       </div>
       <div class="section_body"></div>
     </section>
     <section id="how_to_use">
       <div class="section_title">
-        <h3>使い方</h3>
+        <h2>使い方</h2>
       </div>
-      <div class="section_body"></div>
+      <div class="section_body">
+        <li class="use_list">
+          <h3>一般ユーザーの場合</h3>
+          <ol class="use_procedure">
+            <li>LINEアプリで＿を友達追加する</li>
+            <li>メッセージに従いユーザーを登録する</li>
+            <h4>LINEアプリで使用する場合</h4>
+            <li>リッチメニューから各機能を使用する  
+              <div id="richmenu_des">
+                <h5>各リッチメニューボタンの説明</h5>
+                <table class="richmenu_supplement">
+                  <tr>
+                    <th>出勤</th>
+                    <th>出勤時に使用します。ステータスが作業中になります。</th>
+                  </tr>
+                  <tr>
+                    <th>休憩開始</th>
+                    <th>休憩開始時に使用します。ステータスが休憩中になります。</th>
+                  </tr>
+                  <tr>
+                    <th>休憩終了</th>
+                    <th>休憩終了時に使用します。ステータスが作業中に戻ります。</th>
+                  </tr>
+                  <tr>
+                    <th>退勤</th>
+                    <th>退勤時に使用します。ステータスが退勤中になります。休憩中でも自動で休憩終了し、退勤します。</th>
+                  </tr>
+                  <tr>
+                    <th>今月と先月</th>
+                    <th>今月と前月の勤務履歴を一覧で表示します。</th>
+                  </tr>
+                  <tr>
+                    <th>日付を指定</th>
+                    <th>日付を指定して、勤務履歴の詳細を表示します。</th>
+                  </tr>
+                  <tr>
+                    <th>修正</th>
+                    <th>勤怠履歴を修正します。</th>
+                  </tr>
+                  <tr>
+                    <th>報連相</th>
+                    <th>未実装です。社員間でステータスの確認、管理者への連絡機能を想定。</th>
+                  </tr>
+                </table>
+              </div>
+            </li>
+            <h4>ブラウザで利用する場合</h4>
+            <li value="3">ログイン画面を開く</li>
+            <li>社員登録したLINEアカウントでLINEログイン</li>
+            <li>ログイン後は全ての機能を利用できます。</li>
+            <li>使い終わったら下記管理者ユーザーで自身の社員情報を削除してください。</li>
+          </ol>
+        </li>
+        <li class="use_list">
+          <h3>管理者ユーザーの場合</h3>
+          <ul class="use_procedure">
+            <li>管理者用ログイン画面から下記を入力してログインします。<p>E-mail:admin@sample.com</p><p>Password:adminuser</p></li>
+            <li>ログイン後は全ての機能を利用できます</li>
+          </ul>
+        </li>
+        <li class="use_list">
+          <h4>その他</h4>
+          <ul>
+            <li>
+              <h5>検索機能について</h5>
+              <p>社員情報は、社員番号,セイ,メイで検索できます。</p>
+              <p>勤怠履歴は、社員番号,日付で検索できます。</p>
+            </li>
+            <li>
+              <h5>メッセージ送信機能について</h5>
+              <p>メッセージは、自分で作成した以外のユーザーには送信しないでください。</p>
+            </li>
+          </ul>
+        </li>
+      </div>
     </section>
   </main>
   <footer></footer>

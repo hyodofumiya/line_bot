@@ -1,0 +1,49 @@
+body{}
+header{}
+main{}
+section{
+  margin: 2em 5em;
+}
+#app_detail{}
+#featuer{}
+#area_of_responsibility{}
+#enviroment th{
+  font-weight: normal;
+  text-align: left;
+}
+.function{
+  margin-bottom: 1em;
+  background-color: aqua;
+  padding: 1em;
+  border-radius: 1em;
+}
+#technicals{}
+#ingrediences{}
+#demo{}
+#how_to_use{}
+.section_title{
+  line-height: 3em;
+  padding: 0 1em;
+  background-color: antiquewhite;
+}
+.section_body{
+  margin: 2em;
+}
+.use_list{
+  margin-bottom: 2em;
+  list-style: none;
+  padding: 1em;
+}
+.use_procedure{
+  background-color: blanchedalmond;
+}
+.richmenu_supplement{
+  border-radius: 1em;
+  padding: 1em;
+  border-left: black solid 1px;
+  border-right: black solid 1px;
+}
+#richmenu_des{
+  background-color: #fff;
+}
+footer{}
