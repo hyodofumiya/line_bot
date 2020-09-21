@@ -1,5 +1,14 @@
-body{}
-header{}
+body{
+  max-width: 1440px;
+  margin: 5em auto;
+}
+header{
+  text-align: center;
+  size: 2em;
+}
+header h1{
+  font-size: 2.5em;
+}
 main{}
 section{
   margin: 2em 5em;
@@ -13,7 +22,7 @@ section{
 }
 .function{
   margin-bottom: 1em;
-  background-color: aqua;
+  background-color: #FFF4E0;
   padding: 1em;
   border-radius: 1em;
 }
@@ -24,18 +33,32 @@ section{
 .section_title{
   line-height: 3em;
   padding: 0 1em;
-  background-color: antiquewhite;
+  background-color: #0f7ea0;
+  color: #FFF;
 }
 .section_body{
   margin: 2em;
 }
 .use_list{
   margin-bottom: 2em;
-  list-style: none;
-  padding: 1em;
+}
+.target_user{
+
 }
 .use_procedure{
-  background-color: blanchedalmond;
+  margin: 1em 0;
+  background-color: #FFF4E0;
+  padding: 1.5em !important;
+  border-radius: 1em;
+}
+.use_procedure h4{
+  margin-bottom: 1em;
+}
+.liststyle_none{
+  list-style: none !important;
+}
+.use_procedure li{
+  list-style: decimal inside;
 }
 .richmenu_supplement{
   border-radius: 1em;
@@ -43,7 +66,5 @@ section{
   border-left: black solid 1px;
   border-right: black solid 1px;
 }
-#richmenu_des{
-  background-color: #fff;
-}
+
 footer{}

@@ -152,91 +152,99 @@
         </ul>
       </div>
     </section>
-    <section id="demo">
-      <div class="section_title">
-        <h2>デモ</h2>
-      </div>
-      <div class="section_body"></div>
-    </section>
+
     <section id="how_to_use">
       <div class="section_title">
         <h2>使い方</h2>
       </div>
       <div class="section_body">
-        <li class="use_list">
-          <h3>一般ユーザーの場合</h3>
-          <ol class="use_procedure">
-            <li>LINEアプリで＿を友達追加する</li>
-            <li>メッセージに従いユーザーを登録する</li>
-            <h4>LINEアプリで使用する場合</h4>
-            <li>リッチメニューから各機能を使用する  
-              <div id="richmenu_des">
-                <h5>各リッチメニューボタンの説明</h5>
-                <table class="richmenu_supplement">
-                  <tr>
-                    <th>出勤</th>
-                    <th>出勤時に使用します。ステータスが作業中になります。</th>
-                  </tr>
-                  <tr>
-                    <th>休憩開始</th>
-                    <th>休憩開始時に使用します。ステータスが休憩中になります。</th>
-                  </tr>
-                  <tr>
-                    <th>休憩終了</th>
-                    <th>休憩終了時に使用します。ステータスが作業中に戻ります。</th>
-                  </tr>
-                  <tr>
-                    <th>退勤</th>
-                    <th>退勤時に使用します。ステータスが退勤中になります。休憩中でも自動で休憩終了し、退勤します。</th>
-                  </tr>
-                  <tr>
-                    <th>今月と先月</th>
-                    <th>今月と前月の勤務履歴を一覧で表示します。</th>
-                  </tr>
-                  <tr>
-                    <th>日付を指定</th>
-                    <th>日付を指定して、勤務履歴の詳細を表示します。</th>
-                  </tr>
-                  <tr>
-                    <th>修正</th>
-                    <th>勤怠履歴を修正します。</th>
-                  </tr>
-                  <tr>
-                    <th>報連相</th>
-                    <th>未実装です。社員間でステータスの確認、管理者への連絡機能を想定。</th>
-                  </tr>
-                </table>
-              </div>
-            </li>
-            <h4>ブラウザで利用する場合</h4>
-            <li value="3">ログイン画面を開く</li>
-            <li>社員登録したLINEアカウントでLINEログイン</li>
-            <li>ログイン後は全ての機能を利用できます。</li>
-            <li>使い終わったら下記管理者ユーザーで自身の社員情報を削除してください。</li>
-          </ol>
-        </li>
-        <li class="use_list">
-          <h3>管理者ユーザーの場合</h3>
-          <ul class="use_procedure">
-            <li>管理者用ログイン画面から下記を入力してログインします。<p>E-mail:admin@sample.com</p><p>Password:adminuser</p></li>
-            <li>ログイン後は全ての機能を利用できます</li>
-          </ul>
-        </li>
-        <li class="use_list">
-          <h4>その他</h4>
-          <ul>
-            <li>
-              <h5>検索機能について</h5>
-              <p>社員情報は、社員番号,セイ,メイで検索できます。</p>
-              <p>勤怠履歴は、社員番号,日付で検索できます。</p>
-            </li>
-            <li>
-              <h5>メッセージ送信機能について</h5>
-              <p>メッセージは、自分で作成した以外のユーザーには送信しないでください。</p>
-            </li>
-          </ul>
-        </li>
+        <ul>
+          <li class="use_list">
+            <h3 class="target_user">非管理者ユーザーの場合</h3>
+            <ol class="use_procedure">
+              <h4>LINEアプリで利用</h4>
+              <li>LINEアプリで＿を友達追加する</li>
+              <li>メッセージに従いユーザーを登録する</li>
+              <li>リッチメニューから各機能を使用する  
+                <div id="richmenu_des">
+                  <h5>各リッチメニューボタンの説明</h5>
+                  <table class="richmenu_supplement">
+                    <tr>
+                      <th>出勤</th>
+                      <th>出勤時に使用します。ステータスが作業中になります。</th>
+                    </tr>
+                    <tr>
+                      <th>休憩開始</th>
+                      <th>休憩開始時に使用します。ステータスが休憩中になります。</th>
+                    </tr>
+                    <tr>
+                      <th>休憩終了</th>
+                      <th>休憩終了時に使用します。ステータスが作業中に戻ります。</th>
+                    </tr>
+                    <tr>
+                      <th>退勤</th>
+                      <th>退勤時に使用します。ステータスが退勤中になります。休憩中でも自動で休憩終了し、退勤します。</th>
+                    </tr>
+                    <tr>
+                      <th>今月と先月</th>
+                      <th>今月と前月の勤務履歴を一覧で表示します。</th>
+                    </tr>
+                    <tr>
+                      <th>日付を指定</th>
+                      <th>日付を指定して、勤務履歴の詳細を表示します。</th>
+                    </tr>
+                    <tr>
+                      <th>修正</th>
+                      <th>勤怠履歴を修正します。</th>
+                    </tr>
+                    <tr>
+                      <th>報連相</th>
+                      <th>未実装です。社員間でステータスの確認、管理者への連絡機能を想定。</th>
+                    </tr>
+                  </table>
+                </div>
+              </li>
+            </ol>
+            <ol class="use_procedure">
+              <h4>ブラウザで利用</h4>
+              <li>LINEアプリで＿を友達追加する</li>
+              <li>メッセージに従いユーザーを登録する</li>
+              <li value="3">ログイン画面を開く</li>
+              <li>社員登録したLINEアカウントでLINEログイン</li>
+              <li>ログイン後は全ての機能を利用できます。</li>
+              <li>使い終わったら下記管理者ユーザーで自身の社員情報を削除してください。</li>
+            </ol>
+          </li>
+          <li class="use_list">
+            <h3 class="target_user">管理者ユーザーの場合</h3>
+            <ul class="use_procedure">
+              <li>管理者用ログイン画面から下記を入力してログインします。<br><br><p>　 E-mail: admin@sample.com</p><p>　 Password: adminuser</p><br></li>
+              <li>ログイン後は全ての機能を利用できます</li>
+            </ul>
+          </li>
+          <li class="use_list">
+            <h3 class="target_user">その他</h3>
+            <ul class="use_procedure">
+              <li class="liststyle_none">
+                <h5>検索機能について</h5>
+                <p>社員情報は、社員番号,セイ,メイで検索できます。</p>
+                <p>勤怠履歴は、社員番号,日付で検索できます。</p>
+                <br>
+              </li>
+              <li class="liststyle_none">
+                <h5>メッセージ送信機能について</h5>
+                <p>メッセージは、自分で作成した以外のユーザーには送信しないでください。</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
+    </section>
+    <section id="demo">
+      <div class="section_title">
+        <h2>デモ</h2>
+      </div>
+      <div class="section_body"></div>
     </section>
   </main>
   <footer></footer>
