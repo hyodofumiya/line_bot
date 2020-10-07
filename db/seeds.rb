@@ -16,26 +16,36 @@ def create_richmenu_data
 end
 
 def create_dammy_data
-  for num in 2..18 do
-    date = "2020/05/#{num}"
-    date = date.to_date
-    start_time = Time.new(date.year, date.month, date.day, num, num, 0)
-    finish_time = Time.new(date.year, date.month, date.day, num+2, 2+num, 0)
-    break_time = 1800
-    work_time = (finish_time - start_time - break_time).to_i
-    timecard = TimeCard.new(user_id: 2, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
-    timecard.save
-    p date
-    p start_time
-    p break_time
-    p work_time
-    p timecard.errors
+  date_9 = [1,2,3,4,7,8,9,10,11,14,15,16,17,18,21,22,23,24,25,28,29,30]
+  date_10 =[1,2,5,6,7]
+  date_9.each do |i|
+    create_timecard_record(9, i)
+  end
+  date_10.each do |i|
+    create_timecard_record(10, i)
   end
 end
 
-def create_admin_user
-  User.create( employee_number: 99999, family_name: "テスト", first_name: "テスト", line_id: "000", email: "sample@sample.com", password: "testtest", admin_user: true)
+def create_timecard_record(month,day)
+  date = "2020/#{month}/#{day}"
+  date = date.to_date
+  start_time = Time.new(date.year, date.month, date.day, 9, 0, 0)
+  finish_time = Time.new(date.year, date.month, date.day, 17, 0, 0)
+  break_time = 4800
+  work_time = (finish_time - start_time - break_time).to_i
+  timecard = TimeCard.new(user_id: 1, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
+  timecard.save
 end
 
-create_richmenu_data
+def create_admin_user
+  User.create(employee_number: 99999, family_name: "カンリシャ", first_name: "タロウ", line_id: "000", email: "admin@sample.com", password: "adminuser", admin_user: true)
+end
+
+def create_sample_user
+  User.create(employee_number: 11111, family_name: "サンプル", first_name: "ハナコ", line_id: "111", admin_user: false)
+end
+
 create_admin_user
+create_sample_user
+create_richmenu_data
+create_dammy_data
