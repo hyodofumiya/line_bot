@@ -10,8 +10,6 @@ def create_richmenu_data
   richmenus.each do |richmenu|
     req = Richmenu.new(id: richmenu[0], name: richmenu[1], richmenu_id: richmenu[2], explanation: richmenu[3], created_at: Time.now, updated_at: Time.now)
     res = req.save
-    p req
-    p res
   end
 end
 
