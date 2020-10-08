@@ -9,7 +9,6 @@ window.addEventListener('load', function(){
 function check_submit(){
   $("#line_send_form_in_index").on('submit',function(){
     var checked_line_send_btn = checked_line_send();
-    debugger
     if (checked_line_send_btn == true){
       var message = exist_line_message();
       var user = more_than_one_user_be_selected();
@@ -39,11 +38,15 @@ function lineSendMessage(){
       $('#field-unit--line_message').removeClass("hidden_zone");
       $("#field-unit--line_message").addClass("field-unit--required");
       $('#field-unit--line_message').css({"color": "#293f54"});
+      $('.check_of_line_send').removeAttr("disabled");
+      $('#check_of_line_send__all').removeAttr("disabled");
     }else{
       $('#line_message').attr({"disabled": "disabled"});
       $('#field-unit--line_message').addClass("hidden_zone");
       $("#field-unit--line_message").removeClass("field-unit--required");
       $('#field-unit--line_message').css({"color": "gray"});
+      $('.check_of_line_send').attr({"disabled": "disabled"});
+      $('#check_of_line_send__all').attr({"disabled": "disabled"});
     }
   })
 }
@@ -106,7 +109,6 @@ function change_all_user_line_send_check(){
 
 //submitが押下された時に送信先userが１人以上選択されていることを確認するメソッド
 function more_than_one_user_be_selected(){
-  debugger
   var controller_and_action = page_info();
   var expect_page_info = ["users#new", "users#show", "users#edit", "standbies#new", "standbies#show", "standbies#edit", "time_cards#new", "time_cards#show", "time_cards#edit"];
 
@@ -152,6 +154,7 @@ function exist_line_message(){
 
 
 $(document).ajaxSuccess(function(event, xhr, setting) {
+  debugger
   if (setting.url == "/admin/line_send"){
     alert('メッセージを送信しました');
     document.line_send_form.reset();
