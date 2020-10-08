@@ -20,7 +20,7 @@ ja:
       # view側： User.model_name.human => "ユーザ" / t("activerecord.models.user")と同じ
       user: 社員
       board: 掲示板
-      time_card: 勤怠履歴
+      time_card: 勤務履歴
       standby: 勤務情報
       richmenu: LINEリッチメニュー
       group: グループ
@@ -59,7 +59,7 @@ ja:
       User: 社員情報
       Standby: 勤務情報
       Board: 掲示板
-      TimeCard: 勤怠履歴
+      TimeCard: 勤務履歴
       Richmenu: LINEリッチメニュー
       Group: グループ
     actions:
