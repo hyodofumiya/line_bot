@@ -38,11 +38,15 @@ function lineSendMessage(){
       $('#field-unit--line_message').removeClass("hidden_zone");
       $("#field-unit--line_message").addClass("field-unit--required");
       $('#field-unit--line_message').css({"color": "#293f54"});
+      $('.check_of_line_send').removeAttr("disabled");
+      $('#check_of_line_send__all').removeAttr("disabled");
     }else{
       $('#line_message').attr({"disabled": "disabled"});
       $('#field-unit--line_message').addClass("hidden_zone");
       $("#field-unit--line_message").removeClass("field-unit--required");
       $('#field-unit--line_message').css({"color": "gray"});
+      $('.check_of_line_send').attr({"disabled": "disabled"});
+      $('#check_of_line_send__all').attr({"disabled": "disabled"});
     }
   })
 }
@@ -106,7 +110,7 @@ function change_all_user_line_send_check(){
 //submitが押下された時に送信先userが１人以上選択されていることを確認するメソッド
 function more_than_one_user_be_selected(){
   var controller_and_action = page_info();
-  var expect_page_info = ["users#new", "users#edit", "standbies#new", "standbies#edit", "time_cards#new", "time_cards#edit"];
+  var expect_page_info = ["users#new", "users#show", "users#edit", "standbies#new", "standbies#show", "standbies#edit", "time_cards#new", "time_cards#show", "time_cards#edit"];
 
   if(expect_page_info.includes(controller_and_action)){
     return true
@@ -138,6 +142,7 @@ function page_info(){
   return page_info
 }
 
+//lineメッセージ入力フォームが空でないことを確認するメソッド。空ならfalse,そうでなければtrueを返す。
 function exist_line_message(){
   var line_message = document.getElementById("line_message");
   if(line_message.value == ""){
@@ -149,6 +154,7 @@ function exist_line_message(){
 
 
 $(document).ajaxSuccess(function(event, xhr, setting) {
+  debugger
   if (setting.url == "/admin/line_send"){
     alert('メッセージを送信しました');
     document.line_send_form.reset();

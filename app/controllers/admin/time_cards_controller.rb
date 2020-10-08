@@ -48,7 +48,7 @@ module Admin
     def resource_params
       fix_resource_params
       params.require(resource_class.model_name.param_key).
-        permit(dashboard.permitted_attributes).merge!({"start_time"=>fixed_start_time, "finish_time"=>fixed_finish_time, "work_time"=> "#{work_time}", "break_time"=> fixed_break_time})
+        permit(dashboard.permitted_attributes).merge!({"start_time"=>@fixed_start_time, "finish_time"=>@fixed_finish_time, "work_time"=> "#{@work_time}", "break_time"=> @fixed_break_time})
     end
 
     #DBの型に対応する型にresource情報を整形するメソッド。
