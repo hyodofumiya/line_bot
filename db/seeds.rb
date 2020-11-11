@@ -14,13 +14,13 @@ def create_richmenu_data
 end
 
 def create_dammy_data
-  date_9 = [1,2,3,4,7,8,9,10,11,14,15,16,17,18,21,22,23,24,25,28,29,30]
-  date_10 =[1,2,5,6,7]
-  date_9.each do |i|
-    create_timecard_record(9, i)
-  end
+  date_10 = [1,2,5,6,7,8,9,12,13,14,15,16,19,20,21,22,23,26,27,28,29,30]
+  date_11 =[2,3,4,5,6,9,10,11]
   date_10.each do |i|
     create_timecard_record(10, i)
+  end
+  date_11.each do |i|
+    create_timecard_record(11, i)
   end
 end
 
@@ -31,7 +31,7 @@ def create_timecard_record(month,day)
   finish_time = Time.new(date.year, date.month, date.day, 17, 0, 0)
   break_time = 4800
   work_time = (finish_time - start_time - break_time).to_i
-  timecard = TimeCard.new(user_id: 1, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
+  timecard = TimeCard.new(user_id: 3, date: date, work_time: work_time, start_time: start_time, finish_time: finish_time, break_time: break_time)
   timecard.save
 end
 
@@ -43,7 +43,7 @@ def create_sample_user
   User.create(employee_number: 11111, family_name: "サンプル", first_name: "ハナコ", line_id: "111", admin_user: false)
 end
 
-create_admin_user
-create_sample_user
-create_richmenu_data
+#create_admin_user
+#create_sample_user
+#create_richmenu_data
 create_dammy_data
